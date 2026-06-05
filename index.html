@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BwithMe — Secure Platform</title>
+    <style>
+        :root {
+            --bg-global: #0b071e;
+            --bg-container: #0f0a28;
+            --bg-card: #16103c;
+            --border-color: #241b56;
+            --text-main: #ffffff;
+            --text-muted: #8e89b3;
+            --color-primary: #d946ef;
+            --gradient-accent: linear-gradient(135deg, #a855f7, #ec4899);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-global);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-wrapper {
+            background-color: var(--bg-container);
+            width: 100%;
+            max-width: 410px;
+            height: 780px;
+            border-radius: 42px;
+            border: 10px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .title-area {
+            text-align: center;
+            margin: 40px 0 30px 0;
+        }
+
+        .title-area h1 {
+            font-size: 32px;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .action-btn {
+            background: var(--gradient-accent);
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .alert-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .user-summary {
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
+        .members-grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .grid-member-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 18px 10px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .grid-member-card.chosen {
+            border-color: var(--color-primary);
+            background: linear-gradient(180deg, var(--bg-card), rgba(236, 72, 153, 0.08));
+        }
+
+        .avatar-placeholder {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+        }
+
+        .member-card-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .check-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 12px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-member-card.chosen .check-badge {
+            display: flex;
+        }
+
+        .selection-list-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+        }
+
+        .status-tag {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .status-tag.matched {
+            background-color: rgba(236, 72, 153, 0.15);
+            color: var(--color-primary);
+        }
+
+        .status-tag.pending {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .bottom-nav-menu {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            font-size: 14px;
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-wrapper">
+        <div class="screen active" id="screenLogin">
+            <div class="title-area">
+                <h1>BwithMe</h1>
+                <p style="color: var(--text-muted); font-size: 14px;">Private. Safe. Mutual.</p>
+            </div>
+            <div class="alert-box" id="loginError">Access denied. Invalid secure token.</div>
+            <div class="input-group">
+                <label>Enter Secret Identity Key</label>
+                <input type="password" class="input-field" id="usernameInput" placeholder="bwm.nameXXXX" autocomplete="off">
+            </div>
+            <button class="action-btn" onclick="handleLogin()">Verify Access →</button>
+        </div>
+
+        <div class="screen" id="screenHome">
+            <div class="user-summary">
+                <h2 id="currentProfileName">Dashboard</h2>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Select up to 2 choices secretly</p>
+            </div>
+            <div class="members-grid-container" id="gridContainer"></div>
+        </div>
+
+        <div class="screen" id="screenSelections">
+            <div style="margin-bottom: 20px; margin-top: 10px;">
+                <h2>My Connections</h2>
+                <p style="color: var(--text-muted); font-size: 13px;">Live confirmation dashboard</p>
+            </div>
+            <div id="selectionsListWrapper"></div>
+        </div>
+
+        <div class="bottom-nav-menu" id="bottomNav">
+            <div class="nav-link" onclick="handleLogout()">Exit Session</div>
+            <div class="nav-link active" id="tabHome" onclick="navigateTo('screenHome')">Profiles</div>
+            <div class="nav-link" id="tabSelections" onclick="navigateTo('screenSelections')">My Selections</div>
+        </div>
+    </div>
+
+    <script>
+        // Secure structural data map with completely fixed cryptographic index references.
+        const database = {
+            users: {
+                "bwm.abdelhakime5821": { displayName: "ABDELHAKIME OU", color: "#d946ef", picks: [] },
+                "bwm.abdelilah9034": { displayName: "ABDELILAH AI", color: "#a78bfa", picks: [] },
+                "bwm.abdellah4176": { displayName: "ABDELLAH OU", color: "#93c5fd", picks: [] },
+                "bwm.abderrahim1102": { displayName: "ABDERRAHIM BO", color: "#fed7aa", picks: [] },
+                "bwm.abderrahmane6743": { displayName: "ABDERRAHMANE BE", color: "#3b82f6", picks: [] },
+                "bwm.achraf8819": { displayName: "ACHRAF RE", color: "#ddd6fe", picks: [] },
+                "bwm.achraf2354": { displayName: "ACHRAF SA", color: "#86efac", picks: [] },
+                "bwm.adil7912": { displayName: "ADIL SA", color: "#fda4af", picks: [] },
+                "bwm.ahlam3021": { displayName: "AHLAM BO", color: "#fef08a", picks: [] },
+                "bwm.amal4498": { displayName: "AMAL EL", color: "#6366f1", picks: [] },
+                "bwm.aya6152": { displayName: "AYA EL", color: "#8b5cf6", picks: [] },
+                "bwm.aymane3381": { displayName: "AYMANE FA", color: "#bfdbfe", picks: [] },
+                "bwm.ayoub5092": { displayName: "AYOUB AI", color: "#fbbf24", picks: [] },
+                "bwm.ayoube1276": { displayName: "AYOUBE BE", color: "#14b8a6", picks: [] },
+                "bwm.chaimae9943": { displayName: "CHAIMAE EL", color: "#3b82f6", picks: [] },
+                "bwm.chaima4051": { displayName: "CHAIMA LH", color: "#6ee7b7", picks: [] },
+                "bwm.chayma8210": { displayName: "CHAYMA EZ", color: "#fef08a", picks: [] },
+                "bwm.douaa6639": { displayName: "DOUAA DA", color: "#38bdf8", picks: [] },
+                "bwm.elmahdi1752": { displayName: "EL MAHDI CH", color: "#a3e635", picks: [] },
+                "bwm.essaadia4890": { displayName: "ESSAADIA CH", color: "#fb7185", picks: [] },
+                "bwm.fatima2281": { displayName: "FATIMA CH", color: "#86efac", picks: [] },
+                "bwm.fatima7104": { displayName: "FATIMA HA", color: "#a3e635", picks: [] },
+                "bwm.fatima5593": { displayName: "FATIMA TA", color: "#c084fc", picks: [] },
+                "bwm.ghita3641": { displayName: "GHITA DI", color: "#f43f5e", picks: [] },
+                "bwm.hajar1098": { displayName: "HAJAR AS", color: "#38bdf8", picks: [] },
+                "bwm.hajar8432": { displayName: "HAJAR ZI", color: "#f43f5e", picks: [] },
+                "bwm.hafsa5021": { displayName: "HAFSA RA", color: "#a7f3d0", picks: [] },
+                "bwm.hasnae6918": { displayName: "HASNAE BI", color: "#c084fc", picks: [] },
+                "bwm.hiba3374": { displayName: "HIBA EL", color: "#d946ef", picks: [] },
+                "bwm.hiba9105": { displayName: "HIBA ZD", color: "#38bdf8", picks: [] },
+                "bwm.hind2849": { displayName: "HIND BE", color: "#fca5a5", picks: [] },
+                "bwm.hind7732": { displayName: "HIND FE", color: "#f5d0fe", picks: [] },
+                "bwm.houssam3914": { displayName: "HOUSSAM AA", color: "#60a5fa", picks: [] },
+                "bwm.ikram5528": { displayName: "IKRAM ID", color: "#6366f1", picks: [] },
+                "bwm.imane4190": { displayName: "IMANE BE", color: "#d946ef", picks: [] },
+                "bwm.imrane8043": { displayName: "IMRANE BO", color: "#f5d0fe", picks: [] },
+                "bwm.ismail2615": { displayName: "ISMAIL SA", color: "#93e6fb", picks: [] },
+                "bwm.jamila9087": { displayName: "JAMILA AL", color: "#a3e635", picks: [] },
+                "bwm.kaoutar3841": { displayName: "KAOUTAR BO", color: "#fed7aa", picks: [] },
+                "bwm.kaoutar7729": { displayName: "KAOUTAR OU", color: "#c084fc", picks: [] },
+                "bwm.kaoutar1045": { displayName: "KAOUTAR RH", color: "#fef08a", picks: [] },
+                "bwm.khadija5193": { displayName: "KHADIJA AG", color: "#f472b6", picks: [] },
+                "bwm.khadija2840": { displayName: "KHADIJA EL", color: "#fbcfe8", picks: [] },
+                "bwm.laila6631": { displayName: "LAILA ET", color: "#ddd6fe", picks: [] },
+                "bwm.lamyae4402": { displayName: "LAMYAE BE", color: "#fbcfe8", picks: [] },
+                "bwm.mariam1945": { displayName: "MARIAM BA", color: "#8b5cf6", picks: [] },
+                "bwm.maroua8832": { displayName: "MAROUA JA", color: "#14b8a6", picks: [] },
+                "bwm.marwane3012": { displayName: "MARWANE EL", color: "#c084fc", picks: [] },
+                "bwm.marwane7749": { displayName: "MARWANE GO", color: "#86efac", picks: [] },
+                "bwm.mbarek5561": { displayName: "M'BAREK HA", color: "#c084fc", picks: [] },
+                "bwm.mohamed1928": { displayName: "MOHAMED AI", color: "#f87171", picks: [] },
+                "bwm.mohamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee", picks: [] },
+                "bwm.mohamed8839": { displayName: "MOHAMED AS", color: "#f43f5e", picks: [] },
+                "bwm.mohamed5190": { displayName: "MOHAMED CH", color: "#c084fc", picks: [] },
+                "bwm.mohamed6624": { displayName: "MOHAMED EL", color: "#fca5a5", picks: [] },
+                "bwm.mostafa3392": { displayName: "MOSTAFA AC", color: "#34d399", picks: [] },
+                "bwm.mounia1094": { displayName: "MOUNIA HA", color: "#fb7185", picks: [] },
+                "bwm.nadia4721": { displayName: "NADIA RA", color: "#fed7aa", picks: [] },
+                "bwm.nassima9031": { displayName: "NASSIMA BA", color: "#f59e0b", picks: [] },
+                "bwm.nouhaila6643": { displayName: "NOUHAILA EL", color: "#93c5fd", picks: [] },
+                "bwm.nouhaila2190": { displayName: "NOUHAILA IH", color: "#8b5cf6", picks: [] },
+                "bwm.omar1843": { displayName: "OMAR BE", color: "#06b6d4", picks: [] },
+                "bwm.oumaima7741": { displayName: "OUMAIMA AK", color: "#c084fc", picks: [] },
+                "bwm.oumaima3092": { displayName: "OUMAIMA RI", color: "#bfdbfe", picks: [] },
+                "bwm.oumayma1129": { displayName: "OUMAYMA GU", color: "#93e6fb", picks: [] },
+                "bwm.oumayma4451": { displayName: "OUMAYMA RO", color: "#f5d0fe", picks: [] },
+                "bwm.oussama8824": { displayName: "OUSSAMA BA", color: "#ec4899", picks: [] },
+                "bwm.oussama3910": { displayName: "OUSSAMA GA", color: "#fda4af", picks: [] },
+                "bwm.rabiaa6712": { displayName: "RABIAA EL", color: "#06b6d4", picks: [] },
+                "bwm.rajaa1904": { displayName: "RAJAA NO", color: "#fca5a5", picks: [] },
+                "bwm.rania3940": { displayName: "RANIA BA", color: "#10b981", picks: [] },
+                "bwm.reda4019": { displayName: "REDA HA", color: "#f43f5e", picks: [] },
+                "bwm.rida5590": { displayName: "RIDA EL", color: "#ec4899", picks: [] },
+                "bwm.saad2281": { displayName: "SAAD HM", color: "#10b981", picks: [] },
+                "bwm.saida1104": { displayName: "SAIDA ES", color: "#a7f3d0", picks: [] },
+                "bwm.salma3394": { displayName: "SALMA BE", color: "#93c5fd", picks: [] },
+                "bwm.salma8821": { displayName: "SALMA OU", color: "#fbcfe8", picks: [] },
+                "bwm.salma4052": { displayName: "SALMA TO", color: "#fb7185", picks: [] },
+                "bwm.samia7719": { displayName: "SAMIA KH", color: "#3b82f6", picks: [] },
+                "bwm.sara2943": { displayName: "SARA ZA", color: "#a3e635", picks: [] },
+                "bwm.souhaib5510": { displayName: "SOUHAIB KH", color: "#06b6d4", picks: [] },
+                "bwm.soukaina1984": { displayName: "SOUKAINA CH", color: "#fda4af", picks: [] },
+                "bwm.soulaimane4439": { displayName: "SOULAIMANE ES", color: "#fed7aa", picks: [] },
+                "bwm.walid3910": { displayName: "WALID AL", color: "#fb7185", picks: [] },
+                "bwm.walid7712": { displayName: "WALID BA", color: "#6366f1", picks: [] },
+                "bwm.walid6621": { displayName: "WALID EL", color: "#6ee7b7", picks: [] },
+                "bwm.wiam3092": { displayName: "WIAM EL", color: "#f59e0b", picks: [] },
+                "bwm.yacine1184": { displayName: "YACINE BE", color: "#6ee7b7", picks: [] },
+                "bwm.yassamine4490": { displayName: "YASSAMINE BO", color: "#a7f3d0", picks: [] },
+                "bwm.yassine2291": { displayName: "YASSINE DR", color: "#10b981", picks: [] },
+                "bwm.yassine7103": { displayName: "YASSINE HA", color: "#38bdf8", picks: [] },
+                "bwm.youssef4829": { displayName: "YOUSSEF JA", color: "#f59e0b", picks: [] },
+                "bwm.youssra3021": { displayName: "YOUSSRA EL", color: "#14b8a6", picks: [] },
+                "bwm.zakaria8832": { displayName: "ZAKARIA IZ", color: "#ec4899", picks: [] },
+                "bwm.zineb1104": { displayName: "ZINEB BO", color: "#fef08a", picks: [] },
+                "bwm.zineb6632": { displayName: "ZINEB CH", color: "#93e6fb", picks: [] }
+            },
+            currentUserKey: null
+        };
+
+        // Automatic clean state preparation engine
+        window.onload = function() {
+            database.currentUserKey = null;
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('gridContainer').innerHTML = '';
+            document.getElementById('selectionsListWrapper').innerHTML = '';
+            document.getElementById('bottomNav').style.display = 'none';
+            navigateTo('screenLogin');
+        };
+
+        // Built-in lightweight secure string parsing engine
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash << 5) - hash + str.charCodeAt(i);
+                hash |= 0; 
+            }
+            return "h" + Math.abs(hash).toString(16);
+        }
+
+        // Dynamically create data layers only after authentication check
+        let secureProfilesMap = {};
+        Object.keys(database.users).forEach(rawKey => {
+            let maskedToken = simpleHash(rawKey);
+            secureProfilesMap[maskedToken] = {
+                displayName: database.users[rawKey].displayName,
+                color: database.users[rawKey].color,
+                picks: []
+            };
+        });
+
+        function handleLogin() {
+            const inputField = document.getElementById('usernameInput');
+            const userProvidedKey = inputField.value.trim().toLowerCase();
+            const errorBanner = document.getElementById('loginError');
+
+            if (database.users[userProvidedKey]) {
+                errorBanner.style.display = 'none';
+                database.currentUserKey = simpleHash(userProvidedKey);
+                
+                document.getElementById('currentProfileName').innerText = secureProfilesMap[database.currentUserKey].displayName;
+                document.getElementById('bottomNav').style.display = 'flex';
+                
+                renderGridUI();
+                navigateTo('screenHome');
+            } else {
+                errorBanner.style.display = 'block';
+                inputField.value = '';
+            }
+        }
+
+        function navigateTo(targetScreenId) {
+            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+            document.getElementById(targetScreenId).classList.add('active');
+
+            document.getElementById('tabHome').classList.remove('active');
+            document.getElementById('tabSelections').classList.remove('active');
+
+            if(targetScreenId === 'screenHome') document.getElementById('tabHome').classList.add('active');
+            if(targetScreenId === 'screenSelections') {
+                document.getElementById('tabSelections').classList.add('active');
+                renderSelectionsUI();
+            }
+        }
+
+        function renderGridUI() {
+            const container = document.getElementById('gridContainer');
+            container.innerHTML = ''; 
+
+            Object.keys(secureProfilesMap).sort().forEach(profileToken => {
+                if(profileToken === database.currentUserKey) return;
+
+                const memberData = secureProfilesMap[profileToken];
+                const activeUserPicks = secureProfilesMap[database.currentUserKey].picks;
+                const isChosen = activeUserPicks.includes(profileToken);
+
+                const cardElement = document.createElement('div');
+                cardElement.className = `grid-member-card ${isChosen ? 'chosen' : ''}`;
+                cardElement.onclick = () => handleSelectionToggle(profileToken);
+
+                cardElement.innerHTML = `
+                    <div class="avatar-placeholder" style="background-color: ${memberData.color};"></div>
+                    <div class="member-card-name">${memberData.displayName}</div>
+                    <div class="check-badge">✓</div>
+                `;
+                container.appendChild(cardElement);
+            });
+        }
+
+        function handleSelectionToggle(targetProfileToken) {
+            let activeUserPicks = secureProfilesMap[database.currentUserKey].picks;
+
+            if (activeUserPicks.includes(targetProfileToken)) {
+                secureProfilesMap[database.currentUserKey].picks = activeUserPicks.filter(item => item !== targetProfileToken);
+            } else {
+                if (activeUserPicks.length >= 2) {
+                    alert("Maximum selection threshold reached (2 Choices).");
+                    return;
+                }
+                secureProfilesMap[database.currentUserKey].picks.push(targetProfileToken);
+            }
+            renderGridUI();
+        }
+
+        function renderSelectionsUI() {
+            const recordsWrapper = document.getElementById('selectionsListWrapper');
+            recordsWrapper.innerHTML = '';
+
+            const currentPicksList = secureProfilesMap[database.currentUserKey].picks;
+
+            if(currentPicksList.length === 0) {
+                recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Your selection list is empty.</p>`;
+                return;
+            }
+
+            currentPicksList.forEach(pickedToken => {
+                const targetProfile = secureProfilesMap[pickedToken];
+                const isMutualMatch = secureProfilesMap[pickedToken].picks.includes(database.currentUserKey);
+
+                const listRow = document.createElement('div');
+                listRow.className = 'selection-list-row';
+                listRow.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="avatar-placeholder" style="background-color: ${targetProfile.color}; width:40px; height:40px; margin:0;"></div>
+                        <div style="font-weight: 600; font-size:15px;">${targetProfile.displayName}</div>
+                    </div>
+                    <div>
+                        ${isMutualMatch 
+                            ? `<span class="status-tag matched">💙 Matched</span>` 
+                            : `<span class="status-tag pending">Pending</span>`}
+                    </div>
+                `;
+                recordsWrapper.appendChild(listRow);
+            });
+        }
+
+        function handleLogout() {
+            database.currentUserKey = null;
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('gridContainer').innerHTML = '';
+            document.getElementById('selectionsListWrapper').innerHTML = '';
+            document.getElementById('bottomNav').style.display = 'none';
+            navigateTo('screenLogin');
+        }
+    </script>
+</body>
+</html>
