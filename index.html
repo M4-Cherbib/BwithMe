@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BwithMe — Secure Platform</title>
+    <title>BwithMe — Secure Connected Platform</title>
     <style>
         :root {
             --bg-global: #0b071e;
@@ -233,14 +233,14 @@
         <div class="screen active" id="screenLogin">
             <div class="title-area">
                 <h1>BwithMe</h1>
-                <p style="color: var(--text-muted); font-size: 14px;">Private. Safe. Mutual.</p>
+                <p style="color: var(--text-muted); font-size: 14px;">Private. Connected. Mutual.</p>
             </div>
             <div class="alert-box" id="loginError">Access denied. Invalid secure token.</div>
             <div class="input-group">
                 <label>Enter Secret Identity Key</label>
                 <input type="password" class="input-field" id="usernameInput" placeholder="bwm.nameXXXX" autocomplete="off">
             </div>
-            <button class="action-btn" onclick="handleLogin()">Verify Access →</button>
+            <button class="action-btn" id="loginBtn" onclick="handleLogin()">Verify Access →</button>
         </div>
 
         <div class="screen" id="screenHome">
@@ -267,120 +267,114 @@
     </div>
 
     <script>
-        // Secure structural data map with completely fixed cryptographic index references.
+        // Set up the Supabase credentials
+        const SUPABASE_URL = "https://xiitnfszvqymgtrrpqym.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494";
+
         const database = {
             users: {
-                "bwm.abdelhakime5821": { displayName: "ABDELHAKIME OU", color: "#d946ef", picks: [] },
-                "bwm.abdelilah9034": { displayName: "ABDELILAH AI", color: "#a78bfa", picks: [] },
-                "bwm.abdellah4176": { displayName: "ABDELLAH OU", color: "#93c5fd", picks: [] },
-                "bwm.abderrahim1102": { displayName: "ABDERRAHIM BO", color: "#fed7aa", picks: [] },
-                "bwm.abderrahmane6743": { displayName: "ABDERRAHMANE BE", color: "#3b82f6", picks: [] },
-                "bwm.achraf8819": { displayName: "ACHRAF RE", color: "#ddd6fe", picks: [] },
-                "bwm.achraf2354": { displayName: "ACHRAF SA", color: "#86efac", picks: [] },
-                "bwm.adil7912": { displayName: "ADIL SA", color: "#fda4af", picks: [] },
-                "bwm.ahlam3021": { displayName: "AHLAM BO", color: "#fef08a", picks: [] },
-                "bwm.amal4498": { displayName: "AMAL EL", color: "#6366f1", picks: [] },
-                "bwm.aya6152": { displayName: "AYA EL", color: "#8b5cf6", picks: [] },
-                "bwm.aymane3381": { displayName: "AYMANE FA", color: "#bfdbfe", picks: [] },
-                "bwm.ayoub5092": { displayName: "AYOUB AI", color: "#fbbf24", picks: [] },
-                "bwm.ayoube1276": { displayName: "AYOUBE BE", color: "#14b8a6", picks: [] },
-                "bwm.chaimae9943": { displayName: "CHAIMAE EL", color: "#3b82f6", picks: [] },
-                "bwm.chaima4051": { displayName: "CHAIMA LH", color: "#6ee7b7", picks: [] },
-                "bwm.chayma8210": { displayName: "CHAYMA EZ", color: "#fef08a", picks: [] },
-                "bwm.douaa6639": { displayName: "DOUAA DA", color: "#38bdf8", picks: [] },
-                "bwm.elmahdi1752": { displayName: "EL MAHDI CH", color: "#a3e635", picks: [] },
-                "bwm.essaadia4890": { displayName: "ESSAADIA CH", color: "#fb7185", picks: [] },
-                "bwm.fatima2281": { displayName: "FATIMA CH", color: "#86efac", picks: [] },
-                "bwm.fatima7104": { displayName: "FATIMA HA", color: "#a3e635", picks: [] },
-                "bwm.fatima5593": { displayName: "FATIMA TA", color: "#c084fc", picks: [] },
-                "bwm.ghita3641": { displayName: "GHITA DI", color: "#f43f5e", picks: [] },
-                "bwm.hajar1098": { displayName: "HAJAR AS", color: "#38bdf8", picks: [] },
-                "bwm.hajar8432": { displayName: "HAJAR ZI", color: "#f43f5e", picks: [] },
-                "bwm.hafsa5021": { displayName: "HAFSA RA", color: "#a7f3d0", picks: [] },
-                "bwm.hasnae6918": { displayName: "HASNAE BI", color: "#c084fc", picks: [] },
-                "bwm.hiba3374": { displayName: "HIBA EL", color: "#d946ef", picks: [] },
-                "bwm.hiba9105": { displayName: "HIBA ZD", color: "#38bdf8", picks: [] },
-                "bwm.hind2849": { displayName: "HIND BE", color: "#fca5a5", picks: [] },
-                "bwm.hind7732": { displayName: "HIND FE", color: "#f5d0fe", picks: [] },
-                "bwm.houssam3914": { displayName: "HOUSSAM AA", color: "#60a5fa", picks: [] },
-                "bwm.ikram5528": { displayName: "IKRAM ID", color: "#6366f1", picks: [] },
-                "bwm.imane4190": { displayName: "IMANE BE", color: "#d946ef", picks: [] },
-                "bwm.imrane8043": { displayName: "IMRANE BO", color: "#f5d0fe", picks: [] },
-                "bwm.ismail2615": { displayName: "ISMAIL SA", color: "#93e6fb", picks: [] },
-                "bwm.jamila9087": { displayName: "JAMILA AL", color: "#a3e635", picks: [] },
-                "bwm.kaoutar3841": { displayName: "KAOUTAR BO", color: "#fed7aa", picks: [] },
-                "bwm.kaoutar7729": { displayName: "KAOUTAR OU", color: "#c084fc", picks: [] },
-                "bwm.kaoutar1045": { displayName: "KAOUTAR RH", color: "#fef08a", picks: [] },
-                "bwm.khadija5193": { displayName: "KHADIJA AG", color: "#f472b6", picks: [] },
-                "bwm.khadija2840": { displayName: "KHADIJA EL", color: "#fbcfe8", picks: [] },
-                "bwm.laila6631": { displayName: "LAILA ET", color: "#ddd6fe", picks: [] },
-                "bwm.lamyae4402": { displayName: "LAMYAE BE", color: "#fbcfe8", picks: [] },
-                "bwm.mariam1945": { displayName: "MARIAM BA", color: "#8b5cf6", picks: [] },
-                "bwm.maroua8832": { displayName: "MAROUA JA", color: "#14b8a6", picks: [] },
-                "bwm.marwane3012": { displayName: "MARWANE EL", color: "#c084fc", picks: [] },
-                "bwm.marwane7749": { displayName: "MARWANE GO", color: "#86efac", picks: [] },
-                "bwm.mbarek5561": { displayName: "M'BAREK HA", color: "#c084fc", picks: [] },
-                "bwm.mohamed1928": { displayName: "MOHAMED AI", color: "#f87171", picks: [] },
-                "bwm.mohamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee", picks: [] },
-                "bwm.mohamed8839": { displayName: "MOHAMED AS", color: "#f43f5e", picks: [] },
-                "bwm.mohamed5190": { displayName: "MOHAMED CH", color: "#c084fc", picks: [] },
-                "bwm.mohamed6624": { displayName: "MOHAMED EL", color: "#fca5a5", picks: [] },
-                "bwm.mostafa3392": { displayName: "MOSTAFA AC", color: "#34d399", picks: [] },
-                "bwm.mounia1094": { displayName: "MOUNIA HA", color: "#fb7185", picks: [] },
-                "bwm.nadia4721": { displayName: "NADIA RA", color: "#fed7aa", picks: [] },
-                "bwm.nassima9031": { displayName: "NASSIMA BA", color: "#f59e0b", picks: [] },
-                "bwm.nouhaila6643": { displayName: "NOUHAILA EL", color: "#93c5fd", picks: [] },
-                "bwm.nouhaila2190": { displayName: "NOUHAILA IH", color: "#8b5cf6", picks: [] },
-                "bwm.omar1843": { displayName: "OMAR BE", color: "#06b6d4", picks: [] },
-                "bwm.oumaima7741": { displayName: "OUMAIMA AK", color: "#c084fc", picks: [] },
-                "bwm.oumaima3092": { displayName: "OUMAIMA RI", color: "#bfdbfe", picks: [] },
-                "bwm.oumayma1129": { displayName: "OUMAYMA GU", color: "#93e6fb", picks: [] },
-                "bwm.oumayma4451": { displayName: "OUMAYMA RO", color: "#f5d0fe", picks: [] },
-                "bwm.oussama8824": { displayName: "OUSSAMA BA", color: "#ec4899", picks: [] },
-                "bwm.oussama3910": { displayName: "OUSSAMA GA", color: "#fda4af", picks: [] },
-                "bwm.rabiaa6712": { displayName: "RABIAA EL", color: "#06b6d4", picks: [] },
-                "bwm.rajaa1904": { displayName: "RAJAA NO", color: "#fca5a5", picks: [] },
-                "bwm.rania3940": { displayName: "RANIA BA", color: "#10b981", picks: [] },
-                "bwm.reda4019": { displayName: "REDA HA", color: "#f43f5e", picks: [] },
-                "bwm.rida5590": { displayName: "RIDA EL", color: "#ec4899", picks: [] },
-                "bwm.saad2281": { displayName: "SAAD HM", color: "#10b981", picks: [] },
-                "bwm.saida1104": { displayName: "SAIDA ES", color: "#a7f3d0", picks: [] },
-                "bwm.salma3394": { displayName: "SALMA BE", color: "#93c5fd", picks: [] },
-                "bwm.salma8821": { displayName: "SALMA OU", color: "#fbcfe8", picks: [] },
-                "bwm.salma4052": { displayName: "SALMA TO", color: "#fb7185", picks: [] },
-                "bwm.samia7719": { displayName: "SAMIA KH", color: "#3b82f6", picks: [] },
-                "bwm.sara2943": { displayName: "SARA ZA", color: "#a3e635", picks: [] },
-                "bwm.souhaib5510": { displayName: "SOUHAIB KH", color: "#06b6d4", picks: [] },
-                "bwm.soukaina1984": { displayName: "SOUKAINA CH", color: "#fda4af", picks: [] },
-                "bwm.soulaimane4439": { displayName: "SOULAIMANE ES", color: "#fed7aa", picks: [] },
-                "bwm.walid3910": { displayName: "WALID AL", color: "#fb7185", picks: [] },
-                "bwm.walid7712": { displayName: "WALID BA", color: "#6366f1", picks: [] },
-                "bwm.walid6621": { displayName: "WALID EL", color: "#6ee7b7", picks: [] },
-                "bwm.wiam3092": { displayName: "WIAM EL", color: "#f59e0b", picks: [] },
-                "bwm.yacine1184": { displayName: "YACINE BE", color: "#6ee7b7", picks: [] },
-                "bwm.yassamine4490": { displayName: "YASSAMINE BO", color: "#a7f3d0", picks: [] },
-                "bwm.yassine2291": { displayName: "YASSINE DR", color: "#10b981", picks: [] },
-                "bwm.yassine7103": { displayName: "YASSINE HA", color: "#38bdf8", picks: [] },
-                "bwm.youssef4829": { displayName: "YOUSSEF JA", color: "#f59e0b", picks: [] },
-                "bwm.youssra3021": { displayName: "YOUSSRA EL", color: "#14b8a6", picks: [] },
-                "bwm.zakaria8832": { displayName: "ZAKARIA IZ", color: "#ec4899", picks: [] },
-                "bwm.zineb1104": { displayName: "ZINEB BO", color: "#fef08a", picks: [] },
-                "bwm.zineb6632": { displayName: "ZINEB CH", color: "#93e6fb", picks: [] }
+                "bwm.abdelhakime5821": { displayName: "ABDELHAKIME OU", color: "#d946ef" },
+                "bwm.abdelilah9034": { displayName: "ABDELILAH AI", color: "#a78bfa" },
+                "bwm.abdellah4176": { displayName: "ABDELLAH OU", color: "#93c5fd" },
+                "bwm.abderrahim1102": { displayName: "ABDERRAHIM BO", color: "#fed7aa" },
+                "bwm.abderrahmane6743": { displayName: "ABDERRAHMANE BE", color: "#3b82f6" },
+                "bwm.achraf8819": { displayName: "ACHRAF RE", color: "#ddd6fe" },
+                "bwm.achraf2354": { displayName: "ACHRAF SA", color: "#86efac" },
+                "bwm.adil7912": { displayName: "ADIL SA", color: "#fda4af" },
+                "bwm.ahlam3021": { displayName: "AHLAM BO", color: "#fef08a" },
+                "bwm.amal4498": { displayName: "AMAL EL", color: "#6366f1" },
+                "bwm.aya6152": { displayName: "AYA EL", color: "#8b5cf6" },
+                "bwm.aymane3381": { displayName: "AYMANE FA", color: "#bfdbfe" },
+                "bwm.ayoub5092": { displayName: "AYOUB AI", color: "#fbbf24" },
+                "bwm.ayoube1276": { displayName: "AYOUBE BE", color: "#14b8a6" },
+                "bwm.chaimae9943": { displayName: "CHAIMAE EL", color: "#3b82f6" },
+                "bwm.chaima4051": { displayName: "CHAIMA LH", color: "#6ee7b7" },
+                "bwm.chayma8210": { displayName: "CHAYMA EZ", color: "#fef08a" },
+                "bwm.douaa6639": { displayName: "DOUAA DA", color: "#38bdf8" },
+                "bwm.elmahdi1752": { displayName: "EL MAHDI CH", color: "#a3e635" },
+                "bwm.essaadia4890": { displayName: "ESSAADIA CH", color: "#fb7185" },
+                "bwm.fatima2281": { displayName: "FATIMA CH", color: "#86efac" },
+                "bwm.fatima7104": { displayName: "FATIMA HA", color: "#a3e635" },
+                "bwm.fatima5593": { displayName: "FATIMA TA", color: "#c084fc" },
+                "bwm.ghita3641": { displayName: "GHITA DI", color: "#f43f5e" },
+                "bwm.hajar1098": { displayName: "HAJAR AS", color: "#38bdf8" },
+                "bwm.hajar8432": { displayName: "HAJAR ZI", color: "#f43f5e" },
+                "bwm.hafsa5021": { displayName: "HAFSA RA", color: "#a7f3d0" },
+                "bwm.hasnae6918": { displayName: "HASNAE BI", color: "#c084fc" },
+                "bwm.hiba3374": { displayName: "HIBA EL", color: "#d946ef" },
+                "bwm.hiba9105": { displayName: "HIBA ZD", color: "#38bdf8" },
+                "bwm.hind2849": { displayName: "HIND BE", color: "#fca5a5" },
+                "bwm.hind7732": { displayName: "HIND FE", color: "#f5d0fe" },
+                "bwm.houssam3914": { displayName: "HOUSSAM AA", color: "#60a5fa" },
+                "bwm.ikram5528": { displayName: "IKRAM ID", color: "#6366f1" },
+                "bwm.imane4190": { displayName: "IMANE BE", color: "#d946ef" },
+                "bwm.imrane8043": { displayName: "IMRANE BO", color: "#f5d0fe" },
+                "bwm.ismail2615": { displayName: "ISMAIL SA", color: "#93e6fb" },
+                "bwm.jamila9087": { displayName: "JAMILA AL", color: "#a3e635" },
+                "bwm.kaoutar3841": { displayName: "KAOUTAR BO", color: "#fed7aa" },
+                "bwm.kaoutar7729": { displayName: "KAOUTAR OU", color: "#c084fc" },
+                "bwm.kaoutar1045": { displayName: "KAOUTAR RH", color: "#fef08a" },
+                "bwm.khadija5193": { displayName: "KHADIJA AG", color: "#f472b6" },
+                "bwm.khadija2840": { displayName: "KHADIJA EL", color: "#fbcfe8" },
+                "bwm.laila6631": { displayName: "LAILA ET", color: "#ddd6fe" },
+                "bwm.lamyae4402": { displayName: "LAMYAE BE", color: "#fbcfe8" },
+                "bwm.mariam1945": { displayName: "MARIAM BA", color: "#8b5cf6" },
+                "bwm.maroua8832": { displayName: "MAROUA JA", color: "#14b8a6" },
+                "bwm.marwane3012": { displayName: "MARWANE EL", color: "#c084fc" },
+                "bwm.marwane7749": { displayName: "MARWANE GO", color: "#86efac" },
+                "bwm.mbarek5561": { displayName: "M'BAREK HA", color: "#c084fc" },
+                "bwm.mohamed1928": { displayName: "MOHAMED AI", color: "#f87171" },
+                "bwm.mohamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee" },
+                "bwm.mohamed8839": { displayName: "MOHAMED AS", color: "#f43f5e" },
+                "bwm.mohamed5190": { displayName: "MOHAMED CH", color: "#c084fc" },
+                "bwm.mohamed6624": { displayName: "MOHAMED EL", color: "#fca5a5" },
+                "bwm.mostafa3392": { displayName: "MOSTAFA AC", color: "#34d399" },
+                "bwm.mounia1094": { displayName: "MOUNIA HA", color: "#fb7185" },
+                "bwm.nadia4721": { displayName: "NADIA RA", color: "#fed7aa" },
+                "bwm.nassima9031": { displayName: "NASSIMA BA", color: "#f59e0b" },
+                "bwm.nouhaila6643": { displayName: "NOUHAILA EL", color: "#93c5fd" },
+                "bwm.nouhaila2190": { displayName: "NOUHAILA IH", color: "#8b5cf6" },
+                "bwm.omar1843": { displayName: "OMAR BE", color: "#06b6d4" },
+                "bwm.oumaima7741": { displayName: "OUMAIMA AK", color: "#c084fc" },
+                "bwm.oumaima3092": { displayName: "OUMAIMA RI", color: "#bfdbfe" },
+                "bwm.oumayma1129": { displayName: "OUMAYMA GU", color: "#93e6fb" },
+                "bwm.oumayma4451": { displayName: "OUMAYMA RO", color: "#f5d0fe" },
+                "bwm.oussama8824": { displayName: "OUSSAMA BA", color: "#ec4899" },
+                "bwm.oussama3910": { displayName: "OUSSAMA GA", color: "#fda4af" },
+                "bwm.rabiaa6712": { displayName: "RABIAA EL", color: "#06b6d4" },
+                "bwm.rajaa1904": { displayName: "RAJAA NO", color: "#fca5a5" },
+                "bwm.rania3940": { displayName: "RANIA BA", color: "#10b981" },
+                "bwm.reda4019": { displayName: "REDA HA", color: "#f43f5e" },
+                "bwm.rida5590": { displayName: "RIDA EL", color: "#ec4899" },
+                "bwm.saad2281": { displayName: "SAAD HM", color: "#10b981" },
+                "bwm.saida1104": { displayName: "SAIDA ES", color: "#a7f3d0" },
+                "bwm.salma3394": { displayName: "SALMA BE", color: "#93c5fd" },
+                "bwm.salma8821": { displayName: "SALMA OU", color: "#fbcfe8" },
+                "bwm.salma4052": { displayName: "SALMA TO", color: "#fb7185" },
+                "bwm.samia7719": { displayName: "SAMIA KH", color: "#3b82f6" },
+                "bwm.sara2943": { displayName: "SARA ZA", color: "#a3e635" },
+                "bwm.souhaib5510": { displayName: "SOUHAIB KH", color: "#06b6d4" },
+                "bwm.soukaina1984": { displayName: "SOUKAINA CH", color: "#fda4af" },
+                "bwm.soulaimane4439": { displayName: "SOULAIMANE ES", color: "#fed7aa" },
+                "bwm.walid3910": { displayName: "WALID AL", color: "#fb7185" },
+                "bwm.walid7712": { displayName: "WALID BA", color: "#6366f1" },
+                "bwm.walid6621": { displayName: "WALID EL", color: "#6ee7b7" },
+                "bwm.wiam3092": { displayName: "WIAM EL", color: "#f59e0b" },
+                "bwm.yacine1184": { displayName: "YACINE BE", color: "#6ee7b7" },
+                "bwm.yassamine4490": { displayName: "YASSAMINE BO", color: "#a7f3d0" },
+                "bwm.yassine2291": { displayName: "YASSINE DR", color: "#10b981" },
+                "bwm.yassine7103": { displayName: "YASSINE HA", color: "#38bdf8" },
+                "bwm.youssef4829": { displayName: "YOUSSEF JA", color: "#f59e0b" },
+                "bwm.youssra3021": { displayName: "YOUSSRA EL", color: "#14b8a6" },
+                "bwm.zakaria8832": { displayName: "ZAKARIA IZ", color: "#ec4899" },
+                "bwm.zineb1104": { displayName: "ZINEB BO", color: "#fef08a" },
+                "bwm.zineb6632": { displayName: "ZINEB CH", color: "#93e6fb" }
             },
-            currentUserKey: null
+            currentUserRawKey: null,
+            currentUserMaskedToken: null,
+            allLiveSelections: []
         };
 
-        // Automatic clean state preparation engine
-        window.onload = function() {
-            database.currentUserKey = null;
-            document.getElementById('usernameInput').value = '';
-            document.getElementById('gridContainer').innerHTML = '';
-            document.getElementById('selectionsListWrapper').innerHTML = '';
-            document.getElementById('bottomNav').style.display = 'none';
-            navigateTo('screenLogin');
-        };
-
-        // Built-in lightweight secure string parsing engine
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -390,28 +384,76 @@
             return "h" + Math.abs(hash).toString(16);
         }
 
-        // Dynamically create data layers only after authentication check
         let secureProfilesMap = {};
         Object.keys(database.users).forEach(rawKey => {
             let maskedToken = simpleHash(rawKey);
             secureProfilesMap[maskedToken] = {
                 displayName: database.users[rawKey].displayName,
-                color: database.users[rawKey].color,
-                picks: []
+                color: database.users[rawKey].color
             };
         });
 
-        function handleLogin() {
+        window.onload = function() {
+            handleLogout();
+        };
+
+        async function supabaseRequest(endpoint, options = {}) {
+            const headers = {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
+            };
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, { ...options, headers });
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+            return response.json();
+        }
+
+        async function autoVerifyTable() {
+            try {
+                await supabaseRequest("selections?select=id&limit=1", { method: "GET" });
+            } catch (err) {
+                // Auto create table structure via REST if first load setup fails
+                try {
+                    const setupHeaders = { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" };
+                    await fetch(`${SUPABASE_URL}/functions/v1/setup`, { method: "POST", headers: setupHeaders });
+                } catch(e){}
+            }
+        }
+
+        async function syncDataFromDatabase() {
+            try {
+                database.allLiveSelections = await supabaseRequest("selections?select=*", { method: "GET" });
+            } catch (e) {
+                database.allLiveSelections = [];
+            }
+        }
+
+        async function handleLogin() {
             const inputField = document.getElementById('usernameInput');
+            const loginBtn = document.getElementById('loginBtn');
             const userProvidedKey = inputField.value.trim().toLowerCase();
             const errorBanner = document.getElementById('loginError');
 
             if (database.users[userProvidedKey]) {
                 errorBanner.style.display = 'none';
-                database.currentUserKey = simpleHash(userProvidedKey);
+                loginBtn.innerText = "Connecting...";
+                loginBtn.disabled = true;
+
+                database.currentUserRawKey = userProvidedKey;
+                database.currentUserMaskedToken = simpleHash(userProvidedKey);
                 
-                document.getElementById('currentProfileName').innerText = secureProfilesMap[database.currentUserKey].displayName;
+                // Fire initialization protocol
+                await autoVerifyTable();
+                await syncDataFromDatabase();
+
+                document.getElementById('currentProfileName').innerText = secureProfilesMap[database.currentUserMaskedToken].displayName;
                 document.getElementById('bottomNav').style.display = 'flex';
+                
+                loginBtn.innerText = "Verify Access →";
+                loginBtn.disabled = false;
                 
                 renderGridUI();
                 navigateTo('screenHome');
@@ -428,7 +470,10 @@
             document.getElementById('tabHome').classList.remove('active');
             document.getElementById('tabSelections').classList.remove('active');
 
-            if(targetScreenId === 'screenHome') document.getElementById('tabHome').classList.add('active');
+            if(targetScreenId === 'screenHome') {
+                document.getElementById('tabHome').classList.add('active');
+                renderGridUI();
+            }
             if(targetScreenId === 'screenSelections') {
                 document.getElementById('tabSelections').classList.add('active');
                 renderSelectionsUI();
@@ -439,11 +484,14 @@
             const container = document.getElementById('gridContainer');
             container.innerHTML = ''; 
 
+            const activeUserPicks = database.allLiveSelections
+                .filter(row => row.user_token === database.currentUserMaskedToken)
+                .map(row => row.picked_token);
+
             Object.keys(secureProfilesMap).sort().forEach(profileToken => {
-                if(profileToken === database.currentUserKey) return;
+                if(profileToken === database.currentUserMaskedToken) return;
 
                 const memberData = secureProfilesMap[profileToken];
-                const activeUserPicks = secureProfilesMap[database.currentUserKey].picks;
                 const isChosen = activeUserPicks.includes(profileToken);
 
                 const cardElement = document.createElement('div');
@@ -459,26 +507,49 @@
             });
         }
 
-        function handleSelectionToggle(targetProfileToken) {
-            let activeUserPicks = secureProfilesMap[database.currentUserKey].picks;
+        async function handleSelectionToggle(targetProfileToken) {
+            const activeUserPicks = database.allLiveSelections
+                .filter(row => row.user_token === database.currentUserMaskedToken)
+                .map(row => row.picked_token);
 
             if (activeUserPicks.includes(targetProfileToken)) {
-                secureProfilesMap[database.currentUserKey].picks = activeUserPicks.filter(item => item !== targetProfileToken);
+                // Remove choice from Cloud Storage
+                try {
+                    await supabaseRequest(`selections?user_token=eq.${database.currentUserMaskedToken}&picked_token=eq.${targetProfileToken}`, {
+                        method: "DELETE"
+                    });
+                } catch (e) { alert("Network issue. Failed to clear choice."); return; }
             } else {
                 if (activeUserPicks.length >= 2) {
                     alert("Maximum selection threshold reached (2 Choices).");
                     return;
                 }
-                secureProfilesMap[database.currentUserKey].picks.push(targetProfileToken);
+                // Write choice to Cloud Storage securely
+                try {
+                    await supabaseRequest("selections", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            user_token: database.currentUserMaskedToken,
+                            picked_token: targetProfileToken
+                        })
+                    });
+                } catch (e) { alert("Failed to save selection."); return; }
             }
+            
+            await syncDataFromDatabase();
             renderGridUI();
         }
 
-        function renderSelectionsUI() {
+        async function renderSelectionsUI() {
             const recordsWrapper = document.getElementById('selectionsListWrapper');
+            recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Updating live dashboard...</p>`;
+            
+            await syncDataFromDatabase();
             recordsWrapper.innerHTML = '';
 
-            const currentPicksList = secureProfilesMap[database.currentUserKey].picks;
+            const currentPicksList = database.allLiveSelections
+                .filter(row => row.user_token === database.currentUserMaskedToken)
+                .map(row => row.picked_token);
 
             if(currentPicksList.length === 0) {
                 recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Your selection list is empty.</p>`;
@@ -487,7 +558,11 @@
 
             currentPicksList.forEach(pickedToken => {
                 const targetProfile = secureProfilesMap[pickedToken];
-                const isMutualMatch = secureProfilesMap[pickedToken].picks.includes(database.currentUserKey);
+                
+                // Check if target person has picked current user back
+                const isMutualMatch = database.allLiveSelections.some(row => 
+                    row.user_token === pickedToken && row.picked_token === database.currentUserMaskedToken
+                );
 
                 const listRow = document.createElement('div');
                 listRow.className = 'selection-list-row';
@@ -507,7 +582,9 @@
         }
 
         function handleLogout() {
-            database.currentUserKey = null;
+            database.currentUserRawKey = null;
+            database.currentUserMaskedToken = null;
+            database.allLiveSelections = [];
             document.getElementById('usernameInput').value = '';
             document.getElementById('gridContainer').innerHTML = '';
             document.getElementById('selectionsListWrapper').innerHTML = '';
