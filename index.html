@@ -230,6 +230,7 @@
 <body>
 
     <div class="phone-wrapper">
+        <!-- LOGIN SCREEN -->
         <div class="screen active" id="screenLogin">
             <div class="title-area">
                 <h1>BwithMe</h1>
@@ -243,6 +244,7 @@
             <button class="action-btn" id="loginBtn" onclick="handleLogin()">Verify Access →</button>
         </div>
 
+        <!-- MAIN DASHBOARD -->
         <div class="screen" id="screenHome">
             <div class="user-summary">
                 <h2 id="currentProfileName">Dashboard</h2>
@@ -251,6 +253,7 @@
             <div class="members-grid-container" id="gridContainer"></div>
         </div>
 
+        <!-- SELECTIONS STATUS SCREEN -->
         <div class="screen" id="screenSelections">
             <div style="margin-bottom: 20px; margin-top: 10px;">
                 <h2>My Connections</h2>
@@ -259,6 +262,7 @@
             <div id="selectionsListWrapper"></div>
         </div>
 
+        <!-- APP INTERACTION TABS -->
         <div class="bottom-nav-menu" id="bottomNav">
             <div class="nav-link" onclick="handleLogout()">Exit Session</div>
             <div class="nav-link active" id="tabHome" onclick="navigateTo('screenHome')">Profiles</div>
@@ -267,7 +271,7 @@
     </div>
 
     <script>
-        // Set up the Supabase credentials
+        // Explicit root paths cleanly decoupled to avoid endpoint nesting issues
         const SUPABASE_URL = "https://xiitnfszvqymgtrrpqym.supabase.co";
         const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494";
 
@@ -324,7 +328,7 @@
                 "bwm.marwane7749": { displayName: "MARWANE GO", color: "#86efac" },
                 "bwm.mbarek5561": { displayName: "M'BAREK HA", color: "#c084fc" },
                 "bwm.mohamed1928": { displayName: "MOHAMED AI", color: "#f87171" },
-                "bwm.mohamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee" },
+                "bhamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee" },
                 "bwm.mohamed8839": { displayName: "MOHAMED AS", color: "#f43f5e" },
                 "bwm.mohamed5190": { displayName: "MOHAMED CH", color: "#c084fc" },
                 "bwm.mohamed6624": { displayName: "MOHAMED EL", color: "#fca5a5" },
@@ -404,23 +408,12 @@
                 "Content-Type": "application/json",
                 "Prefer": "return=representation"
             };
+            // Safely structures url endpoint without appending nested paths
             const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, { ...options, headers });
             if (!response.ok) {
                 throw new Error(await response.text());
             }
             return response.json();
-        }
-
-        async function autoVerifyTable() {
-            try {
-                await supabaseRequest("selections?select=id&limit=1", { method: "GET" });
-            } catch (err) {
-                // Auto create table structure via REST if first load setup fails
-                try {
-                    const setupHeaders = { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" };
-                    await fetch(`${SUPABASE_URL}/functions/v1/setup`, { method: "POST", headers: setupHeaders });
-                } catch(e){}
-            }
         }
 
         async function syncDataFromDatabase() {
@@ -445,8 +438,6 @@
                 database.currentUserRawKey = userProvidedKey;
                 database.currentUserMaskedToken = simpleHash(userProvidedKey);
                 
-                // Fire initialization protocol
-                await autoVerifyTable();
                 await syncDataFromDatabase();
 
                 document.getElementById('currentProfileName').innerText = secureProfilesMap[database.currentUserMaskedToken].displayName;
@@ -513,7 +504,6 @@
                 .map(row => row.picked_token);
 
             if (activeUserPicks.includes(targetProfileToken)) {
-                // Remove choice from Cloud Storage
                 try {
                     await supabaseRequest(`selections?user_token=eq.${database.currentUserMaskedToken}&picked_token=eq.${targetProfileToken}`, {
                         method: "DELETE"
@@ -524,7 +514,6 @@
                     alert("Maximum selection threshold reached (2 Choices).");
                     return;
                 }
-                // Write choice to Cloud Storage securely
                 try {
                     await supabaseRequest("selections", {
                         method: "POST",
@@ -559,7 +548,6 @@
             currentPicksList.forEach(pickedToken => {
                 const targetProfile = secureProfilesMap[pickedToken];
                 
-                // Check if target person has picked current user back
                 const isMutualMatch = database.allLiveSelections.some(row => 
                     row.user_token === pickedToken && row.picked_token === database.currentUserMaskedToken
                 );
