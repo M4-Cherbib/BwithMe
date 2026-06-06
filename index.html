@@ -4,451 +4,413 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>BwithMe</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --bg: #0a0810;
-    --surface: #110e1c;
-    --surface2: #19152b;
-    --border: rgba(180,120,255,0.13);
-    --text: #f0eaff;
-    --muted: #8b7faa;
-    --pink: #e040fb;
-    --purple: #9c27b0;
-    --violet: #7c3aed;
-    --neon: #d946ef;
-    --neon2: #a855f7;
-    --success: #34d399;
-    --error: #f87171;
-    --grad: linear-gradient(135deg, #e040fb 0%, #7c3aed 100%);
-    --grad2: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-    --glow: 0 0 30px rgba(224,64,251,0.3);
-    --glow2: 0 0 60px rgba(160,85,255,0.2);
-  }
+/* ── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #08060f;
+  --surface:   #100d1c;
+  --surface2:  #181426;
+  --surface3:  #1f1a30;
+  --border:    rgba(168,100,255,0.14);
+  --border2:   rgba(168,100,255,0.25);
+  --text:      #f0eaff;
+  --muted:     #7d6fa0;
+  --muted2:    #a090c0;
+  --pink:      #e040fb;
+  --violet:    #7c3aed;
+  --neon:      #d946ef;
+  --neon2:     #a855f7;
+  --match:     #34d399;
+  --error:     #f87171;
+  --grad:      linear-gradient(135deg, #e040fb 0%, #7c3aed 100%);
+  --grad2:     linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --grad3:     linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
+  --glow:      0 0 32px rgba(217,70,239,0.35);
+  --glow2:     0 0 70px rgba(140,80,255,0.18);
+  --glow-match:0 0 28px rgba(52,211,153,0.4);
+  --r-card:    26px;
+  --r-inner:   16px;
+  --r-sm:      10px;
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-  }
+html { scroll-behavior: smooth; }
 
-  /* Ambient background orbs */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -20%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-    animation: orb1 12s ease-in-out infinite alternate;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -20%;
-    right: -10%;
-    width: 55vw;
-    height: 55vw;
-    background: radial-gradient(circle, rgba(217,70,239,0.15) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-    animation: orb2 15s ease-in-out infinite alternate;
-  }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+  padding: 24px 0 40px;
+}
 
-  @keyframes orb1 { from { transform: translate(0,0) scale(1); } to { transform: translate(5vw, 5vh) scale(1.1); } }
-  @keyframes orb2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-5vw, -5vh) scale(1.12); } }
+/* ── AMBIENT BACKGROUND ───────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; top: -20%; left: -15%;
+  width: 65vw; height: 65vw;
+  background: radial-gradient(circle, rgba(124,58,237,0.17) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  animation: orb1 13s ease-in-out infinite alternate;
+}
+body::after {
+  content: '';
+  position: fixed; bottom: -20%; right: -15%;
+  width: 58vw; height: 58vw;
+  background: radial-gradient(circle, rgba(217,70,239,0.14) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  animation: orb2 17s ease-in-out infinite alternate;
+}
+@keyframes orb1 { to { transform: translate(6vw,6vh) scale(1.12); } }
+@keyframes orb2 { to { transform: translate(-6vw,-6vh) scale(1.14); } }
 
-  /* Floating particles */
-  .particles {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-  }
-  .particle {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0;
-    animation: floatUp linear infinite;
-  }
-  @keyframes floatUp {
-    0% { opacity: 0; transform: translateY(0) scale(0); }
-    10% { opacity: 0.6; transform: scale(1); }
-    90% { opacity: 0.3; }
-    100% { opacity: 0; transform: translateY(-100vh) scale(0.5); }
-  }
+/* Particles */
+.particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.particle  { position: absolute; border-radius: 50%; opacity: 0; animation: floatUp linear infinite; }
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0) scale(0); }
+  10%  { opacity: 0.55; transform: scale(1); }
+  90%  { opacity: 0.25; }
+  100% { opacity: 0; transform: translateY(-100vh) scale(0.4); }
+}
 
-  /* App container */
-  .app-wrap {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 420px;
-    padding: 16px;
-  }
+/* ── APP SHELL ────────────────────────────────────────────── */
+.app-wrap {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 430px;
+  padding: 0 14px;
+}
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    padding: 40px 36px 36px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.6), var(--glow2);
-    position: relative;
-    overflow: hidden;
-    animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
-  @keyframes cardIn {
-    from { opacity: 0; transform: translateY(40px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
+/* ── CARD ─────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 38px 32px 34px;
+  box-shadow: 0 28px 90px rgba(0,0,0,0.65), var(--glow2);
+  position: relative;
+  overflow: hidden;
+  animation: cardIn 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--grad);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(36px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-  /* Top gradient line */
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--grad);
-  }
+/* ── LOGO ─────────────────────────────────────────────────── */
+.logo { text-align: center; margin-bottom: 30px; }
+.logo-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 62px; height: 62px; border-radius: 18px;
+  background: var(--grad); box-shadow: var(--glow);
+  margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.logo-mark::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 60%);
+}
+.logo-icon   { font-size: 26px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
+.logo-name   {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 27px;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  letter-spacing: -0.5px;
+}
+.logo-tagline { font-size: 11px; color: var(--muted); letter-spacing: 2.2px; text-transform: uppercase; margin-top: 3px; }
 
-  /* Logo */
-  .logo {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  .logo-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px; height: 64px;
-    border-radius: 20px;
-    background: var(--grad);
-    box-shadow: var(--glow);
-    margin-bottom: 14px;
-    position: relative;
-    overflow: hidden;
-  }
-  .logo-mark::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
-  }
-  .logo-icon {
-    font-size: 28px;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
-  }
-  .logo-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 28px;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
-  }
-  .logo-tagline {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
+/* ── TABS ─────────────────────────────────────────────────── */
+.tabs {
+  display: flex; background: var(--surface2);
+  border-radius: 13px; padding: 4px;
+  margin-bottom: 26px; border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1; padding: 10px; border: none; background: none;
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500; border-radius: 9px; cursor: pointer; transition: all 0.22s;
+}
+.tab-btn.active {
+  background: var(--grad); color: #fff;
+  box-shadow: 0 4px 18px rgba(217,70,239,0.38);
+}
 
-  /* Tab switcher */
-  .tabs {
-    display: flex;
-    background: var(--surface2);
-    border-radius: 14px;
-    padding: 4px;
-    margin-bottom: 28px;
-    border: 1px solid var(--border);
-  }
-  .tab-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: none;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.25s;
-  }
-  .tab-btn.active {
-    background: var(--grad);
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(217,70,239,0.35);
-  }
+/* ── FORM SECTIONS ────────────────────────────────────────── */
+.form-section { display: none; }
+.form-section.active { display: block; animation: fadeUp 0.3s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* Forms */
-  .form-section { display: none; animation: fadeSlide 0.35s ease both; }
-  .form-section.active { display: block; }
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+.form-group { margin-bottom: 16px; }
+label {
+  display: block; font-size: 10.5px; font-weight: 500; color: var(--muted);
+  letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 7px;
+}
+input, select {
+  width: 100%; padding: 13px 15px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; transition: all 0.22s; -webkit-appearance: none;
+}
+input:focus, select:focus {
+  border-color: var(--neon2);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
+  background: rgba(24,20,38,0.9);
+}
+input::placeholder { color: rgba(125,111,160,0.5); }
+select option { background: #1a1428; color: var(--text); }
 
-  .form-group { margin-bottom: 18px; }
-  label {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  input, select {
-    width: 100%;
-    padding: 14px 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    outline: none;
-    transition: all 0.25s;
-    -webkit-appearance: none;
-  }
-  input:focus, select:focus {
-    border-color: var(--neon2);
-    box-shadow: 0 0 0 3px rgba(168,85,247,0.2);
-    background: rgba(25,21,43,0.9);
-  }
-  input::placeholder { color: rgba(139,127,170,0.5); }
-  select option { background: #1a1428; color: var(--text); }
+/* Select wrapper with custom arrow */
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '⌄'; position: absolute; right: 15px; top: 50%;
+  transform: translateY(-52%); color: var(--neon2);
+  pointer-events: none; font-size: 19px;
+}
 
-  /* Custom select arrow */
-  .select-wrap { position: relative; }
-  .select-wrap::after {
-    content: '⌄';
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--neon2);
-    pointer-events: none;
-    font-size: 18px;
-  }
+/* ── BUTTONS ──────────────────────────────────────────────── */
+.btn {
+  width: 100%; padding: 14px; border: none; border-radius: 13px;
+  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
+  letter-spacing: 0.2px;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg,rgba(255,255,255,0.14) 0%,transparent 60%);
+  opacity: 0; transition: opacity 0.2s;
+}
+.btn:hover::after  { opacity: 1; }
+.btn-primary { background: var(--grad); color: #fff; box-shadow: 0 8px 28px rgba(217,70,239,0.42); margin-top: 6px; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(217,70,239,0.52); }
+.btn-primary:active { transform: translateY(0); }
+.btn-pick    { background: var(--grad2); color: #fff; box-shadow: 0 8px 28px rgba(168,85,247,0.4); }
+.btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(236,72,153,0.5); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
 
-  /* Buttons */
-  .btn {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-    letter-spacing: 0.3px;
-  }
-  .btn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .btn:hover::after { opacity: 1; }
-  .btn-primary {
-    background: var(--grad);
-    color: #fff;
-    box-shadow: 0 8px 28px rgba(217,70,239,0.4);
-    margin-top: 8px;
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(217,70,239,0.5); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--muted);
-    border: 1px solid var(--border);
-    margin-top: 10px;
-  }
-  .btn-secondary:hover { border-color: var(--neon2); color: var(--text); }
+.btn .spinner {
+  display: inline-block; width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.28); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 7px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+/* ── ALERTS ───────────────────────────────────────────────── */
+.alert {
+  padding: 11px 14px; border-radius: 9px; font-size: 13px;
+  margin-top: 12px; display: none; line-height: 1.5;
+}
+.alert.show   { display: block; animation: fadeUp 0.28s ease both; }
+.alert-error  { background: rgba(248,113,113,0.1);  border: 1px solid rgba(248,113,113,0.3);  color: #fca5a5; }
+.alert-success{ background: rgba(52,211,153,0.1);   border: 1px solid rgba(52,211,153,0.3);   color: #6ee7b7; }
+.alert-info   { background: rgba(168,85,247,0.1);   border: 1px solid rgba(168,85,247,0.3);   color: var(--neon2); }
 
-  /* Spinner inside button */
-  .btn .spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* ── AVATAR BADGE ─────────────────────────────────────────── */
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; font-family: 'Syne', sans-serif; font-weight: 700;
+  flex-shrink: 0; text-transform: uppercase; line-height: 1;
+  background: var(--grad); color: #fff;
+  box-shadow: 0 3px 12px rgba(217,70,239,0.35);
+}
+.avatar-lg { width: 54px; height: 54px; font-size: 18px; }
+.avatar-sm { width: 36px; height: 36px; font-size: 12px; box-shadow: 0 2px 8px rgba(217,70,239,0.28); }
+.avatar-match {
+  background: var(--grad3);
+  box-shadow: 0 3px 14px rgba(52,211,153,0.4);
+}
 
-  /* Alert / message */
-  .alert {
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    margin-top: 14px;
-    display: none;
-    animation: fadeSlide 0.3s ease both;
-    line-height: 1.5;
-  }
-  .alert.show { display: block; }
-  .alert-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #fca5a5; }
-  .alert-success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #6ee7b7; }
-  .alert-info { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--neon2); }
+/* ── HUB VIEW ─────────────────────────────────────────────── */
+#hub-view { display: none; }
+#hub-view.active { display: block; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
 
-  /* Hub view */
-  #hub-view { display: none; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
-  #hub-view.active { display: block; }
+/* User profile strip at top */
+.hub-profile-strip {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.hub-profile-info { flex: 1; min-width: 0; }
+.hub-greeting { font-size: 10.5px; color: var(--muted); letter-spacing: 1.4px; text-transform: uppercase; }
+.hub-name {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--text);
+  margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
-  .hub-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-  }
-  .hub-user-info {}
-  .hub-greeting {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .hub-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    color: var(--text);
-    margin-top: 2px;
-    max-width: 220px;
-    line-height: 1.2;
-  }
-  .logout-btn {
-    width: auto;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    background: var(--surface2);
-    color: var(--muted);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .logout-btn:hover { border-color: var(--error); color: var(--error); }
+.logout-btn {
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.logout-btn:hover { border-color: var(--error); color: var(--error); }
 
-  .hub-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 0 -36px 28px;
-  }
+/* Section label */
+.section-label {
+  font-size: 10px; font-weight: 500; color: var(--muted);
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
 
-  .hub-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 24px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hub-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: var(--grad2);
-    opacity: 0.5;
-  }
-  .hub-card-label {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
+/* ── PICK SECTION ─────────────────────────────────────────── */
+.pick-section {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); padding: 18px 18px 16px;
+  margin-bottom: 14px; position: relative; overflow: hidden;
+}
+.pick-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--grad2); opacity: 0.5;
+}
 
-  /* Neon pulse on pick button */
-  .btn-pick {
-    background: var(--grad2);
-    color: #fff;
-    box-shadow: 0 8px 28px rgba(236,72,153,0.4);
-  }
-  .btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(236,72,153,0.5); }
+/* Custom select with avatar preview */
+.select-with-preview { position: relative; }
+.select-preview-avatar {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  z-index: 2; pointer-events: none;
+  opacity: 0; transition: opacity 0.2s;
+}
+.select-with-preview.has-value .select-preview-avatar { opacity: 1; }
+.select-with-preview.has-value select { padding-left: 52px; }
+.select-with-preview select { padding-right: 36px; }
 
-  /* Confirmed pick state */
-  .confirmed-pick {
-    text-align: center;
-    padding: 20px;
-  }
-  .confirmed-icon {
-    font-size: 40px;
-    margin-bottom: 10px;
-    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
-  @keyframes popIn {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  .confirmed-text {
-    font-family: 'Syne', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .confirmed-name {
-    font-size: 22px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    background: var(--grad2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .confirmed-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+/* ── DASHBOARD SECTION ────────────────────────────────────── */
+.dashboard {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); padding: 18px;
+  margin-top: 14px;
+}
+.dashboard::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--grad); opacity: 0.4;
+}
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+/* Your Selection slot */
+.selection-slot {
+  display: flex; align-items: center; gap: 13px;
+  padding: 12px 14px; border-radius: var(--r-sm);
+  background: var(--surface3); border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.selection-slot.empty { opacity: 0.45; }
+.slot-info { flex: 1; min-width: 0; }
+.slot-name {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slot-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  @media (max-width: 480px) {
-    .card { padding: 32px 22px 28px; border-radius: 24px; }
-    .hub-divider { margin: 0 -22px 24px; }
-  }
+/* Mutual match banner */
+.match-banner {
+  margin-top: 12px; border-radius: var(--r-sm);
+  border: 1px solid rgba(52,211,153,0.35);
+  background: rgba(52,211,153,0.07);
+  padding: 16px 18px;
+  text-align: center;
+  display: none;
+  animation: matchPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  position: relative; overflow: hidden;
+}
+.match-banner.visible { display: block; }
+.match-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+@keyframes matchPop {
+  from { opacity: 0; transform: scale(0.85) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.match-emoji  { font-size: 34px; margin-bottom: 6px; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.match-title  {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+  background: var(--grad3); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+}
+.match-sub    { font-size: 13px; color: var(--muted2); margin-top: 4px; }
+.match-names  {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 14px;
+}
+.match-name-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface3); border: 1px solid rgba(52,211,153,0.25);
+  border-radius: 50px; padding: 6px 14px 6px 6px;
+}
+.match-chip-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--text); }
+.match-heart { font-size: 18px; }
+
+/* Pending / no-match note */
+.pending-note {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  background: var(--surface3); border: 1px solid var(--border);
+  font-size: 12.5px; color: var(--muted);
+}
+.pending-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon); flex-shrink: 0;
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+/* Loading skeleton for dashboard */
+.dash-loading {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--muted); font-size: 13px; padding: 4px 0;
+}
+.dash-loading .spinner {
+  width: 15px; height: 15px; border: 2px solid var(--border2);
+  border-top-color: var(--neon2); border-radius: 50%;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+
+/* Divider */
+.hub-divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  body { padding: 14px 0 32px; align-items: flex-start; }
+  .card { padding: 28px 18px 26px; border-radius: 22px; }
+  .hub-name { font-size: 16px; }
+  .avatar-lg { width: 48px; height: 48px; font-size: 16px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 </style>
 </head>
 <body>
 
-<!-- Ambient particles -->
 <div class="particles" id="particles"></div>
 
 <div class="app-wrap">
 
-  <!-- AUTH CARD -->
+  <!-- ══════════════════ AUTH CARD ══════════════════ -->
   <div class="card" id="auth-card">
+
     <div class="logo">
       <div class="logo-mark"><span class="logo-icon">💜</span></div>
       <div class="logo-name">BwithMe</div>
@@ -457,7 +419,7 @@
 
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-      <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
+      <button class="tab-btn"        onclick="switchTab('register')">Create Account</button>
     </div>
 
     <!-- LOGIN -->
@@ -478,7 +440,7 @@
     <div class="form-section" id="register-section">
       <div class="form-group">
         <label>Full Name</label>
-        <input type="text" id="reg-name" placeholder="As on class roster" autocomplete="off" />
+        <input type="text" id="reg-name" placeholder="As on class roster (UPPERCASE)" autocomplete="off" />
       </div>
       <div class="form-group">
         <label>Class Setup PIN (4 digits)</label>
@@ -491,50 +453,103 @@
       <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
       <div class="alert" id="register-alert"></div>
     </div>
-  </div>
 
-  <!-- HUB CARD -->
+  </div><!-- /auth-card -->
+
+
+  <!-- ══════════════════ HUB CARD ══════════════════ -->
   <div class="card" id="hub-view">
-    <div class="hub-header">
-      <div class="hub-user-info">
-        <div class="hub-greeting">Welcome back</div>
+
+    <!-- User profile strip -->
+    <div class="hub-profile-strip">
+      <div class="avatar avatar-lg" id="hub-avatar">?</div>
+      <div class="hub-profile-info">
+        <div class="hub-greeting">Logged in as</div>
         <div class="hub-name" id="hub-username">—</div>
       </div>
       <button class="logout-btn" onclick="handleLogout()">Log out</button>
     </div>
 
-    <div class="hub-divider"></div>
-
-    <div class="hub-card">
-      <div class="hub-card-label">💘 Choose your match</div>
-      <div class="form-group" style="margin-bottom:16px;">
-        <div class="select-wrap">
-          <select id="classmate-select">
-            <option value="">— Select a classmate —</option>
-          </select>
+    <!-- Pick section -->
+    <div class="section-label">Choose your match</div>
+    <div class="pick-section" id="pick-section">
+      <div class="form-group" style="margin-bottom:14px;">
+        <div class="select-with-preview" id="select-wrapper">
+          <div class="select-preview-avatar">
+            <div class="avatar avatar-sm" id="dropdown-avatar">?</div>
+          </div>
+          <div class="select-wrap">
+            <select id="classmate-select" onchange="onSelectChange()">
+              <option value="">— Select a classmate —</option>
+            </select>
+          </div>
         </div>
       </div>
-      <button class="btn btn-primary btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
+      <button class="btn btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
       <div class="alert" id="pick-alert"></div>
     </div>
 
-    <div id="confirmed-area"></div>
-  </div>
+    <!-- Dashboard -->
+    <div class="hub-divider"></div>
+    <div class="section-label">Your dashboard</div>
+    <div class="dashboard" style="position:relative;">
 
-</div>
+      <!-- Selection slot -->
+      <div style="font-size:11px;color:var(--muted);letter-spacing:1.3px;text-transform:uppercase;margin-bottom:9px;">
+        Your Selection Slot
+      </div>
+      <div class="selection-slot empty" id="selection-slot">
+        <div class="avatar avatar-sm" id="slot-avatar" style="background:var(--surface3);box-shadow:none;border:1px dashed var(--border2);">?</div>
+        <div class="slot-info">
+          <div class="slot-name" id="slot-name">No pick yet</div>
+          <div class="slot-sub"  id="slot-sub">Lock in a choice above</div>
+        </div>
+        <div id="slot-badge" style="display:none;">
+          <span style="font-size:11px;padding:4px 10px;border-radius:50px;background:rgba(168,85,247,0.18);color:var(--neon2);font-weight:600;letter-spacing:0.5px;">Locked 🔒</span>
+        </div>
+      </div>
+
+      <!-- Loading state for match check -->
+      <div class="dash-loading" id="dash-loading" style="display:none;margin-top:10px;">
+        <div class="spinner"></div> Checking for mutual matches…
+      </div>
+
+      <!-- Mutual match banner -->
+      <div class="match-banner" id="match-banner">
+        <div class="match-emoji">🎉</div>
+        <div class="match-title">It's a Match!</div>
+        <div class="match-sub">You both chose each other 💜</div>
+        <div class="match-names" id="match-names"></div>
+      </div>
+
+      <!-- Pending note (shown when picked but no match yet) -->
+      <div class="pending-note" id="pending-note" style="display:none;">
+        <div class="pending-dot"></div>
+        Waiting to see if they pick you back…
+      </div>
+
+    </div><!-- /dashboard -->
+
+  </div><!-- /hub-view -->
+
+</div><!-- /app-wrap -->
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   CONFIG  –  credentials unchanged from original file
+══════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
 const HEADERS = {
-  'Content-Type': 'application/json',
-  'apikey': SUPABASE_KEY,
+  'Content-Type':  'application/json',
+  'apikey':        SUPABASE_KEY,
   'Authorization': `Bearer ${SUPABASE_KEY}`,
-  'Prefer': 'return=representation'
+  'Prefer':        'return=representation'
 };
 
-// ─── CLASS ROSTER ─────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   CLASS ROSTER  –  unchanged
+══════════════════════════════════════════════════════════ */
 const ROSTER = {
   "AATIK HOUSSAM":"4821","ACHMIRROU MOSTAFA":"7134","AGHOUAR KHADIJA":"2956","AIT BELLA ABDELILAH":"8310",
   "AIT BOURHIM AYOUB":"1549","AIT HAMMOU MOHAMED AMINE":"6273","AJAKKA MOHAMED":"3984","AKABAR OUMAIMA":"5102",
@@ -561,34 +576,77 @@ const ROSTER = {
   "TOMZINE YOUSSEF":"1640","WAHKKI HAJAR":"8951","YAHIA YOUSSEF":"2318","YASSINE KAOUTAR":"5749",
   "YASSIR IMAD":"9103","ZAKY SARA":"4632","ZDIHRI HIBA":"8275"
 };
-
 const ALL_NAMES = Object.keys(ROSTER).sort();
 
-// ─── STATE ────────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════════ */
 let currentUser = null; // { full_name, token }
 
-// ─── PARTICLES ────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   AVATAR HELPERS
+══════════════════════════════════════════════════════════ */
+/**
+ * Get up to 2 initials from a full name (first + last word).
+ * "EL ALLAOUI KHADIJA" → "EK"
+ * "BADR RANIA"         → "BR"
+ */
+function getInitials(fullName) {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0][0];
+  return parts[0][0] + parts[parts.length - 1][0];
+}
+
+/* Gradient pool – cycles through so avatars feel varied */
+const AVATAR_GRADS = [
+  'linear-gradient(135deg,#e040fb,#7c3aed)',
+  'linear-gradient(135deg,#a855f7,#ec4899)',
+  'linear-gradient(135deg,#f97316,#ec4899)',
+  'linear-gradient(135deg,#06b6d4,#7c3aed)',
+  'linear-gradient(135deg,#34d399,#06b6d4)',
+  'linear-gradient(135deg,#facc15,#f97316)',
+];
+function avatarGrad(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffff;
+  return AVATAR_GRADS[hash % AVATAR_GRADS.length];
+}
+
+function setAvatar(el, name, isMatch = false) {
+  if (!name) { el.textContent = '?'; el.style.background = 'var(--surface3)'; return; }
+  el.textContent = getInitials(name);
+  el.style.background = isMatch ? 'linear-gradient(135deg,#34d399,#06b6d4)' : avatarGrad(name);
+  el.style.boxShadow = isMatch
+    ? '0 3px 14px rgba(52,211,153,0.45)'
+    : '0 3px 12px rgba(217,70,239,0.35)';
+}
+
+/* ══════════════════════════════════════════════════════════
+   PARTICLES
+══════════════════════════════════════════════════════════ */
 (function spawnParticles() {
   const container = document.getElementById('particles');
   const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 24; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 4 + 2;
     p.style.cssText = `
-      width:${size}px; height:${size}px;
+      width:${size}px;height:${size}px;
       left:${Math.random()*100}%;
       bottom:${-size}px;
       background:${colors[Math.floor(Math.random()*colors.length)]};
       animation-duration:${Math.random()*14+10}s;
       animation-delay:${Math.random()*12}s;
-      filter:blur(${Math.random()*1}px);
+      filter:blur(${Math.random()}px);
     `;
     container.appendChild(p);
   }
 })();
 
-// ─── TAB SWITCHER ─────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════════════════════ */
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => {
     b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1));
@@ -610,84 +668,94 @@ function showAlert(id, msg, type='error') {
 
 function setLoading(btnId, loading, originalText) {
   const btn = document.getElementById(btnId);
-  if (loading) {
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner"></span>Please wait…`;
+  if (loading) { btn.disabled = true;  btn.innerHTML = `<span class="spinner"></span>Please wait…`; }
+  else          { btn.disabled = false; btn.innerHTML = originalText; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   DROPDOWN – avatar preview on change
+══════════════════════════════════════════════════════════ */
+function onSelectChange() {
+  const sel     = document.getElementById('classmate-select');
+  const wrapper = document.getElementById('select-wrapper');
+  const avatar  = document.getElementById('dropdown-avatar');
+  const val     = sel.value;
+
+  if (val) {
+    wrapper.classList.add('has-value');
+    setAvatar(avatar, val);
   } else {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+    wrapper.classList.remove('has-value');
+    avatar.textContent = '?';
+    avatar.style.background = 'var(--surface3)';
   }
 }
 
-// ─── REGISTER ─────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   REGISTER
+══════════════════════════════════════════════════════════ */
 async function handleRegister() {
-  const name = document.getElementById('reg-name').value.trim().toUpperCase();
-  const pin = document.getElementById('reg-pin').value.trim();
+  const name     = document.getElementById('reg-name').value.trim().toUpperCase();
+  const pin      = document.getElementById('reg-pin').value.trim();
   const password = document.getElementById('reg-password').value;
 
-  if (!name || !pin || !password) return showAlert('register-alert','Please fill in all fields.');
-  if (password.length < 4) return showAlert('register-alert','Password must be at least 4 characters.');
-
-  // Validate against roster
-  if (!ROSTER[name]) return showAlert('register-alert','Name not found in the class roster. Check spelling and use UPPERCASE.');
-  if (ROSTER[name] !== pin) return showAlert('register-alert','Incorrect PIN for this name.');
+  if (!name || !pin || !password)
+    return showAlert('register-alert','Please fill in all fields.');
+  if (password.length < 4)
+    return showAlert('register-alert','Password must be at least 4 characters.');
+  if (!ROSTER[name])
+    return showAlert('register-alert','Name not found in the class roster. Check spelling and use UPPERCASE.');
+  if (ROSTER[name] !== pin)
+    return showAlert('register-alert','Incorrect PIN for this name.');
 
   setLoading('register-btn', true, 'Create Account');
-
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify({ full_name: name, password: password })
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+      method: 'POST', headers: HEADERS,
+      body: JSON.stringify({ full_name: name, password })
     });
-
     const data = await res.json().catch(() => null);
 
     if (res.ok) {
-      showAlert('register-alert', '✅ Account created! You can now log in.', 'success');
-      document.getElementById('reg-name').value = '';
-      document.getElementById('reg-pin').value = '';
-      document.getElementById('reg-password').value = '';
+      showAlert('register-alert','✅ Account created! You can now log in.','success');
+      ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
       setTimeout(() => switchTab('login'), 1800);
-    } else if (res.status === 409 || (data && JSON.stringify(data).includes('duplicate'))) {
-      showAlert('register-alert', 'An account with this name already exists. Please log in.');
+    } else if (res.status === 409 || JSON.stringify(data).includes('duplicate')) {
+      showAlert('register-alert','An account with this name already exists. Please log in.');
     } else if (res.status === 401 || res.status === 403) {
-      showAlert('register-alert', '🔒 Access blocked by database security policy. Contact the admin.');
+      showAlert('register-alert','🔒 Access blocked by database policy. Contact the admin.');
     } else {
-      showAlert('register-alert', `Error: ${data?.message || data?.error || 'Unknown error.'}`);
+      showAlert('register-alert',`Error: ${data?.message || data?.error || 'Unknown error.'}`);
     }
-  } catch (err) {
-    showAlert('register-alert', 'Network error. Check your connection and try again.');
+  } catch {
+    showAlert('register-alert','Network error. Check your connection and try again.');
   } finally {
     setLoading('register-btn', false, 'Create Account');
   }
 }
 
-// ─── LOGIN ─────────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   LOGIN
+══════════════════════════════════════════════════════════ */
 async function handleLogin() {
-  const name = document.getElementById('login-name').value.trim().toUpperCase();
+  const name     = document.getElementById('login-name').value.trim().toUpperCase();
   const password = document.getElementById('login-password').value;
 
-  if (!name || !password) return showAlert('login-alert','Please enter your name and password.');
-  if (!ROSTER[name]) return showAlert('login-alert','Name not found in class roster.');
+  if (!name || !password)  return showAlert('login-alert','Please enter your name and password.');
+  if (!ROSTER[name])       return showAlert('login-alert','Name not found in class roster.');
 
   setLoading('login-btn', true, 'Log In');
-
   try {
-    // Fetch profile matching name + password
     const url = `${SUPABASE_URL}/rest/v1/profiles?full_name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=full_name,id`;
-    const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const res  = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json().catch(() => []);
 
     if (!res.ok) {
-      if (res.status === 401 || res.status === 403) {
-        showAlert('login-alert','🔒 Access blocked by database policy. Contact the admin.');
-      } else {
-        showAlert('login-alert',`Error ${res.status}. Try again.`);
-      }
+      showAlert('login-alert', res.status===401||res.status===403
+        ? '🔒 Access blocked by database policy. Contact the admin.'
+        : `Error ${res.status}. Try again.`);
       return;
     }
-
     if (!Array.isArray(data) || data.length === 0) {
       showAlert('login-alert','Incorrect name or password.');
       return;
@@ -697,37 +765,42 @@ async function handleLogin() {
     currentUser = { full_name: profile.full_name, token: profile.id || profile.full_name };
     enterHub();
 
-  } catch (err) {
+  } catch {
     showAlert('login-alert','Network error. Check connection and try again.');
   } finally {
     setLoading('login-btn', false, 'Log In');
   }
 }
 
-// ─── HUB ──────────────────────────────────────────────────
-function enterHub() {
+/* ══════════════════════════════════════════════════════════
+   HUB
+══════════════════════════════════════════════════════════ */
+async function enterHub() {
   document.getElementById('auth-card').style.display = 'none';
   const hub = document.getElementById('hub-view');
   hub.style.display = 'block';
   hub.classList.add('active');
 
+  // Set user avatar & name
+  const hubAvatar = document.getElementById('hub-avatar');
+  setAvatar(hubAvatar, currentUser.full_name);
   document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
 
-  // Populate dropdown (alphabetically, exclude self)
+  // Populate dropdown
   const sel = document.getElementById('classmate-select');
   sel.innerHTML = '<option value="">— Select a classmate —</option>';
   ALL_NAMES.filter(n => n !== currentUser.full_name).forEach(name => {
     const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = titleCase(name);
+    opt.value = name; opt.textContent = titleCase(name);
     sel.appendChild(opt);
   });
+  onSelectChange();
 
-  // Clear previous confirmed area
-  document.getElementById('confirmed-area').innerHTML = '';
-  document.getElementById('pick-alert').className = 'alert';
-  document.getElementById('pick-btn').style.display = '';
-  document.querySelector('.hub-card').style.display = '';
+  // Reset dashboard
+  resetDashboard();
+
+  // Load existing selection from DB
+  await loadDashboard();
 }
 
 function titleCase(str) {
@@ -745,52 +818,149 @@ function handleLogout() {
   switchTab('login');
 }
 
-// ─── PICK ──────────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   PICK
+══════════════════════════════════════════════════════════ */
 async function handlePick() {
-  const sel = document.getElementById('classmate-select');
+  const sel    = document.getElementById('classmate-select');
   const picked = sel.value;
   if (!picked) return showAlert('pick-alert','Please select a classmate first.','error');
 
   setLoading('pick-btn', true, 'Lock In My Choice 🔒');
-
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
-      method: 'POST',
-      headers: HEADERS,
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
+      method: 'POST', headers: HEADERS,
       body: JSON.stringify({
-        user_token: currentUser.token || currentUser.full_name,
+        user_token:   currentUser.token || currentUser.full_name,
         picked_token: picked
       })
     });
-
     const data = await res.json().catch(() => null);
 
     if (res.ok) {
-      // Show confirmed state
-      document.querySelector('.hub-card').style.display = 'none';
-      document.getElementById('confirmed-area').innerHTML = `
-        <div class="hub-card confirmed-pick">
-          <div class="confirmed-icon">💘</div>
-          <div class="confirmed-text">You've chosen</div>
-          <div class="confirmed-name">${titleCase(picked)}</div>
-          <div class="confirmed-sub">Your pick has been saved. Good luck! ✨</div>
-        </div>
-      `;
-    } else if (res.status === 409 || (data && JSON.stringify(data).includes('duplicate'))) {
-      showAlert('pick-alert','You have already submitted a pick.','info');
+      showAlert('pick-alert','✅ Choice locked in!','success');
+      // Immediately update dashboard
+      await loadDashboard();
+    } else if (res.status === 409 || JSON.stringify(data||'').includes('duplicate')) {
+      showAlert('pick-alert','You already submitted a pick. See your dashboard below.','info');
+      await loadDashboard();
     } else if (res.status === 401 || res.status === 403) {
       showAlert('pick-alert','🔒 Access blocked by database policy. Contact the admin.','error');
     } else {
       showAlert('pick-alert',`Error: ${data?.message || data?.error || 'Unknown error.'}`, 'error');
     }
-  } catch (err) {
+  } catch {
     showAlert('pick-alert','Network error. Check connection and try again.','error');
   } finally {
     setLoading('pick-btn', false, 'Lock In My Choice 🔒');
   }
 }
 
-// ─── KEYBOARD ENTER ───────────────────────────────────────
+/* ══════════════════════════════════════════════════════════
+   DASHBOARD  –  load selection & check mutual match
+══════════════════════════════════════════════════════════ */
+function resetDashboard() {
+  // Slot
+  const slot      = document.getElementById('selection-slot');
+  const slotAv    = document.getElementById('slot-avatar');
+  const slotName  = document.getElementById('slot-name');
+  const slotSub   = document.getElementById('slot-sub');
+  const slotBadge = document.getElementById('slot-badge');
+  slot.classList.add('empty');
+  setAvatar(slotAv, null);
+  slotAv.style.background = 'var(--surface3)';
+  slotName.textContent = 'No pick yet';
+  slotSub.textContent  = 'Lock in a choice above';
+  slotBadge.style.display = 'none';
+  // Match banner
+  document.getElementById('match-banner').classList.remove('visible');
+  document.getElementById('pending-note').style.display = 'none';
+  document.getElementById('dash-loading').style.display = 'none';
+}
+
+async function loadDashboard() {
+  const token = currentUser.token || currentUser.full_name;
+  document.getElementById('dash-loading').style.display = 'flex';
+  document.getElementById('match-banner').classList.remove('visible');
+  document.getElementById('pending-note').style.display = 'none';
+
+  try {
+    // 1. Fetch current user's selection
+    const myRes  = await fetch(
+      `${SUPABASE_URL}/rest/v1/selections?user_token=eq.${encodeURIComponent(token)}&select=picked_token`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+    );
+    const myData = await myRes.json().catch(() => []);
+
+    if (!Array.isArray(myData) || myData.length === 0) {
+      // No pick yet – leave dashboard empty
+      document.getElementById('dash-loading').style.display = 'none';
+      return;
+    }
+
+    const pickedName = myData[0].picked_token;
+
+    // Update selection slot
+    const slot      = document.getElementById('selection-slot');
+    const slotAv    = document.getElementById('slot-avatar');
+    const slotName  = document.getElementById('slot-name');
+    const slotSub   = document.getElementById('slot-sub');
+    const slotBadge = document.getElementById('slot-badge');
+
+    slot.classList.remove('empty');
+    setAvatar(slotAv, pickedName);
+    slotName.textContent = titleCase(pickedName);
+    slotSub.textContent  = 'Your locked-in choice';
+    slotBadge.style.display = '';
+
+    // 2. Check if they picked us back (mutual match)
+    // Their user_token is their full_name (or id if stored differently)
+    // We check: selections where user_token = pickedName AND picked_token = our full_name
+    const theirRes  = await fetch(
+      `${SUPABASE_URL}/rest/v1/selections?user_token=eq.${encodeURIComponent(pickedName)}&picked_token=eq.${encodeURIComponent(currentUser.full_name)}&select=picked_token`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+    );
+    const theirData = await theirRes.json().catch(() => []);
+
+    document.getElementById('dash-loading').style.display = 'none';
+
+    if (Array.isArray(theirData) && theirData.length > 0) {
+      // ✅ MUTUAL MATCH
+      setAvatar(slotAv, pickedName, true);
+      showMatchBanner(currentUser.full_name, pickedName);
+    } else {
+      // No match yet
+      document.getElementById('pending-note').style.display = 'flex';
+    }
+
+  } catch {
+    document.getElementById('dash-loading').style.display = 'none';
+    document.getElementById('pending-note').style.display = 'flex';
+    document.getElementById('pending-note').querySelector('.pending-dot').style.background = 'var(--error)';
+  }
+}
+
+function showMatchBanner(myName, theirName) {
+  const banner    = document.getElementById('match-banner');
+  const namesDiv  = document.getElementById('match-names');
+
+  namesDiv.innerHTML = `
+    <div class="match-name-chip">
+      <div class="avatar avatar-sm avatar-match">${getInitials(myName)}</div>
+      <span class="match-chip-name">${titleCase(myName)}</span>
+    </div>
+    <span class="match-heart">💜</span>
+    <div class="match-name-chip">
+      <div class="avatar avatar-sm avatar-match">${getInitials(theirName)}</div>
+      <span class="match-chip-name">${titleCase(theirName)}</span>
+    </div>
+  `;
+  banner.classList.add('visible');
+}
+
+/* ══════════════════════════════════════════════════════════
+   KEYBOARD ENTER
+══════════════════════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   if (document.getElementById('login-section').classList.contains('active')) handleLogin();
