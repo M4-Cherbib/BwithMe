@@ -187,7 +187,6 @@
 
   <div class="phone-container">
     
-    <!-- BRAND COMPONENT -->
     <div class="brand-header">
       <div class="shield-icon">
         <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
@@ -196,10 +195,8 @@
       <div class="brand-tagline">Private • Safe • Mutual</div>
     </div>
 
-    <!-- NOTIFICATION AREA -->
     <div id="status-box" class="status-msg"></div>
 
-    <!-- ENTRY MODULE (LOGIN & REGISTRATION) -->
     <div id="auth-module">
       <div class="form-group">
         <label id="label-name">Full Name (LAST FIRST)</label>
@@ -207,8 +204,8 @@
       </div>
 
       <div class="form-group" id="pin-setup-group">
-        <label id="label-pin">Your Verification PIN</label>
-        <input type="text" id="auth-pin" placeholder="Enter assigned setup PIN" maxlength="6">
+        <label id="label-pin">Your Verification PIN / Password</label>
+        <input type="password" id="auth-pin" placeholder="Enter PIN or Account Password">
       </div>
 
       <div class="form-group hidden" id="pass-group">
@@ -223,7 +220,6 @@
       </div>
     </div>
 
-    <!-- APP HUB VIEW (MATCH SELECTION) -->
     <div id="hub-module" class="hidden">
       <div class="form-group">
         <label>Secure Session Profile</label>
@@ -300,7 +296,7 @@
         btn.innerText = "Register Profile →";
         toggleBox.innerHTML = 'Account active? <span onclick="switchView(false)">Log In Instead</span>';
       } else {
-        labelPin.innerText = "Account Password / PIN";
+        labelPin.innerText = "Account Password";
         passGroup.classList.add('hidden');
         btn.innerText = "Verify Access →";
         toggleBox.innerHTML = 'First time here? <span onclick="switchView(true)">Create an Account</span>';
@@ -322,7 +318,7 @@
       const firstCredential = document.getElementById('auth-pin').value.trim();
 
       if (!inputName || !firstCredential) {
-        dispatchNotice("Please specify required operational identities.");
+        dispatchNotice("Please fill out all identity input fields.");
         return;
       }
 
@@ -335,7 +331,7 @@
 
         // 1. Verify Name exists and Match correct Setup PIN 
         if (!CLASS_ROSTER[inputName] || CLASS_ROSTER[inputName] !== firstCredential) {
-          dispatchNotice("Verification signature match failed. Bad identity or invitation PIN.");
+          dispatchNotice("Verification signatures do not match your roster slot.");
           return;
         }
 
