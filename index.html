@@ -1,584 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BwithMe — Secure Connected Platform</title>
-    <style>
-        :root {
-            --bg-global: #0b071e;
-            --bg-container: #0f0a28;
-            --bg-card: #16103c;
-            --border-color: #241b56;
-            --text-main: #ffffff;
-            --text-muted: #8e89b3;
-            --color-primary: #d946ef;
-            --gradient-accent: linear-gradient(135deg, #a855f7, #ec4899);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BwithMe — Private Matchmaker</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg-global: #05021a;
+      --bg-mobile: #181135;
+      --input-bg: #211947;
+      --border-color: #2f2563;
+      --text-main: #ffffff;
+      --text-muted: #8b83ba;
+      --gradient-btn: linear-gradient(90deg, #9b00ff 0%, #ff007b 100%);
+      --accent-glow: rgba(255, 0, 123, 0.4);
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    
+    body { 
+      background-color: var(--bg-global); 
+      color: var(--text-main); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      padding: 10px;
+    }
 
-        body {
-            background-color: var(--bg-global);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+    /* Premium Mockup Phone Container mimicking your image layout */
+    .phone-container {
+      background-color: var(--bg-mobile);
+      border: 4px solid #2d2459;
+      border-radius: 40px;
+      width: 100%;
+      max-width: 410px;
+      min-height: 720px;
+      padding: 35px 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
 
-        .phone-wrapper {
-            background-color: var(--bg-container);
-            width: 100%;
-            max-width: 410px;
-            height: 780px;
-            border-radius: 42px;
-            border: 10px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
+    /* Phone Dynamic Island Mock notch */
+    .phone-container::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 25px;
+      background: #0d0822;
+      border-radius: 20px;
+    }
 
-        .screen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            padding: 24px;
-            overflow-y: auto;
-        }
+    /* Shield Logo & Brand Layout */
+    .brand-header {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 35px;
+    }
 
-        .screen.active {
-            display: flex;
-        }
+    .shield-icon {
+      width: 65px;
+      height: 65px;
+      background: linear-gradient(135deg, #442582 0%, #aa2582 100%);
+      border: 2px solid #df4bb3;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      box-shadow: 0 0 20px rgba(223, 75, 179, 0.3);
+    }
 
-        .title-area {
-            text-align: center;
-            margin: 40px 0 30px 0;
-        }
+    .shield-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+    }
 
-        .title-area h1 {
-            font-size: 32px;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
+    .brand-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+      background: #fff;
+      -webkit-background-clip: text;
+    }
 
-        .input-group {
-            margin-bottom: 25px;
-        }
+    .brand-tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
 
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
+    /* Interface Forms styling */
+    .form-group { margin-bottom: 20px; }
+    
+    label { 
+      display: block; 
+      font-size: 11px; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 1px; 
+      margin-bottom: 8px; 
+      color: var(--text-muted); 
+    }
+    
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
 
-        .input-field {
-            width: 100%;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            outline: none;
-        }
+    input, select { 
+      width: 100%; 
+      padding: 15px 16px; 
+      background-color: var(--input-bg); 
+      border: 1px solid var(--border-color); 
+      border-radius: 14px; 
+      color: #fff; 
+      font-size: 15px; 
+      transition: all 0.25s; 
+    }
+    
+    input:focus, select:focus { 
+      border-color: #ff007b; 
+      outline: none; 
+      box-shadow: 0 0 12px rgba(255, 0, 123, 0.25);
+    }
+    
+    /* Styled Button resembling your prompt template */
+    .gradient-btn { 
+      width: 100%; 
+      padding: 16px; 
+      background: var(--gradient-btn); 
+      border: none; 
+      border-radius: 14px; 
+      color: #fff; 
+      font-size: 16px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: opacity 0.2s, transform 0.1s; 
+      margin-top: 15px;
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+    
+    .gradient-btn:active { transform: scale(0.98); }
+    .gradient-btn:hover { opacity: 0.95; }
+    
+    .toggle-footer { 
+      text-align: center; 
+      font-size: 13px; 
+      margin-top: auto; 
+      padding-top: 25px;
+      color: var(--text-muted); 
+    }
+    
+    .toggle-footer span { 
+      color: #ff007b; 
+      cursor: pointer; 
+      font-weight: 700; 
+    }
 
-        .action-btn {
-            background: var(--gradient-accent);
-            color: #ffffff;
-            border: none;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .alert-box {
-            background-color: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .user-summary {
-            text-align: center;
-            margin-bottom: 25px;
-            margin-top: 10px;
-        }
-
-        .members-grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .grid-member-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 18px 10px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .grid-member-card.chosen {
-            border-color: var(--color-primary);
-            background: linear-gradient(180deg, var(--bg-card), rgba(236, 72, 153, 0.08));
-        }
-
-        .avatar-placeholder {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            margin: 0 auto 10px auto;
-        }
-
-        .member-card-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .check-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 20px;
-            height: 20px;
-            background-color: var(--color-primary);
-            border-radius: 50%;
-            color: #fff;
-            font-size: 12px;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .grid-member-card.chosen .check-badge {
-            display: flex;
-        }
-
-        .selection-list-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            border-radius: 18px;
-            margin-bottom: 12px;
-        }
-
-        .status-tag {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 20px;
-        }
-
-        .status-tag.matched {
-            background-color: rgba(236, 72, 153, 0.15);
-            color: var(--color-primary);
-        }
-
-        .status-tag.pending {
-            background-color: var(--border-color);
-            color: var(--text-muted);
-        }
-
-        .bottom-nav-menu {
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            padding: 16px 20px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--text-muted);
-            font-size: 14px;
-            text-align: center;
-            cursor: pointer;
-            flex: 1;
-            font-weight: 500;
-        }
-
-        .nav-link.active {
-            color: var(--color-primary);
-            font-weight: 700;
-        }
-    </style>
+    /* System messages alert boxes */
+    .status-msg {
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .status-error { background: rgba(255, 59, 48, 0.15); border: 1px solid #ff3b30; color: #ff453a; }
+    .status-success { background: rgba(52, 199, 89, 0.15); border: 1px solid #34c759; color: #30d158; }
+    
+    .hidden { display: none !important; }
+    .secondary-btn { background: #261f4d; color: #bcaeff; margin-top: 10px; border: 1px solid #3d337a; }
+  </style>
 </head>
 <body>
 
-    <div class="phone-wrapper">
-        <!-- LOGIN SCREEN -->
-        <div class="screen active" id="screenLogin">
-            <div class="title-area">
-                <h1>BwithMe</h1>
-                <p style="color: var(--text-muted); font-size: 14px;">Private. Connected. Mutual.</p>
-            </div>
-            <div class="alert-box" id="loginError">Access denied. Invalid secure token.</div>
-            <div class="input-group">
-                <label>Enter Secret Identity Key</label>
-                <input type="password" class="input-field" id="usernameInput" placeholder="bwm.nameXXXX" autocomplete="off">
-            </div>
-            <button class="action-btn" id="loginBtn" onclick="handleLogin()">Verify Access →</button>
-        </div>
-
-        <!-- MAIN DASHBOARD -->
-        <div class="screen" id="screenHome">
-            <div class="user-summary">
-                <h2 id="currentProfileName">Dashboard</h2>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Select up to 2 choices secretly</p>
-            </div>
-            <div class="members-grid-container" id="gridContainer"></div>
-        </div>
-
-        <!-- SELECTIONS STATUS SCREEN -->
-        <div class="screen" id="screenSelections">
-            <div style="margin-bottom: 20px; margin-top: 10px;">
-                <h2>My Connections</h2>
-                <p style="color: var(--text-muted); font-size: 13px;">Live confirmation dashboard</p>
-            </div>
-            <div id="selectionsListWrapper"></div>
-        </div>
-
-        <!-- APP INTERACTION TABS -->
-        <div class="bottom-nav-menu" id="bottomNav">
-            <div class="nav-link" onclick="handleLogout()">Exit Session</div>
-            <div class="nav-link active" id="tabHome" onclick="navigateTo('screenHome')">Profiles</div>
-            <div class="nav-link" id="tabSelections" onclick="navigateTo('screenSelections')">My Selections</div>
-        </div>
+  <div class="phone-container">
+    
+    <!-- BRAND COMPONENT -->
+    <div class="brand-header">
+      <div class="shield-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      </div>
+      <div class="brand-title">BwithMe</div>
+      <div class="brand-tagline">Private • Safe • Mutual</div>
     </div>
 
-    <script>
-        // Explicit root paths cleanly decoupled to avoid endpoint nesting issues
-        const SUPABASE_URL = "https://xiitnfszvqymgtrrpqym.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494";
+    <!-- NOTIFICATION AREA -->
+    <div id="status-box" class="status-msg"></div>
 
-        const database = {
-            users: {
-                "bwm.abdelhakime5821": { displayName: "ABDELHAKIME OU", color: "#d946ef" },
-                "bwm.abdelilah9034": { displayName: "ABDELILAH AI", color: "#a78bfa" },
-                "bwm.abdellah4176": { displayName: "ABDELLAH OU", color: "#93c5fd" },
-                "bwm.abderrahim1102": { displayName: "ABDERRAHIM BO", color: "#fed7aa" },
-                "bwm.abderrahmane6743": { displayName: "ABDERRAHMANE BE", color: "#3b82f6" },
-                "bwm.achraf8819": { displayName: "ACHRAF RE", color: "#ddd6fe" },
-                "bwm.achraf2354": { displayName: "ACHRAF SA", color: "#86efac" },
-                "bwm.adil7912": { displayName: "ADIL SA", color: "#fda4af" },
-                "bwm.ahlam3021": { displayName: "AHLAM BO", color: "#fef08a" },
-                "bwm.amal4498": { displayName: "AMAL EL", color: "#6366f1" },
-                "bwm.aya6152": { displayName: "AYA EL", color: "#8b5cf6" },
-                "bwm.aymane3381": { displayName: "AYMANE FA", color: "#bfdbfe" },
-                "bwm.ayoub5092": { displayName: "AYOUB AI", color: "#fbbf24" },
-                "bwm.ayoube1276": { displayName: "AYOUBE BE", color: "#14b8a6" },
-                "bwm.chaimae9943": { displayName: "CHAIMAE EL", color: "#3b82f6" },
-                "bwm.chaima4051": { displayName: "CHAIMA LH", color: "#6ee7b7" },
-                "bwm.chayma8210": { displayName: "CHAYMA EZ", color: "#fef08a" },
-                "bwm.douaa6639": { displayName: "DOUAA DA", color: "#38bdf8" },
-                "bwm.elmahdi1752": { displayName: "EL MAHDI CH", color: "#a3e635" },
-                "bwm.essaadia4890": { displayName: "ESSAADIA CH", color: "#fb7185" },
-                "bwm.fatima2281": { displayName: "FATIMA CH", color: "#86efac" },
-                "bwm.fatima7104": { displayName: "FATIMA HA", color: "#a3e635" },
-                "bwm.fatima5593": { displayName: "FATIMA TA", color: "#c084fc" },
-                "bwm.ghita3641": { displayName: "GHITA DI", color: "#f43f5e" },
-                "bwm.hajar1098": { displayName: "HAJAR AS", color: "#38bdf8" },
-                "bwm.hajar8432": { displayName: "HAJAR ZI", color: "#f43f5e" },
-                "bwm.hafsa5021": { displayName: "HAFSA RA", color: "#a7f3d0" },
-                "bwm.hasnae6918": { displayName: "HASNAE BI", color: "#c084fc" },
-                "bwm.hiba3374": { displayName: "HIBA EL", color: "#d946ef" },
-                "bwm.hiba9105": { displayName: "HIBA ZD", color: "#38bdf8" },
-                "bwm.hind2849": { displayName: "HIND BE", color: "#fca5a5" },
-                "bwm.hind7732": { displayName: "HIND FE", color: "#f5d0fe" },
-                "bwm.houssam3914": { displayName: "HOUSSAM AA", color: "#60a5fa" },
-                "bwm.ikram5528": { displayName: "IKRAM ID", color: "#6366f1" },
-                "bwm.imane4190": { displayName: "IMANE BE", color: "#d946ef" },
-                "bwm.imrane8043": { displayName: "IMRANE BO", color: "#f5d0fe" },
-                "bwm.ismail2615": { displayName: "ISMAIL SA", color: "#93e6fb" },
-                "bwm.jamila9087": { displayName: "JAMILA AL", color: "#a3e635" },
-                "bwm.kaoutar3841": { displayName: "KAOUTAR BO", color: "#fed7aa" },
-                "bwm.kaoutar7729": { displayName: "KAOUTAR OU", color: "#c084fc" },
-                "bwm.kaoutar1045": { displayName: "KAOUTAR RH", color: "#fef08a" },
-                "bwm.khadija5193": { displayName: "KHADIJA AG", color: "#f472b6" },
-                "bwm.khadija2840": { displayName: "KHADIJA EL", color: "#fbcfe8" },
-                "bwm.laila6631": { displayName: "LAILA ET", color: "#ddd6fe" },
-                "bwm.lamyae4402": { displayName: "LAMYAE BE", color: "#fbcfe8" },
-                "bwm.mariam1945": { displayName: "MARIAM BA", color: "#8b5cf6" },
-                "bwm.maroua8832": { displayName: "MAROUA JA", color: "#14b8a6" },
-                "bwm.marwane3012": { displayName: "MARWANE EL", color: "#c084fc" },
-                "bwm.marwane7749": { displayName: "MARWANE GO", color: "#86efac" },
-                "bwm.mbarek5561": { displayName: "M'BAREK HA", color: "#c084fc" },
-                "bwm.mohamed1928": { displayName: "MOHAMED AI", color: "#f87171" },
-                "bhamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee" },
-                "bwm.mohamed8839": { displayName: "MOHAMED AS", color: "#f43f5e" },
-                "bwm.mohamed5190": { displayName: "MOHAMED CH", color: "#c084fc" },
-                "bwm.mohamed6624": { displayName: "MOHAMED EL", color: "#fca5a5" },
-                "bwm.mostafa3392": { displayName: "MOSTAFA AC", color: "#34d399" },
-                "bwm.mounia1094": { displayName: "MOUNIA HA", color: "#fb7185" },
-                "bwm.nadia4721": { displayName: "NADIA RA", color: "#fed7aa" },
-                "bwm.nassima9031": { displayName: "NASSIMA BA", color: "#f59e0b" },
-                "bwm.nouhaila6643": { displayName: "NOUHAILA EL", color: "#93c5fd" },
-                "bwm.nouhaila2190": { displayName: "NOUHAILA IH", color: "#8b5cf6" },
-                "bwm.omar1843": { displayName: "OMAR BE", color: "#06b6d4" },
-                "bwm.oumaima7741": { displayName: "OUMAIMA AK", color: "#c084fc" },
-                "bwm.oumaima3092": { displayName: "OUMAIMA RI", color: "#bfdbfe" },
-                "bwm.oumayma1129": { displayName: "OUMAYMA GU", color: "#93e6fb" },
-                "bwm.oumayma4451": { displayName: "OUMAYMA RO", color: "#f5d0fe" },
-                "bwm.oussama8824": { displayName: "OUSSAMA BA", color: "#ec4899" },
-                "bwm.oussama3910": { displayName: "OUSSAMA GA", color: "#fda4af" },
-                "bwm.rabiaa6712": { displayName: "RABIAA EL", color: "#06b6d4" },
-                "bwm.rajaa1904": { displayName: "RAJAA NO", color: "#fca5a5" },
-                "bwm.rania3940": { displayName: "RANIA BA", color: "#10b981" },
-                "bwm.reda4019": { displayName: "REDA HA", color: "#f43f5e" },
-                "bwm.rida5590": { displayName: "RIDA EL", color: "#ec4899" },
-                "bwm.saad2281": { displayName: "SAAD HM", color: "#10b981" },
-                "bwm.saida1104": { displayName: "SAIDA ES", color: "#a7f3d0" },
-                "bwm.salma3394": { displayName: "SALMA BE", color: "#93c5fd" },
-                "bwm.salma8821": { displayName: "SALMA OU", color: "#fbcfe8" },
-                "bwm.salma4052": { displayName: "SALMA TO", color: "#fb7185" },
-                "bwm.samia7719": { displayName: "SAMIA KH", color: "#3b82f6" },
-                "bwm.sara2943": { displayName: "SARA ZA", color: "#a3e635" },
-                "bwm.souhaib5510": { displayName: "SOUHAIB KH", color: "#06b6d4" },
-                "bwm.soukaina1984": { displayName: "SOUKAINA CH", color: "#fda4af" },
-                "bwm.soulaimane4439": { displayName: "SOULAIMANE ES", color: "#fed7aa" },
-                "bwm.walid3910": { displayName: "WALID AL", color: "#fb7185" },
-                "bwm.walid7712": { displayName: "WALID BA", color: "#6366f1" },
-                "bwm.walid6621": { displayName: "WALID EL", color: "#6ee7b7" },
-                "bwm.wiam3092": { displayName: "WIAM EL", color: "#f59e0b" },
-                "bwm.yacine1184": { displayName: "YACINE BE", color: "#6ee7b7" },
-                "bwm.yassamine4490": { displayName: "YASSAMINE BO", color: "#a7f3d0" },
-                "bwm.yassine2291": { displayName: "YASSINE DR", color: "#10b981" },
-                "bwm.yassine7103": { displayName: "YASSINE HA", color: "#38bdf8" },
-                "bwm.youssef4829": { displayName: "YOUSSEF JA", color: "#f59e0b" },
-                "bwm.youssra3021": { displayName: "YOUSSRA EL", color: "#14b8a6" },
-                "bwm.zakaria8832": { displayName: "ZAKARIA IZ", color: "#ec4899" },
-                "bwm.zineb1104": { displayName: "ZINEB BO", color: "#fef08a" },
-                "bwm.zineb6632": { displayName: "ZINEB CH", color: "#93e6fb" }
-            },
-            currentUserRawKey: null,
-            currentUserMaskedToken: null,
-            allLiveSelections: []
-        };
+    <!-- ENTRY MODULE (LOGIN & REGISTRATION) -->
+    <div id="auth-module">
+      <div class="form-group">
+        <label id="label-name">Full Name (LAST FIRST)</label>
+        <input type="text" id="auth-name" placeholder="e.g. CHERBIB MOHAMED" autocomplete="off">
+      </div>
 
-        function simpleHash(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = (hash << 5) - hash + str.charCodeAt(i);
-                hash |= 0; 
-            }
-            return "h" + Math.abs(hash).toString(16);
+      <div class="form-group" id="pin-setup-group">
+        <label id="label-pin">Your Verification PIN</label>
+        <input type="text" id="auth-pin" placeholder="Enter assigned setup PIN" maxlength="6">
+      </div>
+
+      <div class="form-group hidden" id="pass-group">
+        <label>Create a Secret Password</label>
+        <input type="password" id="auth-pass" placeholder="Password for future logins">
+      </div>
+
+      <button id="action-btn" class="gradient-btn" onclick="processAuth()">Verify Access →</button>
+
+      <div class="toggle-footer" id="toggle-container">
+        First time here? <span onclick="switchView(true)">Create an Account</span>
+      </div>
+    </div>
+
+    <!-- APP HUB VIEW (MATCH SELECTION) -->
+    <div id="hub-module" class="hidden">
+      <div class="form-group">
+        <label>Secure Session Profile</label>
+        <input type="text" id="profile-banner" disabled style="opacity: 0.5; font-weight: 700; border-color: transparent;">
+      </div>
+
+      <div class="form-group">
+        <label for="crush-select">Select Confidential Target</label>
+        <select id="crush-select">
+          <option value="">-- Choose Classmate --</option>
+        </select>
+      </div>
+
+      <button class="gradient-btn" onclick="saveSelection()">Lock Choice Securing Match →</button>
+      <button class="gradient-btn secondary-btn" onclick="terminateSession()">Log Out / Disconnect</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Database configuration variables with your live shared credentials
+    const SUPABASE_URL = "https://xiitnfszvqymgtrpqym.supabase.co"; 
+    const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
+    
+    // Core Authorized Student Roster Mapping with Setup PIN keys
+    const CLASS_ROSTER = {
+      "AATIK HOUSSAM": "4821", "ACHMIRROU MOSTAFA": "7134", "AGHOUAR KHADIJA": "2956", "AIT BELLA ABDELILAH": "8310",
+      "AIT BOURHIM AYOUB": "1549", "AIT HAMMOU MOHAMED AMINE": "6273", "AJAKKA MOHAMED": "3984", "AKABAR OUMAIMA": "5102",
+      "ALOUANE WALID": "9437", "ALOUNANE JAMILA": "2061", "ASSABBANE KHADIJA": "7714", "ASSADI HAJAR": "4390",
+      "BADR RANIA": "8825", "BAGUENNI WALID": "1256", "BAIKEN MARIAM": "6478", "BANI BALHCEN OUSSAMA": "3192",
+      "BARDAGUI NASSIMA": "5503", "BELQADI AYOUBE": "9041", "BEN KAMEL OMAR": "2387", "BENDAHAN ABDERRAHMANE": "7619",
+      "BENDAHAR YACINE": "4920", "BENHADOU HIND": "8135", "BENHALIMA IMANE": "3462", "BENJILALI SALMA": "6089",
+      "BENKHAYA LAMYAE": "1754", "BISSALITEN HASNAE": "9243", "BOU-IBAOUN KAOUTAR": "5831", "BOUBBAH ABDERRAHIM": "2176",
+      "BOUGHALEM YASSAMINE": "6904", "BOUMAHDI ZINEB": "4127", "BOUSDIG AHLAM": "8542", "BOUZID IMRANE": "3019",
+      "CHAHID SOUKAINA": "7348", "CHARAFI FATIMA ZAHRA": "1985", "CHENTOUFI ZINEB": "5236", "CHERBIB MOHAMED": "9912",
+      "CHKOURRACH ESSAADIA": "4470", "DRIDBA SALMA": "8219", "DRISSI YASSINE": "3654", "EL ALLAOUI KHADIJA": "6108",
+      "EL BAIKEM MOHAMED": "2743", "EL FADIL OUASSIME": "7891", "EL HAKIMI AMAL": "1430", "EL KOUSSIMI AYA": "5029",
+      "EL MARZOUKI RIDA": "9384", "EL MENBBEHY FATIMA-EZZAHRAE": "6721", "EL MOUBARKI WIAM": "3150", "EL YOUSSFI AYOUB": "8463",
+      "ELAMRANI YOUSSRA": "2094", "ELBOUHALI RABIAA": "7532", "ELHARTI CHAIMAE": "4198", "ELHORRI FATIMA ZAHRA": "5802",
+      "ES SADRI SOULAIMANE": "1347", "ESSADIKI OUMAIMA": "9621", "ESSOUFI SAIDA": "3840", "ETALBI MOHAMED": "7059",
+      "ETTOUNOSY LAILA": "2416", "EZZAHER CHAYMA": "6389", "GHOUFIRI IMANE": "8724", "HABIBI M'BAREK": "1053",
+      "HAFID IDRISSI MOUNIA": "4961", "HAJI FATIMA": "3278", "HAMRERRAS SALMA": "8104", "HMIDI IDRISSI SAAD": "5642",
+      "ID BELKAS IKRAM": "9215", "IHSSOUS NOUHAILA": "2340", "IZZA ZAKARIA": "7493", "JAMIL YOUSSEF": "6152",
+      "JARMOUNE MAROUA": "3891", "KHARBOUCHE SOUHAIB": "8047", "KHATIR HASNAA": "4712", "KHILILA SAMIA": "1593",
+      "KISSADE FATIMA ZAHRA": "6824", "LHAROUI CHAIMA": "3409", "MEZIAT RIDA": "9176", "MIFTAHALKHAIR IKRAM": "5241",
+      "NOUAR RAJAA": "2830", "OUBLKHIR CHAIMAA": "7942", "OUCHEHRA ABDELHAKIME": "6015", "OUHAMMOU KHADIJA": "4329",
+      "OUKALTOUM ABDELLAH": "8691", "OUKHACHA FATIMA ZAHRA": "1734", "QUIRAT SIRINE": "5190", "RABAH NADIA": "3048",
+      "RABBAH MARIEM": "9582", "RAZKAOUI HAFSA": "6214", "SANY ADIL": "4083", "SEFNAJ MAROUA": "7329",
+      "TOMZINE YOUSSEF": "1640", "WAHKKI HAJAR": "8951", "YAHIA YOUSSEF": "2318", "YASSINE KAOUTAR": "5749",
+      "YASSIR IMAD": "9103", "ZAKY SARA": "4632", "ZDIHRI HIBA": "8275"
+    };
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let creationFlow = false;
+    let applicationUser = null;
+
+    window.onload = function() {
+      const activeUser = localStorage.getItem('bwm_authenticated_user');
+      if (activeUser) { launchHub(activeUser); }
+    };
+
+    function switchView(toSignUp) {
+      creationFlow = toSignUp;
+      const labelPin = document.getElementById('label-pin');
+      const passGroup = document.getElementById('pass-group');
+      const btn = document.getElementById('action-btn');
+      const toggleBox = document.getElementById('toggle-container');
+      
+      clearNotifications();
+
+      if (toSignUp) {
+        labelPin.innerText = "Class Assigned Setup PIN";
+        passGroup.classList.remove('hidden');
+        btn.innerText = "Register Profile →";
+        toggleBox.innerHTML = 'Account active? <span onclick="switchView(false)">Log In Instead</span>';
+      } else {
+        labelPin.innerText = "Account Password / PIN";
+        passGroup.classList.add('hidden');
+        btn.innerText = "Verify Access →";
+        toggleBox.innerHTML = 'First time here? <span onclick="switchView(true)">Create an Account</span>';
+      }
+    }
+
+    function dispatchNotice(msg, isSuccess = false) {
+      const box = document.getElementById('status-box');
+      box.innerText = msg;
+      box.className = "status-msg " + (isSuccess ? "status-success" : "status-error");
+      box.style.display = 'block';
+    }
+
+    function clearNotifications() { document.getElementById('status-box').style.display = 'none'; }
+
+    async function processAuth() {
+      clearNotifications();
+      const inputName = document.getElementById('auth-name').value.trim().toUpperCase();
+      const firstCredential = document.getElementById('auth-pin').value.trim();
+
+      if (!inputName || !firstCredential) {
+        dispatchNotice("Please specify required operational identities.");
+        return;
+      }
+
+      if (creationFlow) {
+        const chosenPassword = document.getElementById('auth-pass').value.trim();
+        if (!chosenPassword) {
+          dispatchNotice("You must establish a custom profile password.");
+          return;
         }
 
-        let secureProfilesMap = {};
-        Object.keys(database.users).forEach(rawKey => {
-            let maskedToken = simpleHash(rawKey);
-            secureProfilesMap[maskedToken] = {
-                displayName: database.users[rawKey].displayName,
-                color: database.users[rawKey].color
-            };
-        });
-
-        window.onload = function() {
-            handleLogout();
-        };
-
-        async function supabaseRequest(endpoint, options = {}) {
-            const headers = {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                "Content-Type": "application/json",
-                "Prefer": "return=representation"
-            };
-            // Safely structures url endpoint without appending nested paths
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, { ...options, headers });
-            if (!response.ok) {
-                throw new Error(await response.text());
-            }
-            return response.json();
+        // 1. Verify Name exists and Match correct Setup PIN 
+        if (!CLASS_ROSTER[inputName] || CLASS_ROSTER[inputName] !== firstCredential) {
+          dispatchNotice("Verification signature match failed. Bad identity or invitation PIN.");
+          return;
         }
 
-        async function syncDataFromDatabase() {
-            try {
-                database.allLiveSelections = await supabaseRequest("selections?select=*", { method: "GET" });
-            } catch (e) {
-                database.allLiveSelections = [];
-            }
-        }
+        // 2. Insert user into Database Profiles table
+        try {
+          const { error } = await supabase
+            .from('profiles')
+            .insert([{ full_name: inputName, password: chosenPassword }]);
 
-        async function handleLogin() {
-            const inputField = document.getElementById('usernameInput');
-            const loginBtn = document.getElementById('loginBtn');
-            const userProvidedKey = inputField.value.trim().toLowerCase();
-            const errorBanner = document.getElementById('loginError');
-
-            if (database.users[userProvidedKey]) {
-                errorBanner.style.display = 'none';
-                loginBtn.innerText = "Connecting...";
-                loginBtn.disabled = true;
-
-                database.currentUserRawKey = userProvidedKey;
-                database.currentUserMaskedToken = simpleHash(userProvidedKey);
-                
-                await syncDataFromDatabase();
-
-                document.getElementById('currentProfileName').innerText = secureProfilesMap[database.currentUserMaskedToken].displayName;
-                document.getElementById('bottomNav').style.display = 'flex';
-                
-                loginBtn.innerText = "Verify Access →";
-                loginBtn.disabled = false;
-                
-                renderGridUI();
-                navigateTo('screenHome');
+          if (error) {
+            if (error.code === '23505') {
+              dispatchNotice("Identity record already registered. Switch to login tab.");
             } else {
-                errorBanner.style.display = 'block';
-                inputField.value = '';
+              dispatchNotice("Profile commit error: " + error.message);
             }
+            return;
+          }
+
+          dispatchNotice("Secure profile authorized! Syncing hub...", true);
+          setTimeout(() => { launchHub(inputName); }, 1500);
+
+        } catch (e) {
+          dispatchNotice("Profile processing engine runtime failure.");
         }
 
-        function navigateTo(targetScreenId) {
-            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
-            document.getElementById(targetScreenId).classList.add('active');
+      } else {
+        // STANDARD LOGIN VIEW
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('full_name', inputName)
+            .eq('password', firstCredential)
+            .maybeSingle();
 
-            document.getElementById('tabHome').classList.remove('active');
-            document.getElementById('tabSelections').classList.remove('active');
+          if (error) {
+            dispatchNotice("Identity sync timeout: " + error.message);
+            return;
+          }
 
-            if(targetScreenId === 'screenHome') {
-                document.getElementById('tabHome').classList.add('active');
-                renderGridUI();
-            }
-            if(targetScreenId === 'screenSelections') {
-                document.getElementById('tabSelections').classList.add('active');
-                renderSelectionsUI();
-            }
+          if (!data) {
+            dispatchNotice("Access denied. Untrusted name or account password.");
+            return;
+          }
+
+          launchHub(inputName);
+        } catch (e) {
+          dispatchNotice("Backend server node connection loss.");
         }
+      }
+    }
 
-        function renderGridUI() {
-            const container = document.getElementById('gridContainer');
-            container.innerHTML = ''; 
+    function launchHub(userToken) {
+      applicationUser = userToken;
+      localStorage.setItem('bwm_authenticated_user', userToken);
+      
+      document.getElementById('auth-module').classList.add('hidden');
+      document.getElementById('hub-module').classList.remove('hidden');
+      document.getElementById('profile-banner').value = userToken;
 
-            const activeUserPicks = database.allLiveSelections
-                .filter(row => row.user_token === database.currentUserMaskedToken)
-                .map(row => row.picked_token);
-
-            Object.keys(secureProfilesMap).sort().forEach(profileToken => {
-                if(profileToken === database.currentUserMaskedToken) return;
-
-                const memberData = secureProfilesMap[profileToken];
-                const isChosen = activeUserPicks.includes(profileToken);
-
-                const cardElement = document.createElement('div');
-                cardElement.className = `grid-member-card ${isChosen ? 'chosen' : ''}`;
-                cardElement.onclick = () => handleSelectionToggle(profileToken);
-
-                cardElement.innerHTML = `
-                    <div class="avatar-placeholder" style="background-color: ${memberData.color};"></div>
-                    <div class="member-card-name">${memberData.displayName}</div>
-                    <div class="check-badge">✓</div>
-                `;
-                container.appendChild(cardElement);
-            });
+      const dropdown = document.getElementById('crush-select');
+      dropdown.innerHTML = '<option value="">-- Choose Classmate --</option>';
+      
+      Object.keys(CLASS_ROSTER).sort().forEach(member => {
+        if (member !== userToken) {
+          const item = document.createElement('option');
+          item.value = member;
+          item.innerText = member;
+          dropdown.appendChild(item);
         }
+      });
+    }
 
-        async function handleSelectionToggle(targetProfileToken) {
-            const activeUserPicks = database.allLiveSelections
-                .filter(row => row.user_token === database.currentUserMaskedToken)
-                .map(row => row.picked_token);
+    async function saveSelection() {
+      const choice = document.getElementById('crush-select').value;
+      if (!choice) {
+        alert("Select your option before saving system data state.");
+        return;
+      }
 
-            if (activeUserPicks.includes(targetProfileToken)) {
-                try {
-                    await supabaseRequest(`selections?user_token=eq.${database.currentUserMaskedToken}&picked_token=eq.${targetProfileToken}`, {
-                        method: "DELETE"
-                    });
-                } catch (e) { alert("Network issue. Failed to clear choice."); return; }
-            } else {
-                if (activeUserPicks.length >= 2) {
-                    alert("Maximum selection threshold reached (2 Choices).");
-                    return;
-                }
-                try {
-                    await supabaseRequest("selections", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            user_token: database.currentUserMaskedToken,
-                            picked_token: targetProfileToken
-                        })
-                    });
-                } catch (e) { alert("Failed to save selection."); return; }
-            }
-            
-            await syncDataFromDatabase();
-            renderGridUI();
-        }
+      try {
+        await supabase.from('selections').delete().eq('user_token', applicationUser);
+        const { error } = await supabase.from('selections').insert([{ user_token: applicationUser, picked_token: choice }]);
 
-        async function renderSelectionsUI() {
-            const recordsWrapper = document.getElementById('selectionsListWrapper');
-            recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Updating live dashboard...</p>`;
-            
-            await syncDataFromDatabase();
-            recordsWrapper.innerHTML = '';
+        if (error) { alert("Data commit breakdown: " + error.message); } 
+        else { alert("Confidential choice encrypted and locked!"); }
+      } catch (e) { alert("Transaction system framework interrupt."); }
+    }
 
-            const currentPicksList = database.allLiveSelections
-                .filter(row => row.user_token === database.currentUserMaskedToken)
-                .map(row => row.picked_token);
-
-            if(currentPicksList.length === 0) {
-                recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Your selection list is empty.</p>`;
-                return;
-            }
-
-            currentPicksList.forEach(pickedToken => {
-                const targetProfile = secureProfilesMap[pickedToken];
-                
-                const isMutualMatch = database.allLiveSelections.some(row => 
-                    row.user_token === pickedToken && row.picked_token === database.currentUserMaskedToken
-                );
-
-                const listRow = document.createElement('div');
-                listRow.className = 'selection-list-row';
-                listRow.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="avatar-placeholder" style="background-color: ${targetProfile.color}; width:40px; height:40px; margin:0;"></div>
-                        <div style="font-weight: 600; font-size:15px;">${targetProfile.displayName}</div>
-                    </div>
-                    <div>
-                        ${isMutualMatch 
-                            ? `<span class="status-tag matched">💙 Matched</span>` 
-                            : `<span class="status-tag pending">Pending</span>`}
-                    </div>
-                `;
-                recordsWrapper.appendChild(listRow);
-            });
-        }
-
-        function handleLogout() {
-            database.currentUserRawKey = null;
-            database.currentUserMaskedToken = null;
-            database.allLiveSelections = [];
-            document.getElementById('usernameInput').value = '';
-            document.getElementById('gridContainer').innerHTML = '';
-            document.getElementById('selectionsListWrapper').innerHTML = '';
-            document.getElementById('bottomNav').style.display = 'none';
-            navigateTo('screenLogin');
-        }
-    </script>
+    function terminateSession() {
+      localStorage.removeItem('bwm_authenticated_user');
+      applicationUser = null;
+      document.getElementById('auth-name').value = '';
+      document.getElementById('auth-pin').value = '';
+      document.getElementById('auth-pass').value = '';
+      switchView(false);
+      document.getElementById('hub-module').classList.add('hidden');
+      document.getElementById('auth-module').classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>
