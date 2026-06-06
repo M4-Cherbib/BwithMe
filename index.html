@@ -118,7 +118,7 @@
       border-radius: 14px; 
       color: #fff; 
       font-size: 15px; 
-      transition: all 0.25s; 
+      transition: all 0.25s; Hands
     }
     
     input:focus, select:focus { 
@@ -193,7 +193,7 @@
     <!-- ENTRY MODULE (LOGIN & REGISTRATION) -->
     <div id="auth-module">
       <div class="form-group">
-        <label>Full Name (LAST FIRST)</label>
+        <label>Full Name</label>
         <input type="text" id="auth-name" placeholder="e.g. JOHN SMITH" autocomplete="off">
       </div>
 
@@ -203,7 +203,7 @@
         <input type="password" id="auth-pin" placeholder="Enter your roster PIN code">
       </div>
 
-      <!-- Visible always (Logins use this, Registration creates this) -->
+      <!-- Visible always -->
       <div class="form-group" id="pass-group">
         <label id="pass-label">Account Password</label>
         <input type="password" id="auth-pass" placeholder="Enter account password">
@@ -237,7 +237,6 @@
   </div>
 
   <script>
-    // Config values
     const SUPABASE_URL = "https://xiitnfszvqymgtrpqym.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
     
@@ -278,6 +277,25 @@
       if (activeUser) { launchHub(activeUser); }
     };
 
+    // Resolves both FIRST LAST and LAST FIRST formatting inputs
+    function searchRoster(typedName) {
+      if (CLASS_ROSTER[typedName]) return { exactName: typedName, pin: CLASS_ROSTER[typedName] };
+      
+      const pieces = typedName.split(" ");
+      if (pieces.length === 2) {
+        const flipped = `${pieces[1]} ${pieces[0]}`;
+        if (CLASS_ROSTER[flipped]) return { exactName: flipped, pin: CLASS_ROSTER[flipped] };
+      } else if (pieces.length > 2) {
+        // Fallback for multi-part names: try checking if any flipped combination hits
+        const flippedLastFirst = `${pieces[pieces.length - 1]} ${pieces.slice(0, pieces.length - 1).join(" ")}`;
+        if (CLASS_ROSTER[flippedLastFirst]) return { exactName: flippedLastFirst, pin: CLASS_ROSTER[flippedLastFirst] };
+        
+        const flippedTwoLast = `${pieces.slice(pieces.length - 2).join(" ")} ${pieces.slice(0, pieces.length - 2).join(" ")}`;
+        if (CLASS_ROSTER[flippedTwoLast]) return { exactName: flippedTwoLast, pin: CLASS_ROSTER[flippedTwoLast] };
+      }
+      return null;
+    }
+
     function switchView(toSignUp) {
       creationFlow = toSignUp;
       const pinGroup = document.getElementById('pin-setup-group');
@@ -314,13 +332,16 @@
 
     async function processAuth() {
       clearNotifications();
-      const inputName = document.getElementById('auth-name').value.trim().toUpperCase();
+      const inputName = document.getElementById('auth-name').value.trim().toUpperCase().replace(/\s+/g, ' ');
       const passwordTyped = document.getElementById('auth-pass').value.trim();
 
       if (!inputName || !passwordTyped) {
         dispatchNotice("Please fill out all identity input fields.");
         return;
       }
+
+      // Check smart roster parsing engine
+      const matchedRosterItem = searchRoster(inputName);
 
       if (creationFlow) {
         const rosterPin = document.getElementById('auth-pin').value.trim();
@@ -329,15 +350,17 @@
           return;
         }
 
-        if (!CLASS_ROSTER[inputName] || CLASS_ROSTER[inputName] !== rosterPin) {
+        if (!matchedRosterItem || matchedRosterItem.pin !== rosterPin) {
           dispatchNotice("Verification signatures do not match your roster slot.");
           return;
         }
 
+        const standardSystemName = matchedRosterItem.exactName;
+
         try {
           const { error } = await supabaseClient
             .from('profiles')
-            .insert([{ full_name: inputName, password: passwordTyped }]);
+            .insert([{ full_name: standardSystemName, password: passwordTyped }]);
 
           if (error) {
             if (error.code === '23505') {
@@ -349,7 +372,7 @@
           }
 
           dispatchNotice("Secure profile authorized! Syncing hub...", true);
-          setTimeout(() => { launchHub(inputName); }, 1500);
+          setTimeout(() => { launchHub(standardSystemName); }, 1500);
 
         } catch (e) {
           dispatchNotice("Profile processing engine runtime failure.");
@@ -357,10 +380,14 @@
 
       } else {
         try {
+          // If they are logging in, they might type their flipped name. 
+          // Let's search Supabase using their matched roster format first, fallback to typed input.
+          const checkDbName = matchedRosterItem ? matchedRosterItem.exactName : inputName;
+
           const { data, error } = await supabaseClient
             .from('profiles')
             .select('*')
-            .eq('full_name', inputName)
+            .eq('full_name', checkDbName)
             .eq('password', passwordTyped)
             .maybeSingle();
 
@@ -374,7 +401,7 @@
             return;
           }
 
-          launchHub(inputName);
+          launchHub(checkDbName);
         } catch (e) {
           dispatchNotice("Backend server node connection loss.");
         }
