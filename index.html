@@ -226,9 +226,8 @@
   </div>
 
   <script>
-    // Pure clean native connection routes 
-    const BASE_REST_URL = "https://xiitnfszvqymgtrpqym.supabase.co/rest/v1"; 
-    const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
+    const BASE_REST_URL = "https://xitnfszvqymgtrpqym.supabase.co/rest/v1"; 
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpdG5mc3p2cXltZ3RycHF5bSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzEzNDU1OTE4LCJleHAiOjIwMjkAyDU5OTE4fQ.7eEdH494RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
     
     const CLASS_ROSTER = {
       "AATIK HOUSSAM": "4821", "ACHMIRROU MOSTAFA": "7134", "AGHOUAR KHADIJA": "2956", "AIT BELLA ABDELILAH": "8310",
@@ -268,25 +267,7 @@
     function searchRoster(typedName) {
       const sanitized = typedName.trim().toUpperCase().replace(/\s+/g, ' ');
       if (!sanitized) return null;
-
-      if (CLASS_ROSTER[sanitized]) {
-        return { exactName: sanitized, pin: CLASS_ROSTER[sanitized] };
-      }
-      
-      const pieces = sanitized.split(" ");
-      if (pieces.length === 2) {
-        const flipped = `${pieces[1]} ${pieces[0]}`;
-        if (CLASS_ROSTER[flipped]) return { exactName: flipped, pin: CLASS_ROSTER[flipped] };
-      } else if (pieces.length > 2) {
-        const variant1 = `${pieces[pieces.length - 1]} ${pieces.slice(0, pieces.length - 1).join(" ")}`;
-        if (CLASS_ROSTER[variant1]) return { exactName: variant1, pin: CLASS_ROSTER[variant1] };
-        
-        const variant2 = `${pieces.slice(pieces.length - 2).join(" ")} ${pieces.slice(0, pieces.length - 2).join(" ")}`;
-        if (CLASS_ROSTER[variant2]) return { exactName: variant2, pin: CLASS_ROSTER[variant2] };
-
-        const variant3 = `${pieces.slice(1).join(" ")} ${pieces[0]}`;
-        if (CLASS_ROSTER[variant3]) return { exactName: variant3, pin: CLASS_ROSTER[variant3] };
-      }
+      if (CLASS_ROSTER[sanitized]) return { exactName: sanitized, pin: CLASS_ROSTER[sanitized] };
       return null;
     }
 
@@ -326,7 +307,6 @@
 
     async function processAuth() {
       clearNotifications();
-
       const inputName = document.getElementById('auth-name').value.trim();
       let passwordTyped = document.getElementById('auth-pass').value.trim();
 
@@ -342,12 +322,6 @@
         if (!rosterPin) {
           dispatchNotice("You must enter your class assigned setup PIN.");
           return;
-        }
-
-        if (rosterPin.length > 4 && passwordTyped.length === 4 && !isNaN(passwordTyped)) {
-          const temporaryHold = rosterPin;
-          rosterPin = passwordTyped;
-          passwordTyped = temporaryHold;
         }
 
         if (!matchedRosterItem || matchedRosterItem.pin !== rosterPin) {
@@ -383,13 +357,12 @@
           setTimeout(() => { launchHub(standardSystemName); }, 1500);
 
         } catch (e) {
-          dispatchNotice("Network Transaction Error: Check internet link or credentials structure.");
+          dispatchNotice("Network Transaction Error.");
         }
 
       } else {
         try {
           const checkDbName = matchedRosterItem ? matchedRosterItem.exactName : inputName.toUpperCase();
-
           const response = await fetch(`${BASE_REST_URL}/profiles?full_name=eq.${encodeURIComponent(checkDbName)}&password=eq.${encodeURIComponent(passwordTyped)}`, {
             method: 'GET',
             headers: {
@@ -400,13 +373,11 @@
           });
 
           if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            dispatchNotice("Database Sync Issue: " + (errData.message || response.statusText));
+            dispatchNotice("Database Sync Issue.");
             return;
           }
 
           const data = await response.json();
-
           if (!data || data.length === 0) {
             dispatchNotice("Access denied. Untrusted name or account password.");
             return;
@@ -414,7 +385,7 @@
 
           launchHub(checkDbName);
         } catch (e) {
-          dispatchNotice("Network System Error: Check endpoint routing connection.");
+          dispatchNotice("Network System Error.");
         }
       }
     }
@@ -467,13 +438,12 @@
         });
 
         if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          alert("Data commit breakdown: " + (errData.message || response.statusText));
+          alert("Data commit breakdown.");
         } else {
           alert("Confidential choice encrypted and locked!");
         }
       } catch (e) { 
-        alert("Transaction system framework interrupt: " + e.message); 
+        alert("Transaction system framework interrupt."); 
       }
     }
 
