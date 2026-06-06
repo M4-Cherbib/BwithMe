@@ -1,462 +1,801 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BwithMe — Private Matchmaker</title>
-  <style>
-    :root {
-      --bg-global: #05021a;
-      --bg-mobile: #181135;
-      --input-bg: #211947;
-      --border-color: #2f2563;
-      --text-main: #ffffff;
-      --text-muted: #8b83ba;
-      --gradient-btn: linear-gradient(90deg, #9b00ff 0%, #ff007b 100%);
-      --accent-glow: rgba(255, 0, 123, 0.4);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BwithMe</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0810;
+    --surface: #110e1c;
+    --surface2: #19152b;
+    --border: rgba(180,120,255,0.13);
+    --text: #f0eaff;
+    --muted: #8b7faa;
+    --pink: #e040fb;
+    --purple: #9c27b0;
+    --violet: #7c3aed;
+    --neon: #d946ef;
+    --neon2: #a855f7;
+    --success: #34d399;
+    --error: #f87171;
+    --grad: linear-gradient(135deg, #e040fb 0%, #7c3aed 100%);
+    --grad2: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+    --glow: 0 0 30px rgba(224,64,251,0.3);
+    --glow2: 0 0 60px rgba(160,85,255,0.2);
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    
-    body { 
-      background-color: var(--bg-global); 
-      color: var(--text-main); 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-      padding: 10px;
-    }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .phone-container {
-      background-color: var(--bg-mobile);
-      border: 4px solid #2d2459;
-      border-radius: 40px;
-      width: 100%;
-      max-width: 410px;
-      min-height: 720px;
-      padding: 35px 25px;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.02);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
 
-    .phone-container::before {
-      content: '';
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 110px;
-      height: 25px;
-      background: #0d0822;
-      border-radius: 20px;
-    }
+  /* Ambient background orbs */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: orb1 12s ease-in-out infinite alternate;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 55vw;
+    height: 55vw;
+    background: radial-gradient(circle, rgba(217,70,239,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: orb2 15s ease-in-out infinite alternate;
+  }
 
-    .brand-header {
-      text-align: center;
-      margin-top: 30px;
-      margin-bottom: 35px;
-    }
+  @keyframes orb1 { from { transform: translate(0,0) scale(1); } to { transform: translate(5vw, 5vh) scale(1.1); } }
+  @keyframes orb2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-5vw, -5vh) scale(1.12); } }
 
-    .shield-icon {
-      width: 65px;
-      height: 65px;
-      background: linear-gradient(135deg, #442582 0%, #aa2582 100%);
-      border: 2px solid #df4bb3;
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 15px;
-      box-shadow: 0 0 20px rgba(223, 75, 179, 0.3);
-    }
+  /* Floating particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translateY(0) scale(0); }
+    10% { opacity: 0.6; transform: scale(1); }
+    90% { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-100vh) scale(0.5); }
+  }
 
-    .shield-icon svg {
-      width: 28px;
-      height: 28px;
-      fill: #fff;
-    }
+  /* App container */
+  .app-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 16px;
+  }
 
-    .brand-title {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-      color: #ffffff;
-    }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 40px 36px 36px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), var(--glow2);
+    position: relative;
+    overflow: hidden;
+    animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
 
-    .brand-tagline {
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
+  /* Top gradient line */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--grad);
+  }
 
-    .form-group { margin-bottom: 20px; }
-    
-    label { 
-      display: block; 
-      font-size: 11px; 
-      font-weight: 700; 
-      text-transform: uppercase; 
-      letter-spacing: 1px; 
-      margin-bottom: 8px; 
-      color: var(--text-muted); 
-    }
+  /* Logo */
+  .logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px; height: 64px;
+    border-radius: 20px;
+    background: var(--grad);
+    box-shadow: var(--glow);
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+  }
+  .logo-icon {
+    font-size: 28px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  }
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+  .logo-tagline {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
 
-    input, select { 
-      width: 100%; 
-      padding: 15px 16px; 
-      background-color: var(--input-bg); 
-      border: 1px solid var(--border-color); 
-      border-radius: 14px; 
-      color: #fff; 
-      font-size: 15px; 
-      transition: all 0.25s;
-    }
-    
-    input:focus, select:focus { 
-      border-color: #ff007b; 
-      outline: none; 
-      box-shadow: 0 0 12px rgba(255, 0, 123, 0.25);
-    }
-    
-    .gradient-btn { 
-      width: 100%; 
-      padding: 16px; 
-      background: var(--gradient-btn); 
-      border: none; 
-      border-radius: 14px; 
-      color: #fff; 
-      font-size: 16px; 
-      font-weight: 700; 
-      cursor: pointer; 
-      transition: opacity 0.2s, transform 0.1s; 
-      margin-top: 15px;
-      box-shadow: 0 6px 20px var(--accent-glow);
-    }
-    
-    .gradient-btn:active { transform: scale(0.98); }
-    
-    .toggle-footer { 
-      text-align: center; 
-      font-size: 13px; 
-      margin-top: auto; 
-      padding-top: 25px;
-      color: var(--text-muted); 
-    }
-    
-    .toggle-footer span { 
-      color: #ff007b; 
-      cursor: pointer; 
-      font-weight: 700; 
-    }
+  /* Tab switcher */
+  .tabs {
+    display: flex;
+    background: var(--surface2);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .tab-btn.active {
+    background: var(--grad);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(217,70,239,0.35);
+  }
 
-    .status-msg {
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      text-align: center;
-      margin-bottom: 18px;
-      word-break: break-all;
-      display: none;
-    }
-    .status-error { background: rgba(255, 59, 48, 0.15); border: 1px solid #ff3b30; color: #ff453a; }
-    .status-success { background: rgba(52, 199, 89, 0.15); border: 1px solid #34c759; color: #30d158; }
-    
-    .hidden { display: none !important; }
-    .secondary-btn { background: #261f4d; color: #bcaeff; margin-top: 10px; border: 1px solid #3d337a; }
-  </style>
+  /* Forms */
+  .form-section { display: none; animation: fadeSlide 0.35s ease both; }
+  .form-section.active { display: block; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-group { margin-bottom: 18px; }
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  input, select {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.25s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--neon2);
+    box-shadow: 0 0 0 3px rgba(168,85,247,0.2);
+    background: rgba(25,21,43,0.9);
+  }
+  input::placeholder { color: rgba(139,127,170,0.5); }
+  select option { background: #1a1428; color: var(--text); }
+
+  /* Custom select arrow */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '⌄';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neon2);
+    pointer-events: none;
+    font-size: 18px;
+  }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+  }
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn:hover::after { opacity: 1; }
+  .btn-primary {
+    background: var(--grad);
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(217,70,239,0.4);
+    margin-top: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(217,70,239,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    margin-top: 10px;
+  }
+  .btn-secondary:hover { border-color: var(--neon2); color: var(--text); }
+
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+  /* Spinner inside button */
+  .btn .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Alert / message */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-top: 14px;
+    display: none;
+    animation: fadeSlide 0.3s ease both;
+    line-height: 1.5;
+  }
+  .alert.show { display: block; }
+  .alert-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #fca5a5; }
+  .alert-success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #6ee7b7; }
+  .alert-info { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--neon2); }
+
+  /* Hub view */
+  #hub-view { display: none; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+  #hub-view.active { display: block; }
+
+  .hub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .hub-user-info {}
+  .hub-greeting {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .hub-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--text);
+    margin-top: 2px;
+    max-width: 220px;
+    line-height: 1.2;
+  }
+  .logout-btn {
+    width: auto;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .logout-btn:hover { border-color: var(--error); color: var(--error); }
+
+  .hub-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 -36px 28px;
+  }
+
+  .hub-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hub-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--grad2);
+    opacity: 0.5;
+  }
+  .hub-card-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  /* Neon pulse on pick button */
+  .btn-pick {
+    background: var(--grad2);
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(236,72,153,0.4);
+  }
+  .btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(236,72,153,0.5); }
+
+  /* Confirmed pick state */
+  .confirmed-pick {
+    text-align: center;
+    padding: 20px;
+  }
+  .confirmed-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .confirmed-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .confirmed-name {
+    font-size: 22px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    background: var(--grad2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .confirmed-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media (max-width: 480px) {
+    .card { padding: 32px 22px 28px; border-radius: 24px; }
+    .hub-divider { margin: 0 -22px 24px; }
+  }
+</style>
 </head>
 <body>
 
-  <div class="phone-container">
-    
-    <div class="brand-header">
-      <div class="shield-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-      </div>
-      <div class="brand-title">BwithMe</div>
-      <div class="brand-tagline">Private • Safe • Mutual</div>
+<!-- Ambient particles -->
+<div class="particles" id="particles"></div>
+
+<div class="app-wrap">
+
+  <!-- AUTH CARD -->
+  <div class="card" id="auth-card">
+    <div class="logo">
+      <div class="logo-mark"><span class="logo-icon">💜</span></div>
+      <div class="logo-name">BwithMe</div>
+      <div class="logo-tagline">Class Matchmaking</div>
     </div>
 
-    <div id="status-box" class="status-msg"></div>
-
-    <div id="auth-module">
-      <div class="form-group">
-        <label>Full Name (Last First)</label>
-        <input type="text" id="auth-name" placeholder="e.g. CHERBIB MOHAMED" autocomplete="off">
-      </div>
-
-      <div class="form-group hidden" id="pin-setup-group">
-        <label>Class Assigned Setup PIN</label>
-        <input type="password" id="auth-pin" placeholder="Enter your 4-digit roster PIN">
-      </div>
-
-      <div class="form-group" id="pass-group">
-        <label id="pass-label">PIN / Account Password</label>
-        <input type="password" id="auth-pass" placeholder="Enter password">
-      </div>
-
-      <button id="action-btn" class="gradient-btn" onclick="processAuth()">Verify Access →</button>
-
-      <div class="toggle-footer" id="toggle-container">
-        First time here? <span onclick="switchView(true)">Create an Account</span>
-      </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+      <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
     </div>
 
-    <div id="hub-module" class="hidden">
+    <!-- LOGIN -->
+    <div class="form-section active" id="login-section">
       <div class="form-group">
-        <label>Secure Session Profile</label>
-        <input type="text" id="profile-banner" disabled style="opacity: 0.5; font-weight: 700; border-color: transparent;">
+        <label>Full Name</label>
+        <input type="text" id="login-name" placeholder="e.g. AATIK HOUSSAM" autocomplete="off" />
       </div>
-
       <div class="form-group">
-        <label for="crush-select">Select Confidential Target</label>
-        <select id="crush-select">
-          <option value="">-- Choose Classmate --</option>
-        </select>
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Your password" />
       </div>
-
-      <button class="gradient-btn" onclick="saveSelection()">Lock Choice Securing Match →</button>
-      <button class="gradient-btn secondary-btn" onclick="terminateSession()">Log Out / Disconnect</button>
+      <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log In</button>
+      <div class="alert" id="login-alert"></div>
     </div>
 
+    <!-- REGISTER -->
+    <div class="form-section" id="register-section">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="As on class roster" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Class Setup PIN (4 digits)</label>
+        <input type="text" id="reg-pin" placeholder="••••" maxlength="4" inputmode="numeric" />
+      </div>
+      <div class="form-group">
+        <label>Create Password</label>
+        <input type="password" id="reg-password" placeholder="Choose a password" />
+      </div>
+      <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
+      <div class="alert" id="register-alert"></div>
+    </div>
   </div>
 
-  <script>
-    const BASE_REST_URL = "https://xiitnfszvqymgtrpqym.supabase.co/rest/v1"; 
-    const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
-    
-    const CLASS_ROSTER = {
-      "AATIK HOUSSAM": "4821", "ACHMIRROU MOSTAFA": "7134", "AGHOUAR KHADIJA": "2956", "AIT BELLA ABDELILAH": "8310",
-      "AIT BOURHIM AYOUB": "1549", "AIT HAMMOU MOHAMED AMINE": "6273", "AJAKKA MOHAMED": "3984", "AKABAR OUMAIMA": "5102",
-      "ALOUANE WALID": "9437", "ALOUNANE JAMILA": "2061", "ASSABBANE KHADIJA": "7714", "ASSADI HAJAR": "4390",
-      "BADR RANIA": "8825", "BAGUENNI WALID": "1256", "BAIKEN MARIAM": "6478", "BANI BALHCEN OUSSAMA": "3192",
-      "BARDAGUI NASSIMA": "5503", "BELQADI AYOUBE": "9041", "BEN KAMEL OMAR": "2387", "BENDAHAN ABDERRAHMANE": "7619",
-      "BENDAHAR YACINE": "4920", "BENHADOU HIND": "8135", "BENHALIMA IMANE": "3462", "BENJILALI SALMA": "6089",
-      "BENKHAYA LAMYAE": "1754", "BISSALITEN HASNAE": "9243", "BOU-IBAOUN KAOUTAR": "5831", "BOUBBAH ABDERRAHIM": "2176",
-      "BOUGHALEM YASSAMINE": "6904", "BOUMAHDI ZINEB": "4127", "BOUSDIG AHLAM": "8542", "BOUZID IMRANE": "3019",
-      "CHAHID SOUKAINA": "7348", "CHARAFI FATIMA ZAHRA": "1985", "CHENTOUFI ZINEB": "5236", "CHERBIB MOHAMED": "9912",
-      "CHKOURRACH ESSAADIA": "4470", "DRIDBA SALMA": "8219", "DRISSI YASSINE": "3654", "EL ALLAOUI KHADIJA": "6108",
-      "EL BAIKEM MOHAMED": "2743", "EL FADIL OUASSIME": "7891", "EL HAKIMI AMAL": "1430", "EL KOUSSIMI AYA": "5029",
-      "EL MARZOUKI RIDA": "9384", "EL MENBBEHY FATIMA-EZZAHRAE": "6721", "EL MOUBARKI WIAM": "3150", "EL YOUSSFI AYOUB": "8463",
-      "ELAMRANI YOUSSRA": "2094", "ELBOUHALI RABIAA": "7532", "ELHARTI CHAIMAE": "4198", "ELHORRI FATIMA ZAHRA": "5802",
-      "ES SADRI SOULAIMANE": "1347", "ESSADIKI OUMAIMA": "9621", "ESSOUFI SAIDA": "3840", "ETALBI MOHAMED": "7059",
-      "ETTOUNOSY LAILA": "2416", "EZZAHER CHAYMA": "6389", "GHOUFIRI IMANE": "8724", "HABIBI M'BAREK": "1053",
-      "HAFID IDRISSI MOUNIA": "4961", "HAJI FATIMA": "3278", "HAMRERRAS SALMA": "8104", "HMIDI IDRISSI SAAD": "5642",
-      "ID BELKAS IKRAM": "9215", "IHSSOUS NOUHAILA": "2340", "IZZA ZAKARIA": "7493", "JAMIL YOUSSEF": "6152",
-      "JARMOUNE MAROUA": "3891", "KHARBOUCHE SOUHAIB": "8047", "KHATIR HASNAA": "4712", "KHILILA SAMIA": "1593",
-      "KISSADE FATIMA ZAHRA": "6824", "LHAROUI CHAIMA": "3409", "MEZIAT RIDA": "9176", "MIFTAHALKHAIR IKRAM": "5241",
-      "NOUAR RAJAA": "2830", "OUBLKHIR CHAIMAA": "7942", "OUCHEHRA ABDELHAKIME": "6015", "OUHAMMOU KHADIJA": "4329",
-      "OUKALTOUM ABDELLAH": "8691", "OUKHACHA FATIMA ZAHRA": "1734", "QUIRAT SIRINE": "5190", "RABAH NADIA": "3048",
-      "RABBAH MARIEM": "9582", "RAZKAOUI HAFSA": "6214", "SANY ADIL": "4083", "SEFNAJ MAROUA": "7329",
-      "TOMZINE YOUSSEF": "1640", "WAHKKI HAJAR": "8951", "YAHIA YOUSSEF": "2318", "YASSINE KAOUTAR": "5749",
-      "YASSIR IMAD": "9103", "ZAKY SARA": "4632", "ZDIHRI HIBA": "8275"
-    };
+  <!-- HUB CARD -->
+  <div class="card" id="hub-view">
+    <div class="hub-header">
+      <div class="hub-user-info">
+        <div class="hub-greeting">Welcome back</div>
+        <div class="hub-name" id="hub-username">—</div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Log out</button>
+    </div>
 
-    let creationFlow = false;
-    let applicationUser = null;
+    <div class="hub-divider"></div>
 
-    window.onload = function() {
-      const activeUser = localStorage.getItem('bwm_authenticated_user');
-      if (activeUser) { launchHub(activeUser); }
-    };
+    <div class="hub-card">
+      <div class="hub-card-label">💘 Choose your match</div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <div class="select-wrap">
+          <select id="classmate-select">
+            <option value="">— Select a classmate —</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
+      <div class="alert" id="pick-alert"></div>
+    </div>
 
-    function searchRoster(typedName) {
-      const sanitized = typedName.trim().toUpperCase().replace(/\s+/g, ' ');
-      if (!sanitized) return null;
-      if (CLASS_ROSTER[sanitized]) return { exactName: sanitized, pin: CLASS_ROSTER[sanitized] };
-      return null;
+    <div id="confirmed-area"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const SUPABASE_URL = 'https://xiitnfszvqymgtrpqym.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
+const HEADERS = {
+  'Content-Type': 'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Prefer': 'return=representation'
+};
+
+// ─── CLASS ROSTER ─────────────────────────────────────────
+const ROSTER = {
+  "AATIK HOUSSAM":"4821","ACHMIRROU MOSTAFA":"7134","AGHOUAR KHADIJA":"2956","AIT BELLA ABDELILAH":"8310",
+  "AIT BOURHIM AYOUB":"1549","AIT HAMMOU MOHAMED AMINE":"6273","AJAKKA MOHAMED":"3984","AKABAR OUMAIMA":"5102",
+  "ALOUANE WALID":"9437","ALOUNANE JAMILA":"2061","ASSABBANE KHADIJA":"7714","ASSADI HAJAR":"4390",
+  "BADR RANIA":"8825","BAGUENNI WALID":"1256","BAIKEN MARIAM":"6478","BANI BALHCEN OUSSAMA":"3192",
+  "BARDAGUI NASSIMA":"5503","BELQADI AYOUBE":"9041","BEN KAMEL OMAR":"2387","BENDAHAN ABDERRAHMANE":"7619",
+  "BENDAHAR YACINE":"4920","BENHADOU HIND":"8135","BENHALIMA IMANE":"3462","BENJILALI SALMA":"6089",
+  "BENKHAYA LAMYAE":"1754","BISSALITEN HASNAE":"9243","BOU-IBAOUN KAOUTAR":"5831","BOUBBAH ABDERRAHIM":"2176",
+  "BOUGHALEM YASSAMINE":"6904","BOUMAHDI ZINEB":"4127","BOUSDIG AHLAM":"8542","BOUZID IMRANE":"3019",
+  "CHAHID SOUKAINA":"7348","CHARAFI FATIMA ZAHRA":"1985","CHENTOUFI ZINEB":"5236","CHERBIB MOHAMED":"9912",
+  "CHKOURRACH ESSAADIA":"4470","DRIDBA SALMA":"8219","DRISSI YASSINE":"3654","EL ALLAOUI KHADIJA":"6108",
+  "EL BAIKEM MOHAMED":"2743","EL FADIL OUASSIME":"7891","EL HAKIMI AMAL":"1430","EL KOUSSIMI AYA":"5029",
+  "EL MARZOUKI RIDA":"9384","EL MENBBEHY FATIMA-EZZAHRAE":"6721","EL MOUBARKI WIAM":"3150","EL YOUSSFI AYOUB":"8463",
+  "ELAMRANI YOUSSRA":"2094","ELBOUHALI RABIAA":"7532","ELHARTI CHAIMAE":"4198","ELHORRI FATIMA ZAHRA":"5802",
+  "ES SADRI SOULAIMANE":"1347","ESSADIKI OUMAIMA":"9621","ESSOUFI SAIDA":"3840","ETALBI MOHAMED":"7059",
+  "ETTOUNOSY LAILA":"2416","EZZAHER CHAYMA":"6389","GHOUFIRI IMANE":"8724","HABIBI M'BAREK":"1053",
+  "HAFID IDRISSI MOUNIA":"4961","HAJI FATIMA":"3278","HAMRERRAS SALMA":"8104","HMIDI IDRISSI SAAD":"5642",
+  "ID BELKAS IKRAM":"9215","IHSSOUS NOUHAILA":"2340","IZZA ZAKARIA":"7493","JAMIL YOUSSEF":"6152",
+  "JARMOUNE MAROUA":"3891","KHARBOUCHE SOUHAIB":"8047","KHATIR HASNAA":"4712","KHILILA SAMIA":"1593",
+  "KISSADE FATIMA ZAHRA":"6824","LHAROUI CHAIMA":"3409","MEZIAT RIDA":"9176","MIFTAHALKHAIR IKRAM":"5241",
+  "NOUAR RAJAA":"2830","OUBLKHIR CHAIMAA":"7942","OUCHEHRA ABDELHAKIME":"6015","OUHAMMOU KHADIJA":"4329",
+  "OUKALTOUM ABDELLAH":"8691","OUKHACHA FATIMA ZAHRA":"1734","QUIRAT SIRINE":"5190","RABAH NADIA":"3048",
+  "RABBAH MARIEM":"9582","RAZKAOUI HAFSA":"6214","SANY ADIL":"4083","SEFNAJ MAROUA":"7329",
+  "TOMZINE YOUSSEF":"1640","WAHKKI HAJAR":"8951","YAHIA YOUSSEF":"2318","YASSINE KAOUTAR":"5749",
+  "YASSIR IMAD":"9103","ZAKY SARA":"4632","ZDIHRI HIBA":"8275"
+};
+
+const ALL_NAMES = Object.keys(ROSTER).sort();
+
+// ─── STATE ────────────────────────────────────────────────
+let currentUser = null; // { full_name, token }
+
+// ─── PARTICLES ────────────────────────────────────────────
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      bottom:${-size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*14+10}s;
+      animation-delay:${Math.random()*12}s;
+      filter:blur(${Math.random()*1}px);
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ─── TAB SWITCHER ─────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1));
+  });
+  document.getElementById('login-section').classList.toggle('active', tab==='login');
+  document.getElementById('register-section').classList.toggle('active', tab==='register');
+  clearAlerts();
+}
+
+function clearAlerts() {
+  document.querySelectorAll('.alert').forEach(a => { a.className='alert'; a.textContent=''; });
+}
+
+function showAlert(id, msg, type='error') {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `alert alert-${type} show`;
+}
+
+function setLoading(btnId, loading, originalText) {
+  const btn = document.getElementById(btnId);
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span>Please wait…`;
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// ─── REGISTER ─────────────────────────────────────────────
+async function handleRegister() {
+  const name = document.getElementById('reg-name').value.trim().toUpperCase();
+  const pin = document.getElementById('reg-pin').value.trim();
+  const password = document.getElementById('reg-password').value;
+
+  if (!name || !pin || !password) return showAlert('register-alert','Please fill in all fields.');
+  if (password.length < 4) return showAlert('register-alert','Password must be at least 4 characters.');
+
+  // Validate against roster
+  if (!ROSTER[name]) return showAlert('register-alert','Name not found in the class roster. Check spelling and use UPPERCASE.');
+  if (ROSTER[name] !== pin) return showAlert('register-alert','Incorrect PIN for this name.');
+
+  setLoading('register-btn', true, 'Create Account');
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({ full_name: name, password: password })
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (res.ok) {
+      showAlert('register-alert', '✅ Account created! You can now log in.', 'success');
+      document.getElementById('reg-name').value = '';
+      document.getElementById('reg-pin').value = '';
+      document.getElementById('reg-password').value = '';
+      setTimeout(() => switchTab('login'), 1800);
+    } else if (res.status === 409 || (data && JSON.stringify(data).includes('duplicate'))) {
+      showAlert('register-alert', 'An account with this name already exists. Please log in.');
+    } else if (res.status === 401 || res.status === 403) {
+      showAlert('register-alert', '🔒 Access blocked by database security policy. Contact the admin.');
+    } else {
+      showAlert('register-alert', `Error: ${data?.message || data?.error || 'Unknown error.'}`);
     }
+  } catch (err) {
+    showAlert('register-alert', 'Network error. Check your connection and try again.');
+  } finally {
+    setLoading('register-btn', false, 'Create Account');
+  }
+}
 
-    function switchView(toSignUp) {
-      creationFlow = toSignUp;
-      const pinGroup = document.getElementById('pin-setup-group');
-      const passLabel = document.getElementById('pass-label');
-      const passInput = document.getElementById('auth-pass');
-      const btn = document.getElementById('action-btn');
-      const toggleBox = document.getElementById('toggle-container');
-      
-      clearNotifications();
+// ─── LOGIN ─────────────────────────────────────────────────
+async function handleLogin() {
+  const name = document.getElementById('login-name').value.trim().toUpperCase();
+  const password = document.getElementById('login-password').value;
 
-      if (toSignUp) {
-        pinGroup.classList.remove('hidden');
-        passLabel.innerText = "Create a Secret Password";
-        passInput.placeholder = "Password for future logins";
-        btn.innerText = "Register Profile →";
-        toggleBox.innerHTML = 'Account active? <span onclick="switchView(false)">Log In Instead</span>';
+  if (!name || !password) return showAlert('login-alert','Please enter your name and password.');
+  if (!ROSTER[name]) return showAlert('login-alert','Name not found in class roster.');
+
+  setLoading('login-btn', true, 'Log In');
+
+  try {
+    // Fetch profile matching name + password
+    const url = `${SUPABASE_URL}/rest/v1/profiles?full_name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=full_name,id`;
+    const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const data = await res.json().catch(() => []);
+
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        showAlert('login-alert','🔒 Access blocked by database policy. Contact the admin.');
       } else {
-        pinGroup.classList.add('hidden');
-        passLabel.innerText = "PIN / Account Password";
-        passInput.placeholder = "Enter account password";
-        btn.innerText = "Verify Access →";
-        toggleBox.innerHTML = 'First time here? <span onclick="switchView(true)">Create an Account</span>';
+        showAlert('login-alert',`Error ${res.status}. Try again.`);
       }
+      return;
     }
 
-    function dispatchNotice(msg, isSuccess = false) {
-      const box = document.getElementById('status-box');
-      box.innerText = msg;
-      box.className = "status-msg " + (isSuccess ? "status-success" : "status-error");
-      box.style.display = 'block';
+    if (!Array.isArray(data) || data.length === 0) {
+      showAlert('login-alert','Incorrect name or password.');
+      return;
     }
 
-    function clearNotifications() { document.getElementById('status-box').style.display = 'none'; }
+    const profile = data[0];
+    currentUser = { full_name: profile.full_name, token: profile.id || profile.full_name };
+    enterHub();
 
-    async function processAuth() {
-      clearNotifications();
-      const inputName = document.getElementById('auth-name').value.trim();
-      let passwordTyped = document.getElementById('auth-pass').value.trim();
+  } catch (err) {
+    showAlert('login-alert','Network error. Check connection and try again.');
+  } finally {
+    setLoading('login-btn', false, 'Log In');
+  }
+}
 
-      if (!inputName || !passwordTyped) {
-        dispatchNotice("Please fill out all identity input fields.");
-        return;
-      }
+// ─── HUB ──────────────────────────────────────────────────
+function enterHub() {
+  document.getElementById('auth-card').style.display = 'none';
+  const hub = document.getElementById('hub-view');
+  hub.style.display = 'block';
+  hub.classList.add('active');
 
-      const matchedRosterItem = searchRoster(inputName);
+  document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
 
-      if (creationFlow) {
-        let rosterPin = document.getElementById('auth-pin').value.trim();
-        if (!rosterPin) {
-          dispatchNotice("You must enter your class assigned setup PIN.");
-          return;
-        }
+  // Populate dropdown (alphabetically, exclude self)
+  const sel = document.getElementById('classmate-select');
+  sel.innerHTML = '<option value="">— Select a classmate —</option>';
+  ALL_NAMES.filter(n => n !== currentUser.full_name).forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = titleCase(name);
+    sel.appendChild(opt);
+  });
 
-        if (!matchedRosterItem || matchedRosterItem.pin !== rosterPin) {
-          dispatchNotice("Verification signatures do not match your roster slot.");
-          return;
-        }
+  // Clear previous confirmed area
+  document.getElementById('confirmed-area').innerHTML = '';
+  document.getElementById('pick-alert').className = 'alert';
+  document.getElementById('pick-btn').style.display = '';
+  document.querySelector('.hub-card').style.display = '';
+}
 
-        const standardSystemName = matchedRosterItem.exactName;
+function titleCase(str) {
+  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
 
-        try {
-          const response = await fetch(`${BASE_REST_URL}/profiles`, {
-            method: 'POST',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify({ full_name: standardSystemName, password: passwordTyped })
-          });
+function handleLogout() {
+  currentUser = null;
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('hub-view').classList.remove('active');
+  document.getElementById('auth-card').style.display = '';
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-password').value = '';
+  clearAlerts();
+  switchTab('login');
+}
 
-          if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            if (response.status === 409 || (errData.message && errData.message.includes('duplicate'))) {
-              dispatchNotice("Identity record already registered. Switch to login tab.");
-            } else {
-              dispatchNotice("Database Response: " + (errData.message || response.statusText));
-            }
-            return;
-          }
+// ─── PICK ──────────────────────────────────────────────────
+async function handlePick() {
+  const sel = document.getElementById('classmate-select');
+  const picked = sel.value;
+  if (!picked) return showAlert('pick-alert','Please select a classmate first.','error');
 
-          dispatchNotice("Secure profile authorized! Syncing hub...", true);
-          setTimeout(() => { launchHub(standardSystemName); }, 1500);
+  setLoading('pick-btn', true, 'Lock In My Choice 🔒');
 
-        } catch (e) {
-          dispatchNotice("Network Transaction Error.");
-        }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({
+        user_token: currentUser.token || currentUser.full_name,
+        picked_token: picked
+      })
+    });
 
-      } else {
-        try {
-          const checkDbName = matchedRosterItem ? matchedRosterItem.exactName : inputName.toUpperCase();
-          const response = await fetch(`${BASE_REST_URL}/profiles?full_name=eq.${encodeURIComponent(checkDbName)}&password=eq.${encodeURIComponent(passwordTyped)}`, {
-            method: 'GET',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Accept': 'application/json'
-            }
-          });
+    const data = await res.json().catch(() => null);
 
-          if (!response.ok) {
-            dispatchNotice("Database Sync Issue.");
-            return;
-          }
-
-          const data = await response.json();
-          if (!data || data.length === 0) {
-            dispatchNotice("Access denied. Untrusted name or account password.");
-            return;
-          }
-
-          launchHub(checkDbName);
-        } catch (e) {
-          dispatchNotice("Network System Error.");
-        }
-      }
+    if (res.ok) {
+      // Show confirmed state
+      document.querySelector('.hub-card').style.display = 'none';
+      document.getElementById('confirmed-area').innerHTML = `
+        <div class="hub-card confirmed-pick">
+          <div class="confirmed-icon">💘</div>
+          <div class="confirmed-text">You've chosen</div>
+          <div class="confirmed-name">${titleCase(picked)}</div>
+          <div class="confirmed-sub">Your pick has been saved. Good luck! ✨</div>
+        </div>
+      `;
+    } else if (res.status === 409 || (data && JSON.stringify(data).includes('duplicate'))) {
+      showAlert('pick-alert','You have already submitted a pick.','info');
+    } else if (res.status === 401 || res.status === 403) {
+      showAlert('pick-alert','🔒 Access blocked by database policy. Contact the admin.','error');
+    } else {
+      showAlert('pick-alert',`Error: ${data?.message || data?.error || 'Unknown error.'}`, 'error');
     }
+  } catch (err) {
+    showAlert('pick-alert','Network error. Check connection and try again.','error');
+  } finally {
+    setLoading('pick-btn', false, 'Lock In My Choice 🔒');
+  }
+}
 
-    function launchHub(userToken) {
-      applicationUser = userToken;
-      localStorage.setItem('bwm_authenticated_user', userToken);
-      
-      document.getElementById('auth-module').classList.add('hidden');
-      document.getElementById('hub-module').classList.remove('hidden');
-      document.getElementById('profile-banner').value = userToken;
-
-      const dropdown = document.getElementById('crush-select');
-      dropdown.innerHTML = '<option value="">-- Choose Classmate --</option>';
-      
-      Object.keys(CLASS_ROSTER).sort().forEach(member => {
-        if (member !== userToken) {
-          const item = document.createElement('option');
-          item.value = member;
-          item.innerText = member;
-          dropdown.appendChild(item);
-        }
-      });
-    }
-
-    async function saveSelection() {
-      const choice = document.getElementById('crush-select').value;
-      if (!choice) {
-        alert("Select your option before saving system data state.");
-        return;
-      }
-
-      try {
-        await fetch(`${BASE_REST_URL}/selections?user_token=eq.${encodeURIComponent(applicationUser)}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        const response = await fetch(`${BASE_REST_URL}/selections`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ user_token: applicationUser, picked_token: choice })
-        });
-
-        if (!response.ok) {
-          alert("Data commit breakdown.");
-        } else {
-          alert("Confidential choice encrypted and locked!");
-        }
-      } catch (e) { 
-        alert("Transaction system framework interrupt."); 
-      }
-    }
-
-    function terminateSession() {
-      localStorage.removeItem('bwm_authenticated_user');
-      applicationUser = null;
-      document.getElementById('auth-name').value = '';
-      document.getElementById('auth-pin').value = '';
-      document.getElementById('auth-pass').value = '';
-      switchView(false);
-      document.getElementById('hub-module').classList.add('hidden');
-      document.getElementById('auth-module').classList.remove('hidden');
-    }
-  </script>
+// ─── KEYBOARD ENTER ───────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('login-section').classList.contains('active')) handleLogin();
+  else handleRegister();
+});
+</script>
 </body>
 </html>
