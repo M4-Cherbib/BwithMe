@@ -88,7 +88,7 @@
       font-weight: 800;
       letter-spacing: -0.5px;
       margin-bottom: 4px;
-      background: #fff;
+      color: #ffffff;
     }
 
     .brand-tagline {
@@ -178,6 +178,7 @@
 
   <div class="phone-container">
     
+    <!-- BRAND COMPONENT -->
     <div class="brand-header">
       <div class="shield-icon">
         <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
@@ -186,22 +187,26 @@
       <div class="brand-tagline">Private • Safe • Mutual</div>
     </div>
 
+    <!-- NOTIFICATION AREA -->
     <div id="status-box" class="status-msg"></div>
 
+    <!-- ENTRY MODULE (LOGIN & REGISTRATION) -->
     <div id="auth-module">
       <div class="form-group">
-        <label id="label-name">Full Name (LAST FIRST)</label>
+        <label>Full Name (LAST FIRST)</label>
         <input type="text" id="auth-name" placeholder="e.g. JOHN SMITH" autocomplete="off">
       </div>
 
-      <div class="form-group" id="pin-setup-group">
-        <label id="label-pin">Account Password</label>
-        <input type="password" id="auth-pin" placeholder="Enter PIN or Account Password">
+      <!-- Visible during Registration only -->
+      <div class="form-group hidden" id="pin-setup-group">
+        <label>Class Assigned Setup PIN</label>
+        <input type="password" id="auth-pin" placeholder="Enter your roster PIN code">
       </div>
 
-      <div class="form-group hidden" id="pass-group">
-        <label>Create a Secret Password</label>
-        <input type="password" id="auth-pass" placeholder="Password for future logins">
+      <!-- Visible always (Logins use this, Registration creates this) -->
+      <div class="form-group" id="pass-group">
+        <label id="pass-label">Account Password</label>
+        <input type="password" id="auth-pass" placeholder="Enter account password">
       </div>
 
       <button id="action-btn" class="gradient-btn" onclick="processAuth()">Verify Access →</button>
@@ -211,6 +216,7 @@
       </div>
     </div>
 
+    <!-- APP HUB VIEW (MATCH SELECTION) -->
     <div id="hub-module" class="hidden">
       <div class="form-group">
         <label>Secure Session Profile</label>
@@ -274,21 +280,24 @@
 
     function switchView(toSignUp) {
       creationFlow = toSignUp;
-      const labelPin = document.getElementById('label-pin');
-      const passGroup = document.getElementById('pass-group');
+      const pinGroup = document.getElementById('pin-setup-group');
+      const passLabel = document.getElementById('pass-label');
+      const passInput = document.getElementById('auth-pass');
       const btn = document.getElementById('action-btn');
       const toggleBox = document.getElementById('toggle-container');
       
       clearNotifications();
 
       if (toSignUp) {
-        labelPin.innerText = "Class Assigned Setup PIN";
-        passGroup.classList.remove('hidden');
+        pinGroup.classList.remove('hidden');
+        passLabel.innerText = "Create a Secret Password";
+        passInput.placeholder = "Password for future logins";
         btn.innerText = "Register Profile →";
         toggleBox.innerHTML = 'Account active? <span onclick="switchView(false)">Log In Instead</span>';
       } else {
-        labelPin.innerText = "Account Password";
-        passGroup.classList.add('hidden');
+        pinGroup.classList.add('hidden');
+        passLabel.innerText = "Account Password";
+        passInput.placeholder = "Enter account password";
         btn.innerText = "Verify Access →";
         toggleBox.innerHTML = 'First time here? <span onclick="switchView(true)">Create an Account</span>';
       }
@@ -306,21 +315,21 @@
     async function processAuth() {
       clearNotifications();
       const inputName = document.getElementById('auth-name').value.trim().toUpperCase();
-      const firstCredential = document.getElementById('auth-pin').value.trim();
+      const passwordTyped = document.getElementById('auth-pass').value.trim();
 
-      if (!inputName || !firstCredential) {
+      if (!inputName || !passwordTyped) {
         dispatchNotice("Please fill out all identity input fields.");
         return;
       }
 
       if (creationFlow) {
-        const chosenPassword = document.getElementById('auth-pass').value.trim();
-        if (!chosenPassword) {
-          dispatchNotice("You must establish a custom profile password.");
+        const rosterPin = document.getElementById('auth-pin').value.trim();
+        if (!rosterPin) {
+          dispatchNotice("You must enter your class assigned setup PIN.");
           return;
         }
 
-        if (!CLASS_ROSTER[inputName] || CLASS_ROSTER[inputName] !== firstCredential) {
+        if (!CLASS_ROSTER[inputName] || CLASS_ROSTER[inputName] !== rosterPin) {
           dispatchNotice("Verification signatures do not match your roster slot.");
           return;
         }
@@ -328,7 +337,7 @@
         try {
           const { error } = await supabaseClient
             .from('profiles')
-            .insert([{ full_name: inputName, password: chosenPassword }]);
+            .insert([{ full_name: inputName, password: passwordTyped }]);
 
           if (error) {
             if (error.code === '23505') {
@@ -352,7 +361,7 @@
             .from('profiles')
             .select('*')
             .eq('full_name', inputName)
-            .eq('password', firstCredential)
+            .eq('password', passwordTyped)
             .maybeSingle();
 
           if (error) {
