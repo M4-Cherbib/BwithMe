@@ -160,6 +160,7 @@
       font-size: 13px;
       text-align: center;
       margin-bottom: 18px;
+      word-break: break-all;
       display: none;
     }
     .status-error { background: rgba(255, 59, 48, 0.15); border: 1px solid #ff3b30; color: #ff453a; }
@@ -185,8 +186,8 @@
 
     <div id="auth-module">
       <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="auth-name" placeholder="e.g. MOHAMED CHERBIB" autocomplete="off">
+        <label>Full Name (Last First)</label>
+        <input type="text" id="auth-name" placeholder="e.g. CHERBIB MOHAMED" autocomplete="off">
       </div>
 
       <div class="form-group hidden" id="pin-setup-group">
@@ -195,8 +196,8 @@
       </div>
 
       <div class="form-group" id="pass-group">
-        <label id="pass-label">Account Password</label>
-        <input type="password" id="auth-pass" placeholder="Enter account password">
+        <label id="pass-label">PIN / Account Password</label>
+        <input type="password" id="auth-pass" placeholder="Enter password">
       </div>
 
       <button id="action-btn" class="gradient-btn" onclick="processAuth()">Verify Access →</button>
@@ -226,6 +227,7 @@
   </div>
 
   <script>
+    // Embedded Credentials 
     const SUPABASE_URL = "https://xiitnfszvqymgtrpqym.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
     
@@ -256,7 +258,13 @@
       "YASSIR IMAD": "9103", "ZAKY SARA": "4632", "ZDIHRI HIBA": "8275"
     };
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let supabaseClient = null;
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch(err) {
+      console.error("Initialization issue:", err);
+    }
+    
     let creationFlow = false;
     let applicationUser = null;
 
@@ -308,7 +316,7 @@
         toggleBox.innerHTML = 'Account active? <span onclick="switchView(false)">Log In Instead</span>';
       } else {
         pinGroup.classList.add('hidden');
-        passLabel.innerText = "Account Password";
+        passLabel.innerText = "PIN / Account Password";
         passInput.placeholder = "Enter account password";
         btn.innerText = "Verify Access →";
         toggleBox.innerHTML = 'First time here? <span onclick="switchView(true)">Create an Account</span>';
@@ -326,6 +334,12 @@
 
     async function processAuth() {
       clearNotifications();
+      
+      if (!supabaseClient) {
+        dispatchNotice("Database connection link initialization failed.");
+        return;
+      }
+
       const inputName = document.getElementById('auth-name').value.trim();
       let passwordTyped = document.getElementById('auth-pass').value.trim();
 
@@ -343,7 +357,6 @@
           return;
         }
 
-        // Handle inverted inputs dynamically if they swap values
         if (rosterPin.length > 4 && passwordTyped.length === 4 && !isNaN(passwordTyped)) {
           const temporaryHold = rosterPin;
           rosterPin = passwordTyped;
@@ -366,7 +379,7 @@
             if (error.code === '23505') {
               dispatchNotice("Identity record already registered. Switch to login tab.");
             } else {
-              dispatchNotice("Profile commit error: " + error.message);
+              dispatchNotice("Database Response: " + error.message);
             }
             return;
           }
@@ -375,7 +388,7 @@
           setTimeout(() => { launchHub(standardSystemName); }, 1500);
 
         } catch (e) {
-          dispatchNotice("Profile processing engine runtime failure.");
+          dispatchNotice("Runtime Processing Error: " + e.message);
         }
 
       } else {
@@ -390,7 +403,7 @@
             .maybeSingle();
 
           if (error) {
-            dispatchNotice("Identity sync timeout: " + error.message);
+            dispatchNotice("Database Sync Issue: " + error.message);
             return;
           }
 
@@ -401,7 +414,7 @@
 
           launchHub(checkDbName);
         } catch (e) {
-          dispatchNotice("Backend server node connection loss.");
+          dispatchNotice("Network System Error: " + e.message);
         }
       }
     }
@@ -440,7 +453,7 @@
 
         if (error) { alert("Data commit breakdown: " + error.message); } 
         else { alert("Confidential choice encrypted and locked!"); }
-      } catch (e) { alert("Transaction system framework interrupt."); }
+      } catch (e) { alert("Transaction system framework interrupt: " + e.message); }
     }
 
     function terminateSession() {
