@@ -29,7 +29,7 @@
       padding: 10px;
     }
 
-    /* Premium Mockup Phone Container mimicking your image layout */
+    /* Premium Mockup Phone Container */
     .phone-container {
       background-color: var(--bg-mobile);
       border: 4px solid #2d2459;
@@ -89,7 +89,6 @@
       letter-spacing: -0.5px;
       margin-bottom: 4px;
       background: #fff;
-      -webkit-background-clip: text;
     }
 
     .brand-tagline {
@@ -110,12 +109,6 @@
       margin-bottom: 8px; 
       color: var(--text-muted); 
     }
-    
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
 
     input, select { 
       width: 100%; 
@@ -134,7 +127,6 @@
       box-shadow: 0 0 12px rgba(255, 0, 123, 0.25);
     }
     
-    /* Styled Button resembling your prompt template */
     .gradient-btn { 
       width: 100%; 
       padding: 16px; 
@@ -151,7 +143,6 @@
     }
     
     .gradient-btn:active { transform: scale(0.98); }
-    .gradient-btn:hover { opacity: 0.95; }
     
     .toggle-footer { 
       text-align: center; 
@@ -200,11 +191,11 @@
     <div id="auth-module">
       <div class="form-group">
         <label id="label-name">Full Name (LAST FIRST)</label>
-        <input type="text" id="auth-name" placeholder="e.g. CHERBIB MOHAMED" autocomplete="off">
+        <input type="text" id="auth-name" placeholder="e.g. JOHN SMITH" autocomplete="off">
       </div>
 
       <div class="form-group" id="pin-setup-group">
-        <label id="label-pin">Your Verification PIN / Password</label>
+        <label id="label-pin">Account Password</label>
         <input type="password" id="auth-pin" placeholder="Enter PIN or Account Password">
       </div>
 
@@ -240,11 +231,11 @@
   </div>
 
   <script>
-    // Database configuration variables with your live shared credentials
+    // Config values
     const SUPABASE_URL = "https://xiitnfszvqymgtrpqym.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494"; 
     
-    // Core Authorized Student Roster Mapping with Setup PIN keys
+    // Core Authorized Student Roster
     const CLASS_ROSTER = {
       "AATIK HOUSSAM": "4821", "ACHMIRROU MOSTAFA": "7134", "AGHOUAR KHADIJA": "2956", "AIT BELLA ABDELILAH": "8310",
       "AIT BOURHIM AYOUB": "1549", "AIT HAMMOU MOHAMED AMINE": "6273", "AJAKKA MOHAMED": "3984", "AKABAR OUMAIMA": "5102",
@@ -272,7 +263,7 @@
       "YASSIR IMAD": "9103", "ZAKY SARA": "4632", "ZDIHRI HIBA": "8275"
     };
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let creationFlow = false;
     let applicationUser = null;
 
@@ -329,15 +320,13 @@
           return;
         }
 
-        // 1. Verify Name exists and Match correct Setup PIN 
         if (!CLASS_ROSTER[inputName] || CLASS_ROSTER[inputName] !== firstCredential) {
           dispatchNotice("Verification signatures do not match your roster slot.");
           return;
         }
 
-        // 2. Insert user into Database Profiles table
         try {
-          const { error } = await supabase
+          const { error } = await supabaseClient
             .from('profiles')
             .insert([{ full_name: inputName, password: chosenPassword }]);
 
@@ -358,9 +347,8 @@
         }
 
       } else {
-        // STANDARD LOGIN VIEW
         try {
-          const { data, error } = await supabase
+          const { data, error } = await supabaseClient
             .from('profiles')
             .select('*')
             .eq('full_name', inputName)
@@ -413,8 +401,8 @@
       }
 
       try {
-        await supabase.from('selections').delete().eq('user_token', applicationUser);
-        const { error } = await supabase.from('selections').insert([{ user_token: applicationUser, picked_token: choice }]);
+        await supabaseClient.from('selections').delete().eq('user_token', applicationUser);
+        const { error } = await supabaseClient.from('selections').insert([{ user_token: applicationUser, picked_token: choice }]);
 
         if (error) { alert("Data commit breakdown: " + error.message); } 
         else { alert("Confidential choice encrypted and locked!"); }
