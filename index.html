@@ -342,26 +342,48 @@ label {
   display: block; font-size: 10.5px; font-weight: 500; color: var(--muted);
   letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 7px;
 }
-input, select {
+input {
   width: 100%; padding: 13px 15px;
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: var(--r-inner); color: var(--text);
   font-family: 'DM Sans', sans-serif; font-size: 15px;
   outline: none; transition: all 0.22s; -webkit-appearance: none;
 }
+/* Select gets its own rule block so we can control right padding independently */
+select {
+  width: 100%; padding: 14px 44px 14px 16px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; transition: all 0.22s; cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 input:focus, select:focus {
   border-color: var(--neon2);
   box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
   background: rgba(24,20,38,0.9);
 }
+/* Light mode focus: solid white so text stays readable on mobile */
+body.light-theme select:focus {
+  background: #ffffff;
+  border-color: var(--neon2);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.14);
+}
 input::placeholder { color: rgba(125,111,160,0.5); }
 select option { background: #1a1428; color: var(--text); }
 
 .select-wrap { position: relative; }
+/* Modern ▼ chevron — small, precisely positioned, never overlaps text */
 .select-wrap::after {
-  content: '⌄'; position: absolute; right: 15px; top: 50%;
-  transform: translateY(-52%); color: var(--neon2);
-  pointer-events: none; font-size: 19px;
+  content: '▼';
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--neon2);
+  pointer-events: none;
+  font-size: 10px;
+  line-height: 1;
 }
 
 /* ── BUTTONS ──────────────────────────────────────────────── */
@@ -1195,6 +1217,7 @@ async function handleDeletePick() {
     const res = await fetch(url, { method: 'DELETE', headers: HEADERS });
 
     if (res.ok) {
+      currentPickData = null;
       await syncDashboard();
     } else {
       alert("Database rejected modification command.");
