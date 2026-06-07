@@ -1,582 +1,1037 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BwithMe — Secure Connected Platform</title>
-    <style>
-        :root {
-            --bg-global: #0b071e;
-            --bg-container: #0f0a28;
-            --bg-card: #16103c;
-            --border-color: #241b56;
-            --text-main: #ffffff;
-            --text-muted: #8e89b3;
-            --color-primary: #d946ef;
-            --gradient-accent: linear-gradient(135deg, #a855f7, #ec4899);
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BwithMe</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+/* ══════════════════════════════════════════════════════════
+   RESET & TOKENS
+══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+:root {
+  --bg:          #08060f;
+  --surface:     #100d1c;
+  --surface2:    #181426;
+  --surface3:    #1f1a30;
+  --surface4:    #252040;
+  --border:      rgba(168,100,255,0.14);
+  --border2:     rgba(168,100,255,0.28);
+  --text:        #f0eaff;
+  --muted:       #7d6fa0;
+  --muted2:      #a090c0;
+  --pink:        #e040fb;
+  --violet:      #7c3aed;
+  --neon:        #d946ef;
+  --neon2:       #a855f7;
+  --match:       #34d399;
+  --cyan:        #06b6d4;
+  --amber:       #fbbf24;
+  --error:       #f87171;
+  --grad:        linear-gradient(135deg, #e040fb 0%, #7c3aed 100%);
+  --grad2:       linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --grad3:       linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
+  --grad-lock:   linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  --grad-unlock: linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
+  --glow:        0 0 32px rgba(217,70,239,0.35);
+  --glow2:       0 0 70px rgba(140,80,255,0.18);
+  --glow-match:  0 0 28px rgba(52,211,153,0.4);
+  --glow-lock:   0 0 20px rgba(251,191,36,0.35);
+  --glow-unlock: 0 0 20px rgba(52,211,153,0.4);
+  --r-card:      26px;
+  --r-inner:     16px;
+  --r-sm:        10px;
+  --r-xs:        7px;
+}
 
-        body {
-            background-color: var(--bg-global);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+html { scroll-behavior: smooth; }
 
-        .phone-wrapper {
-            background-color: var(--bg-container);
-            width: 100%;
-            max-width: 410px;
-            height: 780px;
-            border-radius: 42px;
-            border: 10px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+  padding: 24px 0 48px;
+}
 
-        .screen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            padding: 24px;
-            overflow-y: auto;
-        }
+/* ── AMBIENT ORBS ─────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; top: -20%; left: -15%;
+  width: 65vw; height: 65vw;
+  background: radial-gradient(circle, rgba(124,58,237,0.17) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  animation: orb1 13s ease-in-out infinite alternate;
+}
+body::after {
+  content: '';
+  position: fixed; bottom: -20%; right: -15%;
+  width: 58vw; height: 58vw;
+  background: radial-gradient(circle, rgba(217,70,239,0.14) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+  animation: orb2 17s ease-in-out infinite alternate;
+}
+@keyframes orb1 { to { transform: translate(6vw,6vh) scale(1.12); } }
+@keyframes orb2 { to { transform: translate(-6vw,-6vh) scale(1.14); } }
 
-        .screen.active {
-            display: flex;
-        }
+/* Particles */
+.particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.particle  { position: absolute; border-radius: 50%; opacity: 0; animation: floatUp linear infinite; }
+@keyframes floatUp {
+  0%   { opacity: 0;    transform: translateY(0) scale(0); }
+  10%  { opacity: 0.55; transform: scale(1); }
+  90%  { opacity: 0.25; }
+  100% { opacity: 0;    transform: translateY(-100vh) scale(0.4); }
+}
 
-        .title-area {
-            text-align: center;
-            margin: 40px 0 30px 0;
-        }
+/* ── APP SHELL ────────────────────────────────────────────── */
+.app-wrap {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 430px;
+  padding: 0 14px;
+}
 
-        .title-area h1 {
-            font-size: 32px;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
+/* ── CARD ─────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 38px 32px 34px;
+  box-shadow: 0 28px 90px rgba(0,0,0,0.65), var(--glow2);
+  position: relative;
+  overflow: hidden;
+  animation: cardIn 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--grad);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(36px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-        .input-group {
-            margin-bottom: 25px;
-        }
+/* ── LOGO ─────────────────────────────────────────────────── */
+.logo { text-align: center; margin-bottom: 30px; }
+.logo-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 62px; height: 62px; border-radius: 18px;
+  background: var(--grad); box-shadow: var(--glow);
+  margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.logo-mark::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 60%);
+}
+.logo-icon     { font-size: 26px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
+.logo-name     {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 27px;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  letter-spacing: -0.5px;
+}
+.logo-tagline { font-size: 11px; color: var(--muted); letter-spacing: 2.2px; text-transform: uppercase; margin-top: 3px; }
 
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
+/* ── TABS ─────────────────────────────────────────────────── */
+.tabs {
+  display: flex; background: var(--surface2);
+  border-radius: 13px; padding: 4px;
+  margin-bottom: 26px; border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1; padding: 10px; border: none; background: none;
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500; border-radius: 9px; cursor: pointer; transition: all 0.22s;
+}
+.tab-btn.active {
+  background: var(--grad); color: #fff;
+  box-shadow: 0 4px 18px rgba(217,70,239,0.38);
+}
 
-        .input-field {
-            width: 100%;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            outline: none;
-        }
+/* ── FORM SECTIONS ────────────────────────────────────────── */
+.form-section { display: none; }
+.form-section.active { display: block; animation: fadeUp 0.3s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-        .action-btn {
-            background: var(--gradient-accent);
-            color: #ffffff;
-            border: none;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
+.form-group { margin-bottom: 16px; }
+label {
+  display: block; font-size: 10.5px; font-weight: 500; color: var(--muted);
+  letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 7px;
+}
+input, select {
+  width: 100%; padding: 13px 15px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; transition: all 0.22s; -webkit-appearance: none;
+}
+input:focus, select:focus {
+  border-color: var(--neon2);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
+  background: rgba(24,20,38,0.9);
+}
+input::placeholder { color: rgba(125,111,160,0.5); }
+select option { background: #1a1428; color: var(--text); }
 
-        .alert-box {
-            background-color: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 15px;
-            display: none;
-        }
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '⌄'; position: absolute; right: 15px; top: 50%;
+  transform: translateY(-52%); color: var(--neon2);
+  pointer-events: none; font-size: 19px;
+}
 
-        .user-summary {
-            text-align: center;
-            margin-bottom: 25px;
-            margin-top: 10px;
-        }
+/* ── BUTTONS ──────────────────────────────────────────────── */
+.btn {
+  width: 100%; padding: 14px; border: none; border-radius: 13px;
+  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
+  letter-spacing: 0.2px;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg,rgba(255,255,255,0.14) 0%,transparent 60%);
+  opacity: 0; transition: opacity 0.2s;
+}
+.btn:hover::after  { opacity: 1; }
+.btn-primary { background: var(--grad);  color: #fff; box-shadow: 0 8px 28px rgba(217,70,239,0.42); margin-top: 6px; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(217,70,239,0.52); }
+.btn-primary:active { transform: translateY(0); }
+.btn-pick    { background: var(--grad2); color: #fff; box-shadow: 0 8px 28px rgba(168,85,247,0.4); }
+.btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(236,72,153,0.5); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
 
-        .members-grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
+/* Change-choice unlock button */
+.btn-unlock {
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 12px;
+  padding: 6px 12px; border-radius: 6px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; width: auto;
+}
+.btn-unlock:hover { 
+  background: rgba(248, 113, 113, 0.2); 
+  border-color: rgba(248, 113, 113, 0.5); 
+}
 
-        .grid-member-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 18px 10px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-        }
+.btn .spinner {
+  display: inline-block; width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.28); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 7px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-        .grid-member-card.chosen {
-            border-color: var(--color-primary);
-            background: linear-gradient(180deg, var(--bg-card), rgba(236, 72, 153, 0.08));
-        }
+/* ── ALERTS ───────────────────────────────────────────────── */
+.alert {
+  padding: 11px 14px; border-radius: 9px; font-size: 13px;
+  margin-top: 12px; display: none; line-height: 1.5;
+}
+.alert.show    { display: block; animation: fadeUp 0.28s ease both; }
+.alert-error   { background: rgba(248,113,113,0.1);  border: 1px solid rgba(248,113,113,0.3);  color: #fca5a5; }
+.alert-success { background: rgba(52,211,153,0.1);   border: 1px solid rgba(52,211,153,0.3);   color: #6ee7b7; }
+.alert-info    { background: rgba(168,85,247,0.1);   border: 1px solid rgba(168,85,247,0.3);   color: var(--neon2); }
 
-        .avatar-placeholder {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            margin: 0 auto 10px auto;
-        }
+/* ── AVATAR ───────────────────────────────────────────────── */
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; font-family: 'Syne', sans-serif; font-weight: 700;
+  flex-shrink: 0; text-transform: uppercase; line-height: 1;
+  background: var(--grad); color: #fff;
+  box-shadow: 0 3px 12px rgba(217,70,239,0.35);
+}
+.avatar-lg    { width: 54px; height: 54px; font-size: 18px; }
+.avatar-sm    { width: 36px; height: 36px; font-size: 12px; box-shadow: 0 2px 8px rgba(217,70,239,0.28); }
+.avatar-match { background: var(--grad3); box-shadow: 0 3px 14px rgba(52,211,153,0.4); }
 
-        .member-card-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
+/* ══════════════════════════════════════════════════════════
+   HUB VIEW
+══════════════════════════════════════════════════════════ */
+#hub-view { display: none; }
+#hub-view.active { display: block; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
 
-        .check-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 20px;
-            height: 20px;
-            background-color: var(--color-primary);
-            border-radius: 50%;
-            color: #fff;
-            font-size: 12px;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
+/* Profile strip */
+.hub-profile-strip {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.hub-profile-info  { flex: 1; min-width: 0; }
+.hub-greeting      { font-size: 10.5px; color: var(--muted); letter-spacing: 1.4px; text-transform: uppercase; }
+.hub-name          {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--text);
+  margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.logout-btn {
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.logout-btn:hover { border-color: var(--error); color: var(--error); }
 
-        .grid-member-card.chosen .check-badge {
-            display: flex;
-        }
+/* Section label */
+.section-label {
+  font-size: 10px; font-weight: 500; color: var(--muted);
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        .selection-list-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            border-radius: 18px;
-            margin-bottom: 12px;
-        }
+/* Pick section wrapper */
+.pick-section {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); padding: 18px 18px 16px;
+  margin-bottom: 14px; position: relative; overflow: hidden;
+  transition: all 0.4s ease;
+}
+.pick-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--grad2); opacity: 0.5;
+}
 
-        .status-tag {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 20px;
-        }
+/* Avatar preview inside dropdown */
+.select-with-preview { position: relative; }
+.select-preview-avatar {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  z-index: 2; pointer-events: none;
+  opacity: 0; transition: opacity 0.2s;
+}
+.select-with-preview.has-value .select-preview-avatar { opacity: 1; }
+.select-with-preview.has-value select { padding-left: 52px; }
+.select-with-preview select { padding-right: 36px; }
 
-        .status-tag.matched {
-            background-color: rgba(236, 72, 153, 0.15);
-            color: var(--color-primary);
-        }
+/* ══════════════════════════════════════════════════════════
+   LOCK TIMER BADGE
+══════════════════════════════════════════════════════════ */
+.timer-badge {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: #d8b4fe;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-        .status-tag.pending {
-            background-color: var(--border-color);
-            color: var(--text-muted);
-        }
+/* Locked-form blocker notice */
+.locked-notice {
+  border-radius: var(--r-inner);
+  background: var(--surface3);
+  border: 1px dashed rgba(251,191,36,0.28);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 14px;
+  animation: fadeUp 0.4s ease both;
+}
+.locked-notice-icon { font-size: 28px; flex-shrink: 0; }
+.locked-notice-title {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+  color: var(--text); margin-bottom: 4px;
+}
+.locked-notice-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.locked-notice-sub strong { color: var(--amber); font-weight: 600; }
 
-        .bottom-nav-menu {
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            padding: 16px 20px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* ══════════════════════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════════════════════ */
+.dashboard {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-inner); padding: 18px;
+  margin-top: 14px; position: relative; overflow: hidden;
+}
+.dashboard::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--grad); opacity: 0.4;
+}
+.dash-sub-label {
+  font-size: 10.5px; color: var(--muted); letter-spacing: 1.3px;
+  text-transform: uppercase; margin-bottom: 9px;
+}
 
-        .nav-link {
-            color: var(--text-muted);
-            font-size: 14px;
-            text-align: center;
-            cursor: pointer;
-            flex: 1;
-            font-weight: 500;
-        }
+/* Selection slot */
+.selection-slot {
+  display: flex; align-items: center; gap: 13px;
+  padding: 12px 14px; border-radius: var(--r-sm);
+  background: var(--surface3); border: 1px solid var(--border);
+  transition: border-color 0.3s;
+}
+.selection-slot.empty     { opacity: 0.45; }
+.selection-slot.is-locked { border-color: rgba(251,191,36,0.28); }
+.selection-slot.is-free   { border-color: rgba(52,211,153,0.3); }
+.slot-info  { flex: 1; min-width: 0; }
+.slot-name  {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slot-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.slot-right { display: flex; align-items: center; flex-shrink: 0; }
 
-        .nav-link.active {
-            color: var(--color-primary);
-            font-weight: 700;
-        }
-    </style>
+/* Mutual match banner */
+.match-banner {
+  margin-top: 12px; border-radius: var(--r-sm);
+  border: 1px solid rgba(52,211,153,0.35);
+  background: rgba(52,211,153,0.07);
+  padding: 16px 18px; text-align: center;
+  display: none; position: relative; overflow: hidden;
+  animation: matchPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.match-banner.visible { display: block; }
+.match-banner::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+@keyframes matchPop {
+  from { opacity: 0; transform: scale(0.85) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.match-emoji { font-size: 34px; margin-bottom: 6px; animation: heartbeat 2s ease-in-out infinite; }
+@keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.match-title {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+  background: var(--grad3); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+}
+.match-sub   { font-size: 13px; color: var(--muted2); margin-top: 4px; }
+.match-names {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 14px; flex-wrap: wrap;
+}
+.match-name-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface3); border: 1px solid rgba(52,211,153,0.25);
+  border-radius: 50px; padding: 6px 14px 6px 6px;
+}
+.match-chip-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--text); }
+.match-heart     { font-size: 18px; }
+
+/* Pending / no-match */
+.pending-note {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  background: var(--surface3); border: 1px solid var(--border);
+  font-size: 12.5px; color: var(--muted);
+}
+.pending-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon); flex-shrink: 0;
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+/* Dashboard loading */
+.dash-loading {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--muted); font-size: 13px; padding: 4px 0;
+}
+.dash-loading .spinner {
+  width: 15px; height: 15px; border: 2px solid var(--border2);
+  border-top-color: var(--neon2); border-radius: 50%;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+
+/* Hub divider */
+.hub-divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  body { padding: 14px 0 36px; }
+  .card { padding: 28px 18px 26px; border-radius: 22px; }
+  .hub-name { font-size: 16px; }
+  .avatar-lg { width: 48px; height: 48px; font-size: 16px; }
+  .match-names { flex-direction: column; gap: 6px; }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
 </head>
 <body>
 
-    <div class="phone-wrapper">
-        <!-- LOGIN SCREEN -->
-        <div class="screen active" id="screenLogin">
-            <div class="title-area">
-                <h1>BwithMe</h1>
-                <p style="color: var(--text-muted); font-size: 14px;">Private. Connected. Mutual.</p>
-            </div>
-            <div class="alert-box" id="loginError">Access denied. Invalid secure token.</div>
-            <div class="input-group">
-                <label>Enter Secret Identity Key</label>
-                <input type="password" class="input-field" id="usernameInput" placeholder="bwm.nameXXXX" autocomplete="off">
-            </div>
-            <button class="action-btn" id="loginBtn" onclick="handleLogin()">Verify Access →</button>
-        </div>
+<div class="particles" id="particles"></div>
 
-        <!-- MAIN DASHBOARD -->
-        <div class="screen" id="screenHome">
-            <div class="user-summary">
-                <h2 id="currentProfileName">Dashboard</h2>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Select up to 2 choices secretly</p>
-            </div>
-            <div class="members-grid-container" id="gridContainer"></div>
-        </div>
+<div class="app-wrap">
 
-        <!-- SELECTIONS STATUS SCREEN -->
-        <div class="screen" id="screenSelections">
-            <div style="margin-bottom: 20px; margin-top: 10px;">
-                <h2>My Connections</h2>
-                <p style="color: var(--text-muted); font-size: 13px;">Live confirmation dashboard</p>
-            </div>
-            <div id="selectionsListWrapper"></div>
-        </div>
+  <div class="card" id="auth-card">
 
-        <!-- APP INTERACTION TABS -->
-        <div class="bottom-nav-menu" id="bottomNav">
-            <div class="nav-link" onclick="handleLogout()">Exit Session</div>
-            <div class="nav-link active" id="tabHome" onclick="navigateTo('screenHome')">Profiles</div>
-            <div class="nav-link" id="tabSelections" onclick="navigateTo('screenSelections')">My Selections</div>
-        </div>
+    <div class="logo">
+      <div class="logo-mark"><span class="logo-icon">💜</span></div>
+      <div class="logo-name">BwithMe</div>
+      <div class="logo-tagline">Class Matchmaking</div>
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://xiitnfszvqymgtrrpqym.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494";
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+      <button class="tab-btn"        onclick="switchTab('register')">Create Account</button>
+    </div>
 
-        const database = {
-            users: {
-                "bwm.abdelhakime5821": { displayName: "ABDELHAKIME OU", color: "#d946ef" },
-                "bwm.abdelilah9034": { displayName: "ABDELILAH AI", color: "#a78bfa" },
-                "bwm.abdellah4176": { displayName: "ABDELLAH OU", color: "#93c5fd" },
-                "bwm.abderrahim1102": { displayName: "ABDERRAHIM BO", color: "#fed7aa" },
-                "bwm.abderrahmane6743": { displayName: "ABDERRAHMANE BE", color: "#3b82f6" },
-                "bwm.achraf8819": { displayName: "ACHRAF RE", color: "#ddd6fe" },
-                "bwm.achraf2354": { displayName: "ACHRAF SA", color: "#86efac" },
-                "bwm.adil7912": { displayName: "ADIL SA", color: "#fda4af" },
-                "bwm.ahlam3021": { displayName: "AHLAM BO", color: "#fef08a" },
-                "bwm.amal4498": { displayName: "AMAL EL", color: "#6366f1" },
-                "bwm.aya6152": { displayName: "AYA EL", color: "#8b5cf6" },
-                "bwm.aymane3381": { displayName: "AYMANE FA", color: "#bfdbfe" },
-                "bwm.ayoub5092": { displayName: "AYOUB AI", color: "#fbbf24" },
-                "bwm.ayoube1276": { displayName: "AYOUBE BE", color: "#14b8a6" },
-                "bwm.chaimae9943": { displayName: "CHAIMAE EL", color: "#3b82f6" },
-                "bwm.chaima4051": { displayName: "CHAIMA LH", color: "#6ee7b7" },
-                "bwm.chayma8210": { displayName: "CHAYMA EZ", color: "#fef08a" },
-                "bwm.douaa6639": { displayName: "DOUAA DA", color: "#38bdf8" },
-                "bwm.elmahdi1752": { displayName: "EL MAHDI CH", color: "#a3e635" },
-                "bwm.essaadia4890": { displayName: "ESSAADIA CH", color: "#fb7185" },
-                "bwm.fatima2281": { displayName: "FATIMA CH", color: "#86efac" },
-                "bwm.fatima7104": { displayName: "FATIMA HA", color: "#a3e635" },
-                "bwm.fatima5593": { displayName: "FATIMA TA", color: "#c084fc" },
-                "bwm.ghita3641": { displayName: "GHITA DI", color: "#f43f5e" },
-                "bwm.hajar1098": { displayName: "HAJAR AS", color: "#38bdf8" },
-                "bwm.hajar8432": { displayName: "HAJAR ZI", color: "#f43f5e" },
-                "bwm.hafsa5021": { displayName: "HAFSA RA", color: "#a7f3d0" },
-                "bwm.hasnae6918": { displayName: "HASNAE BI", color: "#c084fc" },
-                "bwm.hiba3374": { displayName: "HIBA EL", color: "#d946ef" },
-                "bwm.hiba9105": { displayName: "HIBA ZD", color: "#38bdf8" },
-                "bwm.hind2849": { displayName: "HIND BE", color: "#fca5a5" },
-                "bwm.hind7732": { displayName: "HIND FE", color: "#f5d0fe" },
-                "bwm.houssam3914": { displayName: "HOUSSAM AA", color: "#60a5fa" },
-                "bwm.ikram5528": { displayName: "IKRAM ID", color: "#6366f1" },
-                "bwm.imane4190": { displayName: "IMANE BE", color: "#d946ef" },
-                "bwm.imrane8043": { displayName: "IMRANE BO", color: "#f5d0fe" },
-                "bwm.ismail2615": { displayName: "ISMAIL SA", color: "#93e6fb" },
-                "bwm.jamila9087": { displayName: "JAMILA AL", color: "#a3e635" },
-                "bwm.kaoutar3841": { displayName: "KAOUTAR BO", color: "#fed7aa" },
-                "bwm.kaoutar7729": { displayName: "KAOUTAR OU", color: "#c084fc" },
-                "bwm.kaoutar1045": { displayName: "KAOUTAR RH", color: "#fef08a" },
-                "bwm.khadija5193": { displayName: "KHADIJA AG", color: "#f472b6" },
-                "bwm.khadija2840": { displayName: "KHADIJA EL", color: "#fbcfe8" },
-                "bwm.laila6631": { displayName: "LAILA ET", color: "#ddd6fe" },
-                "bwm.lamyae4402": { displayName: "LAMYAE BE", color: "#fbcfe8" },
-                "bwm.mariam1945": { displayName: "MARIAM BA", color: "#8b5cf6" },
-                "bwm.maroua8832": { displayName: "MAROUA JA", color: "#14b8a6" },
-                "bwm.marwane3012": { displayName: "MARWANE EL", color: "#c084fc" },
-                "bwm.marwane7749": { displayName: "MARWANE GO", color: "#86efac" },
-                "bwm.mbarek5561": { displayName: "M'BAREK HA", color: "#c084fc" },
-                "bwm.mohamed1928": { displayName: "MOHAMED AI", color: "#f87171" },
-                "bhamed4401": { displayName: "MOHAMED AJ", color: "#22d3ee" },
-                "bwm.mohamed8839": { displayName: "MOHAMED AS", color: "#f43f5e" },
-                "bwm.mohamed5190": { displayName: "MOHAMED CH", color: "#c084fc" },
-                "bwm.mohamed6624": { displayName: "MOHAMED EL", color: "#fca5a5" },
-                "bwm.mostafa3392": { displayName: "MOSTAFA AC", color: "#34d399" },
-                "bwm.mounia1094": { displayName: "MOUNIA HA", color: "#fb7185" },
-                "bwm.nadia4721": { displayName: "NADIA RA", color: "#fed7aa" },
-                "bwm.nassima9031": { displayName: "NASSIMA BA", color: "#f59e0b" },
-                "bwm.nouhaila6643": { displayName: "NOUHAILA EL", color: "#93c5fd" },
-                "bwm.nouhaila2190": { displayName: "NOUHAILA IH", color: "#8b5cf6" },
-                "bwm.omar1843": { displayName: "OMAR BE", color: "#06b6d4" },
-                "bwm.oumaima7741": { displayName: "OUMAIMA AK", color: "#c084fc" },
-                "bwm.oumaima3092": { displayName: "OUMAIMA RI", color: "#bfdbfe" },
-                "bwm.oumayma1129": { displayName: "OUMAYMA GU", color: "#93e6fb" },
-                "bwm.oumayma4451": { displayName: "OUMAYMA RO", color: "#f5d0fe" },
-                "bwm.oussama8824": { displayName: "OUSSAMA BA", color: "#ec4899" },
-                "bwm.oussama3910": { displayName: "OUSSAMA GA", color: "#fda4af" },
-                "bwm.rabiaa6712": { displayName: "RABIAA EL", color: "#06b6d4" },
-                "bwm.rajaa1904": { displayName: "RAJAA NO", color: "#fca5a5" },
-                "bwm.rania3940": { displayName: "RANIA BA", color: "#10b981" },
-                "bwm.reda4019": { displayName: "REDA HA", color: "#f43f5e" },
-                "bwm.rida5590": { displayName: "RIDA EL", color: "#ec4899" },
-                "bwm.saad2281": { displayName: "SAAD HM", color: "#10b981" },
-                "bwm.saida1104": { displayName: "SAIDA ES", color: "#a7f3d0" },
-                "bwm.salma3394": { displayName: "SALMA BE", color: "#93c5fd" },
-                "bwm.salma8821": { displayName: "SALMA OU", color: "#fbcfe8" },
-                "bwm.salma4052": { displayName: "SALMA TO", color: "#fb7185" },
-                "bwm.samia7719": { displayName: "SAMIA KH", color: "#3b82f6" },
-                "bara2943": { displayName: "SARA ZA", color: "#a3e635" },
-                "bwm.souhaib5510": { displayName: "SOUHAIB KH", color: "#06b6d4" },
-                "bwm.soukaina1984": { displayName: "SOUKAINA CH", color: "#fda4af" },
-                "bwm.soulaimane4439": { displayName: "SOULAIMANE ES", color: "#fed7aa" },
-                "bwm.walid3910": { displayName: "WALID AL", color: "#fb7185" },
-                "bwm.walid7712": { displayName: "WALID BA", color: "#6366f1" },
-                "bwm.walid6621": { displayName: "WALID EL", color: "#6ee7b7" },
-                "bwm.wiam3092": { displayName: "WIAM EL", color: "#f59e0b" },
-                "bwm.yacine1184": { displayName: "YACINE BE", color: "#6ee7b7" },
-                "bwm.yassamine4490": { displayName: "YASSAMINE BO", color: "#a7f3d0" },
-                "bwm.yassine2291": { displayName: "YASSINE DR", color: "#10b981" },
-                "bwm.yassine7103": { displayName: "YASSINE HA", color: "#38bdf8" },
-                "bwm.youssef4829": { displayName: "YOUSSEF JA", color: "#f59e0b" },
-                "bwm.youssra3021": { displayName: "YOUSSRA EL", color: "#14b8a6" },
-                "bwm.zakaria8832": { displayName: "ZAKARIA IZ", color: "#ec4899" },
-                "bwm.zineb1104": { displayName: "ZINEB BO", color: "#fef08a" },
-                "bwm.zineb6632": { displayName: "ZINEB CH", color: "#93e6fb" }
-            },
-            currentUserRawKey: null,
-            currentUserMaskedToken: null,
-            allLiveSelections: []
-        };
+    <div class="form-section active" id="login-section">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="login-name" placeholder="e.g. TYLER MORRISON" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Your password" />
+      </div>
+      <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log In</button>
+      <div class="alert" id="login-alert"></div>
+    </div>
 
-        function simpleHash(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = (hash << 5) - hash + str.charCodeAt(i);
-                hash |= 0; 
-            }
-            return "h" + Math.abs(hash).toString(16);
+    <div class="form-section" id="register-section">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="As on class roster (UPPERCASE)" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Class Setup PIN (4 digits)</label>
+        <input type="text" id="reg-pin" placeholder="••••" maxlength="4" inputmode="numeric" />
+      </div>
+      <div class="form-group">
+        <label>Create Password</label>
+        <input type="password" id="reg-password" placeholder="Choose a password" />
+      </div>
+      <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
+      <div class="alert" id="register-alert"></div>
+    </div>
+
+  </div><div class="card" id="hub-view">
+
+    <div class="hub-profile-strip">
+      <div class="avatar avatar-lg" id="hub-avatar">?</div>
+      <div class="hub-profile-info">
+        <div class="hub-greeting">Logged in as</div>
+        <div class="hub-name" id="hub-username">—</div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Log out</button>
+    </div>
+
+    <div id="pick-wrapper">
+      
+      <div class="locked-notice" id="locked-notice" style="display:none; margin-bottom:14px;">
+        <div class="locked-notice-icon">🔒</div>
+        <div class="locked-notice-body">
+          <div class="locked-notice-title">Your choice is locked in</div>
+          <div class="locked-notice-sub">
+            You can change your pick when the lock timer expires down below.
+          </div>
+        </div>
+      </div>
+
+      <div id="pick-form-area">
+        <div class="section-label">Choose your match</div>
+        <div class="pick-section">
+          <div class="form-group" style="margin-bottom:14px;">
+            <div class="select-with-preview" id="select-wrapper">
+              <div class="select-preview-avatar">
+                <div class="avatar avatar-sm" id="dropdown-avatar">?</div>
+              </div>
+              <div class="select-wrap">
+                <select id="classmate-select" onchange="onSelectChange()">
+                  <option value="">— Loading registered profiles… —</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
+          <div class="alert" id="pick-alert"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="already-picked-alert" class="alert alert-info" style="margin-bottom: 20px; display:none;">
+      You have submitted a selection slot. Check status variables below.
+    </div>
+
+    <div class="hub-divider"></div>
+    <div class="section-label">Your dashboard</div>
+    <div class="dashboard">
+
+      <div class="dash-sub-label">Your Selection Slot</div>
+
+      <div class="selection-slot empty" id="selection-slot">
+        <div class="avatar avatar-sm" id="slot-avatar" style="background:var(--surface3);box-shadow:none;border:1px dashed var(--border2);">?</div>
+        <div class="slot-info">
+          <div class="slot-name" id="slot-name">No pick yet</div>
+          <div class="slot-sub"  id="slot-sub">Lock in a choice above</div>
+        </div>
+        <div class="slot-right" id="slot-right"></div>
+      </div>
+
+      <div class="dash-loading" id="dash-loading" style="display:none;margin-top:10px;">
+        <div class="spinner"></div> Syncing status indicators…
+      </div>
+
+      <div class="match-banner" id="match-banner">
+        <div class="match-emoji">🎉</div>
+        <div class="match-title">It's a Match!</div>
+        <div class="match-sub">You both chose each other 💜</div>
+        <div class="match-names" id="match-names"></div>
+      </div>
+
+      <div class="pending-note" id="pending-note" style="display:none;">
+        <div class="pending-dot"></div>
+        Waiting to see if they pick you back…
+      </div>
+
+    </div></div></div><script>
+/* ══════════════════════════════════════════════════════════
+   CONFIG 
+══════════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
+const HEADERS = {
+  'Content-Type':  'application/json',
+  'apikey':        SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Prefer':        'return=representation'
+};
+
+const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
+
+/* ══════════════════════════════════════════════════════════
+   CLASS ROSTER — Safely used exclusively for account validation
+══════════════════════════════════════════════════════════ */
+const ROSTER = {
+  "AATIK HOUSSAM":"4821","ACHMIRROU MOSTAFA":"7134","AGHOUAR KHADIJA":"2956","AIT BELLA ABDELILAH":"8310",
+  "AIT BOURHIM AYOUB":"1549","AIT HAMMOU MOHAMED AMINE":"6273","AJAKKA MOHAMED":"3984","AKABAR OUMAIMA":"5102",
+  "ALOUANE WALID":"9437","ALOUNANE JAMILA":"2061","ASSABBANE KHADIJA":"7714","ASSADI HAJAR":"4390",
+  "BADR RANIA":"8825","BAGUENNI WALID":"1256","BAIKEN MARIAM":"6478","BANI BALHCEN OUSSAMA":"3192",
+  "BARDAGUI NASSIMA":"5503","BELQADI AYOUBE":"9041","BEN KAMEL OMAR":"2387","BENDAHAN ABDERRAHMANE":"7619",
+  "BENDAHAR YACINE":"4920","BENHADOU HIND":"8135","BENHALIMA IMANE":"3462","BENJILALI SALMA":"6089",
+  "BENKHAYA LAMYAE":"1754","BISSALITEN HASNAE":"9243","BOU-IBAOUN KAOUTAR":"5831","BOUBBAH ABDERRAHIM":"2176",
+  "BOUGHALEM YASSAMINE":"6904","BOUMAHDI ZINEB":"4127","BOUSDIG AHLAM":"8542","BOUZID IMRANE":"3019",
+  "CHAHID SOUKAINA":"7348","CHARAFI FATIMA ZAHRA":"1985","CHENTOUFI ZINEB":"5236","CHERBIB MOHAMED":"9912",
+  "CHKOURRACH ESSAADIA":"4470","DRIDBA SALMA":"8219","DRISSI YASSINE":"3654","EL ALLAOUI KHADIJA":"6108",
+  "EL BAIKEM MOHAMED":"2743","EL FADIL OUASSIME":"7891","EL HAKIMI AMAL":"1430","EL KOUSSIMI AYA":"5029",
+  "EL MARZOUKI RIDA":"9384","EL MENBBEHY FATIMA-EZZAHRAE":"6721","EL MOUBARKI WIAM":"3150","EL YOUSSFI AYOUB":"8463",
+  "ELAMRANI YOUSSRA":"2094","ELBOUHALI RABIAA":"7532","ELHARTI CHAIMAE":"4198","ELHORRI FATIMA ZAHRA":"5802",
+  "ES SADRI SOULAIMANE":"1347","ESSADIKI OUMAIMA":"9621","ESSOUFI SAIDA":"3840","ETALBI MOHAMED":"7059",
+  "ETTOUNOSY LAILA":"2416","EZZAHER CHAYMA":"6389","GHOUFIRI IMANE":"8724","HABIBI M'BAREK":"1053",
+  "HAFID IDRISSI MOUNIA":"4961","HAJI FATIMA":"3278","HAMRERRAS SALMA":"8104","HMIDI IDRISSI SAAD":"5642",
+  "ID BELKAS IKRAM":"9215","IHSSOUS NOUHAILA":"2340","IZZA ZAKARIA":"7493","JAMIL YOUSSEF":"6152",
+  "JARMOUNE MAROUA":"3891","KHARBOUCHE SOUHAIB":"8047","KHATIR HASNAA":"4712","KHILILA SAMIA":"1593",
+  "KISSADE FATIMA ZAHRA":"6824","LHAROUI CHAIMA":"3409","MEZIAT RIDA":"9176","MIFTAHALKHAIR IKRAM":"5241",
+  "NOUAR RAJAA":"2830","OUBLKHIR CHAIMAA":"7942","OUCHEHRA ABDELHAKIME":"6015","OUHAMMOU KHADIJA":"4329",
+  "OUKALTOUM ABDELLAH":"8691","OUKHACHA FATIMA ZAHRA":"1734","QUIRAT SIRINE":"5190","RABAH NADIA":"3048",
+  "RABBAH MARIEM":"9582","RAZKAOUI HAFSA":"6214","SANY ADIL":"4083","SEFNAJ MAROUA":"7329",
+  "TOMZINE YOUSSEF":"1640","WAHKKI HAJAR":"8951","YAHIA YOUSSEF":"2318","YASSINE KAOUTAR":"5749",
+  "YASSIR IMAD":"9103","ZAKY SARA":"4632","ZDIHRI HIBA":"8275"
+};
+
+/* ══════════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════════ */
+let currentUser       = null; // { full_name, token }
+let countdownInterval = null; // setInterval tracker
+let currentPickData   = null; // stores selected record values
+
+/* ── AMBIENT CANVAS GENERATOR ───────────────────────────── */
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
+  for (let i = 0; i < 24; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;bottom:${-size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*14+10}s;
+      animation-delay:${Math.random()*12}s;
+      filter:blur(${Math.random()}px);
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ── INTERFACE BADGE FORMATTERS ─────────────────────────── */
+function getInitials(name) {
+  const parts = name.trim().split(/\s+/);
+  return parts.length === 1 ? parts[0][0] : parts[0][0] + parts[parts.length-1][0];
+}
+const GRAD_POOL = [
+  'linear-gradient(135deg,#e040fb,#7c3aed)',
+  'linear-gradient(135deg,#a855f7,#ec4899)',
+  'linear-gradient(135deg,#f97316,#ec4899)',
+  'linear-gradient(135deg,#06b6d4,#7c3aed)',
+  'linear-gradient(135deg,#34d399,#06b6d4)',
+  'linear-gradient(135deg,#facc15,#f97316)',
+];
+function avatarGrad(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return GRAD_POOL[h % GRAD_POOL.length];
+}
+function setAvatar(el, name, isMatch = false) {
+  if (!name) {
+    el.textContent = '?'; el.style.background = 'var(--surface3)'; el.style.boxShadow = 'none'; return;
+  }
+  el.textContent = getInitials(name);
+  el.style.background  = isMatch ? 'linear-gradient(135deg,#34d399,#06b6d4)' : avatarGrad(name);
+  el.style.boxShadow   = isMatch ? '0 3px 14px rgba(52,211,153,0.45)' : '0 3px 12px rgba(217,70,239,0.35)';
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) =>
+    b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1))
+  );
+  document.getElementById('login-section').classList.toggle('active', tab==='login');
+  document.getElementById('register-section').classList.toggle('active', tab==='register');
+  clearAlerts();
+}
+function clearAlerts() {
+  document.querySelectorAll('.alert').forEach(a => { a.className='alert'; a.textContent=''; a.style.display='none'; });
+}
+function showAlert(id, msg, type='error') {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.className = `alert alert-${type} show`; el.style.display = 'block';
+}
+function setLoading(btnId, loading, originalText) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) { btn.disabled=true; btn.innerHTML=`<span class="spinner"></span>Processing…`; }
+  else          { btn.disabled=false; btn.innerHTML=originalText; }
+}
+function titleCase(str) {
+  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function onSelectChange() {
+  const sel     = document.getElementById('classmate-select');
+  const wrapper = document.getElementById('select-wrapper');
+  const avatar  = document.getElementById('dropdown-avatar');
+  const val     = sel.value;
+  if (val) {
+    wrapper.classList.add('has-value'); setAvatar(avatar, val);
+  } else {
+    wrapper.classList.remove('has-value'); avatar.textContent = '?'; avatar.style.background = 'var(--surface3)';
+  }
+}
+
+/* ── NEW SECURE COMPLIANT SIGNUP LAYER ────────────────── */
+async function handleRegister() {
+  const name     = document.getElementById('reg-name').value.trim().toUpperCase();
+  const pin      = document.getElementById('reg-pin').value.trim();
+  const password = document.getElementById('reg-password').value;
+
+  if (!name || !pin || !password) return showAlert('register-alert','Please fill out all inputs.');
+  if (password.length < 4) return showAlert('register-alert','Security password must contain at least 4 symbols.');
+  if (!ROSTER[name]) return showAlert('register-alert','Name missing from authorized registration whitelist.');
+  if (ROSTER[name] !== pin) return showAlert('register-alert','Incorrect validation PIN code.');
+
+  setLoading('register-btn', true, 'Create Account');
+  try {
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+      method: 'POST', headers: HEADERS,
+      body: JSON.stringify({ full_name: name, password })
+    });
+    const data = await res.json().catch(() => null);
+
+    if (res.ok) {
+      showAlert('register-alert','✅ Registration complete! Redirecting to credentials gateway…','success');
+      ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
+      setTimeout(() => switchTab('login'), 1500);
+    } else if (res.status === 409 || JSON.stringify(data).includes('duplicate')) {
+      showAlert('register-alert','This username profile already signed up.');
+    } else {
+      showAlert('register-alert',`Database fault: ${data?.message || 'Access rejected.'}`);
+    }
+  } catch {
+    showAlert('register-alert','Connection failure.');
+  } finally {
+    setLoading('register-btn', false, 'Create Account');
+  }
+}
+
+async function handleLogin() {
+  const name     = document.getElementById('login-name').value.trim().toUpperCase();
+  const password = document.getElementById('login-password').value;
+
+  if (!name || !password) return showAlert('login-alert','Provide access name and password verification.');
+  if (!ROSTER[name])       return showAlert('login-alert','Identity mismatch with authorization logs.');
+
+  setLoading('login-btn', true, 'Log In');
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/profiles?full_name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=full_name,id`;
+    const res  = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+    const data = await res.json().catch(() => []);
+
+    if (!res.ok || !Array.isArray(data) || data.length === 0) {
+      showAlert('login-alert','Invalid credentials combination.'); return;
+    }
+
+    currentUser = { full_name: data[0].full_name, token: data[0].id };
+    enterHub();
+  } catch {
+    showAlert('login-alert','Gateway link timeout.');
+  } finally {
+    setLoading('login-btn', false, 'Log In');
+  }
+}
+
+/* ── PRIVACY ENFORCED WORKSPACE SYSTEM ─────────────────── */
+async function enterHub() {
+  document.getElementById('auth-card').style.display = 'none';
+  const hub = document.getElementById('hub-view');
+  hub.style.display = 'block'; hub.classList.add('active');
+
+  setAvatar(document.getElementById('hub-avatar'), currentUser.full_name);
+  document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
+
+  // SECURE PRIVACY RETRIEVAL FROM SERVER
+  const dropdownElement = document.getElementById('classmate-select');
+  dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
+
+  try {
+    // We strictly query the database directly to verify who actually registered. Unregistered users do not exist here.
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const activeProfiles = await response.json().catch(() => []);
+
+    // Filter out our own identity profile
+    const registeredClassmates = activeProfiles
+      .map(p => p.full_name)
+      .filter(name => name !== currentUser.full_name)
+      .sort();
+
+    dropdownElement.innerHTML = '';
+
+    if (registeredClassmates.length === 0) {
+      dropdownElement.innerHTML = '<option value="">⏳ Waiting for classmates to join...</option>';
+    } else {
+      dropdownElement.innerHTML = '<option value="">— Select an active classmate —</option>';
+      registeredClassmates.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = titleCase(name);
+        dropdownElement.appendChild(option);
+      });
+    }
+  } catch (err) {
+    dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices...</option>';
+  }
+
+  await syncDashboard();
+}
+
+async function syncDashboard() {
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  const slot       = document.getElementById('selection-slot');
+  const slotAvatar = document.getElementById('slot-avatar');
+  const slotName   = document.getElementById('slot-name');
+  const slotSub    = document.getElementById('slot-sub');
+  const slotRight  = document.getElementById('slot-right');
+  
+  const loading = document.getElementById('dash-loading');
+  const banner  = document.getElementById('match-banner');
+  const note    = document.getElementById('pending-note');
+  
+  const formArea    = document.getElementById('pick-form-area');
+  const lockedNotice = document.getElementById('locked-notice');
+  const staticAlert = document.getElementById('already-picked-alert');
+
+  loading.style.display = 'flex';
+  banner.classList.remove('visible');
+  note.style.display = 'none';
+  slotRight.innerHTML = '';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections?select=user_token,picked_token,created_at`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      cache: "no-store"
+    });
+    const selections = await res.json().catch(() => []);
+
+    const myPick = selections.find(s => s.user_token === currentUser.full_name);
+    const reciprocalMatches = selections.filter(s => s.picked_token === currentUser.full_name).map(s => s.user_token);
+
+    if (myPick) {
+      currentPickData = myPick; // Save structural state internally
+      const selectedPartner = myPick.picked_token;
+
+      slot.className = "selection-slot";
+      setAvatar(slotAvatar, selectedPartner);
+      slotName.textContent = titleCase(selectedPartner);
+      slotSub.textContent = "Your choice is locked";
+
+      // Evaluate Remaining Delta Parameters 
+      function triggerCountdownExecution() {
+        const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
+        const durationRemaining = LOCK_DURATION_MS - elapsedMs;
+
+        if (durationRemaining > 0) {
+          // ACTIVE TIME LOCK
+          slot.className = "selection-slot is-locked";
+          formArea.style.display = 'none';
+          lockedNotice.style.display = 'flex';
+          staticAlert.style.display = 'none';
+
+          const d = Math.floor(durationRemaining / (1000 * 60 * 60 * 24));
+          const h = Math.floor((durationRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((durationRemaining % (1000 * 60 * 60)) / (1000 * 60));
+          
+          let durationString = d > 0 ? `${d}d ` : '';
+          durationString += `${h}h ${m}m`;
+
+          slotRight.innerHTML = `<div class="timer-badge">⏳ Locked: ${durationString}</div>`;
+        } else {
+          // LOCK LIFECYCLE TERMINATED
+          clearInterval(countdownInterval);
+          slot.className = "selection-slot is-free";
+          formArea.style.display = 'none';
+          lockedNotice.style.display = 'none';
+          staticAlert.style.display = 'block';
+
+          slotRight.innerHTML = `<button class="btn-unlock" onclick="handleDeletePick()">Change Choice 🔓</button>`;
         }
+      }
 
-        let secureProfilesMap = {};
-        Object.keys(database.users).forEach(rawKey => {
-            let maskedToken = simpleHash(rawKey);
-            secureProfilesMap[maskedToken] = {
-                displayName: database.users[rawKey].displayName,
-                color: database.users[rawKey].color
-            };
-        });
+      triggerCountdownExecution();
+      countdownInterval = setInterval(triggerCountdownExecution, 60000);
 
-        window.onload = function() {
-            handleLogout();
-        };
+      if (reciprocalMatches.includes(selectedPartner)) {
+        setAvatar(slotAvatar, selectedPartner, true);
+        document.getElementById('match-names').innerHTML = `
+          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(currentUser.full_name)}</div><span class="match-chip-name">${titleCase(currentUser.full_name)}</span></div>
+          <span class="match-heart">💜</span>
+          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(selectedPartner)}</div><span class="match-chip-name">${titleCase(selectedPartner)}</span></div>
+        `;
+        banner.classList.add('visible');
+      } else {
+        note.style.display = 'flex';
+      }
 
-        async function supabaseRequest(endpoint, options = {}) {
-            const headers = {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                "Content-Type": "application/json",
-                "Prefer": "return=representation"
-            };
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, { ...options, headers });
-            if (!response.ok) {
-                throw new Error(await response.text());
-            }
-            return response.json();
-        }
+    } else {
+      // CLEAR UNLOCKED SLOTS STATE
+      currentPickData = null;
+      slot.className = "selection-slot empty";
+      setAvatar(slotAvatar, null);
+      slotName.textContent = 'No pick yet';
+      slotSub.textContent = 'Lock in a choice above';
+      
+      formArea.style.display = 'block';
+      lockedNotice.style.display = 'none';
+      staticAlert.style.display = 'none';
+      
+      document.getElementById('classmate-select').value = "";
+      onSelectChange();
+    }
+  } catch {
+    console.error("Link synchronization failed.");
+  } finally {
+    loading.style.display = 'none';
+  }
+}
 
-        async function syncDataFromDatabase() {
-            try {
-                database.allLiveSelections = await supabaseRequest("selections?select=*", { method: "GET" });
-            } catch (e) {
-                database.allLiveSelections = [];
-            }
-        }
+async function handlePick() {
+  const selectedClassmate = document.getElementById('classmate-select').value;
+  if (!selectedClassmate) return showAlert('pick-alert', 'Please select an options profile.');
 
-        async function handleLogin() {
-            const inputField = document.getElementById('usernameInput');
-            const loginBtn = document.getElementById('loginBtn');
-            const userProvidedKey = inputField.value.trim().toLowerCase();
-            const errorBanner = document.getElementById('loginError');
+  setLoading('pick-btn', true, 'Lock In My Choice 🔒');
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
+      method: 'POST', headers: HEADERS,
+      body: JSON.stringify({ user_token: currentUser.full_name, picked_token: selectedClassmate })
+    });
 
-            if (database.users[userProvidedKey]) {
-                errorBanner.style.display = 'none';
-                loginBtn.innerText = "Connecting...";
-                loginBtn.disabled = true;
+    if (res.ok) {
+      showAlert('pick-alert', 'Choice permanently saved inside verification stack. Locked for 5 days.', 'success');
+      setTimeout(() => syncDashboard(), 1200);
+    } else {
+      showAlert('pick-alert', 'Submission processing error.');
+    }
+  } catch {
+    showAlert('pick-alert', 'Data transmission fault.');
+  } finally {
+    setLoading('pick-btn', false, 'Lock In My Choice 🔒');
+  }
+}
 
-                database.currentUserRawKey = userProvidedKey;
-                database.currentUserMaskedToken = simpleHash(userProvidedKey);
-                
-                await syncDataFromDatabase();
+async function handleDeletePick() {
+  if (!currentPickData) return;
 
-                document.getElementById('currentProfileName').innerText = secureProfilesMap[database.currentUserMaskedToken].displayName;
-                document.getElementById('bottomNav').style.display = 'flex';
-                
-                loginBtn.innerText = "Verify Access →";
-                loginBtn.disabled = false;
-                
-                renderGridUI();
-                navigateTo('screenHome');
-            } else {
-                errorBanner.style.display = 'block';
-                inputField.value = '';
-            }
-        }
+  // STRICT CLIENT SIDE COMPLIANCE CHECK
+  const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
+  if (elapsedMs < LOCK_DURATION_MS) {
+    alert("Compliance Violations: Direct access modification locked down until countdown expires.");
+    return;
+  }
 
-        function navigateTo(targetScreenId) {
-            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
-            document.getElementById(targetScreenId).classList.add('active');
+  if (!confirm("Are you certain you want to change your saved choice? This action resets your selection window.")) return;
+  
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/selections?user_token=eq.${encodeURIComponent(currentUser.full_name)}`;
+    const res = await fetch(url, { method: 'DELETE', headers: HEADERS });
 
-            document.getElementById('tabHome').classList.remove('active');
-            document.getElementById('tabSelections').classList.remove('active');
+    if (res.ok) {
+      await syncDashboard();
+    } else {
+      alert("Database rejected modification command.");
+    }
+  } catch {
+    alert("Network request termination fault.");
+  }
+}
 
-            if(targetScreenId === 'screenHome') {
-                document.getElementById('tabHome').classList.add('active');
-                renderGridUI();
-            }
-            if(targetScreenId === 'screenSelections') {
-                document.getElementById('tabSelections').classList.add('active');
-                renderSelectionsUI();
-            }
-        }
-
-        function renderGridUI() {
-            const container = document.getElementById('gridContainer');
-            container.innerHTML = ''; 
-
-            const activeUserPicks = database.allLiveSelections
-                .filter(row => row.user_token === database.currentUserMaskedToken)
-                .map(row => row.picked_token);
-
-            Object.keys(secureProfilesMap).sort().forEach(profileToken => {
-                if(profileToken === database.currentUserMaskedToken) return;
-
-                const memberData = secureProfilesMap[profileToken];
-                const isChosen = activeUserPicks.includes(profileToken);
-
-                const cardElement = document.createElement('div');
-                cardElement.className = `grid-member-card ${isChosen ? 'chosen' : ''}`;
-                cardElement.onclick = () => handleSelectionToggle(profileToken);
-
-                cardElement.innerHTML = `
-                    <div class="avatar-placeholder" style="background-color: ${memberData.color};"></div>
-                    <div class="member-card-name">${memberData.displayName}</div>
-                    <div class="check-badge">✓</div>
-                `;
-                container.appendChild(cardElement);
-            });
-        }
-
-        async function handleSelectionToggle(targetProfileToken) {
-            const activeUserPicks = database.allLiveSelections
-                .filter(row => row.user_token === database.currentUserMaskedToken)
-                .map(row => row.picked_token);
-
-            if (activeUserPicks.includes(targetProfileToken)) {
-                try {
-                    await supabaseRequest(`selections?user_token=eq.${database.currentUserMaskedToken}&picked_token=eq.${targetProfileToken}`, {
-                        method: "DELETE"
-                    });
-                } catch (e) { alert("Network issue. Failed to clear choice."); return; }
-            } else {
-                if (activeUserPicks.length >= 2) {
-                    alert("Maximum selection threshold reached (2 Choices).");
-                    return;
-                }
-                try {
-                    await supabaseRequest("selections", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            user_token: database.currentUserMaskedToken,
-                            picked_token: targetProfileToken
-                        })
-                    });
-                } catch (e) { alert("Failed to save selection."); return; }
-            }
-            
-            await syncDataFromDatabase();
-            renderGridUI();
-        }
-
-        async function renderSelectionsUI() {
-            const recordsWrapper = document.getElementById('selectionsListWrapper');
-            recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Updating live dashboard...</p>`;
-            
-            await syncDataFromDatabase();
-            recordsWrapper.innerHTML = '';
-
-            const currentPicksList = database.allLiveSelections
-                .filter(row => row.user_token === database.currentUserMaskedToken)
-                .map(row => row.picked_token);
-
-            if(currentPicksList.length === 0) {
-                recordsWrapper.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:14px; margin-top:40px;">Your selection list is empty.</p>`;
-                return;
-            }
-
-            currentPicksList.forEach(pickedToken => {
-                const targetProfile = secureProfilesMap[pickedToken];
-                
-                const isMutualMatch = database.allLiveSelections.some(row => 
-                    row.user_token === pickedToken && row.picked_token === database.currentUserMaskedToken
-                );
-
-                const listRow = document.createElement('div');
-                listRow.className = 'selection-list-row';
-                listRow.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="avatar-placeholder" style="background-color: ${targetProfile.color}; width:40px; height:40px; margin:0;"></div>
-                        <div style="font-weight: 600; font-size:15px;">${targetProfile.displayName}</div>
-                    </div>
-                    <div>
-                        ${isMutualMatch 
-                            ? `<span class="status-tag matched">💙 Matched</span>` 
-                            : `<span class="status-tag pending">Pending</span>`}
-                    </div>
-                `;
-                recordsWrapper.appendChild(listRow);
-            });
-        }
-
-        function handleLogout() {
-            database.currentUserRawKey = null;
-            database.currentUserMaskedToken = null;
-            database.allLiveSelections = [];
-            document.getElementById('usernameInput').value = '';
-            document.getElementById('gridContainer').innerHTML = '';
-            document.getElementById('selectionsListWrapper').innerHTML = '';
-            document.getElementById('bottomNav').style.display = 'none';
-            navigateTo('screenLogin');
-        }
-    </script>
+function handleLogout() {
+  if (countdownInterval) clearInterval(countdownInterval);
+  currentUser = null; currentPickData = null;
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('hub-view').classList.remove('active');
+  document.getElementById('auth-card').style.display = 'block';
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-password').value = '';
+  clearAlerts(); switchTab('login');
+}
+</script>
 </body>
 </html>
+
