@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BwithMe — Secure Connected Platform</title>
     <style>
-        /* ═══════════════════════════════════════════════
-           THEME DEFINITIONS (DARK & LIGHT TOKENS)
-        ═══════════════════════════════════════════════ */
-        :root[data-theme="dark"] {
+        :root {
             --bg-global: #0b071e;
             --bg-container: #0f0a28;
             --bg-card: #16103c;
@@ -17,19 +14,6 @@
             --text-muted: #8e89b3;
             --color-primary: #d946ef;
             --gradient-accent: linear-gradient(135deg, #a855f7, #ec4899);
-            --toggle-bg: rgba(255, 255, 255, 0.05);
-        }
-
-        :root[data-theme="light"] {
-            --bg-global: #f3f0fc;
-            --bg-container: #ffffff;
-            --bg-card: #f8f6fe;
-            --border-color: #dcd6f7;
-            --text-main: #1d183a;
-            --text-muted: #6e679a;
-            --color-primary: #ca26e2;
-            --gradient-accent: linear-gradient(135deg, #9333ea, #db2777);
-            --toggle-bg: rgba(0, 0, 0, 0.05);
         }
 
         * {
@@ -37,7 +21,6 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
         body {
@@ -61,25 +44,6 @@
             flex-direction: column;
             position: relative;
             overflow: hidden;
-        }
-
-        /* ── THEME SWITCH UI COMPONENT ── */
-        .theme-switcher-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 50;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid var(--border-color);
-            background: var(--toggle-bg);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            outline: none;
         }
 
         .screen {
@@ -261,12 +225,43 @@
             color: var(--color-primary);
             font-weight: 700;
         }
+
+        /* ═══════════════════════════════════════════════
+           ADDED: LIGHT MODE OVERRIDES & TOGGLE SWITCH STYLE
+        ═══════════════════════════════════════════════ */
+        .phone-wrapper.light-mode {
+            --bg-container: #ffffff;
+            --bg-card: #f8f6fe;
+            --border-color: #dcd6f7;
+            --text-main: #1d183a;
+            --text-muted: #6e679a;
+        }
+        
+        .theme-toggle-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            z-index: 999;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
     </style>
 </head>
 <body>
 
-    <div class="phone-wrapper">
-        <button class="theme-switcher-btn" id="themeSwitcher" onclick="toggleTheme()">☀️</button>
+    <div class="phone-wrapper" id="phoneWrapper">
+        <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
 
         <div class="screen active" id="screenLogin">
             <div class="title-area">
@@ -305,6 +300,7 @@
     </div>
 
     <script>
+        // Explicit root paths cleanly decoupled to avoid endpoint nesting issues
         const SUPABASE_URL = "https://xiitnfszvqymgtrrpqym.supabase.co";
         const SUPABASE_KEY = "sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494";
 
@@ -378,7 +374,7 @@
                 "bwm.oumayma4451": { displayName: "OUMAYMA RO", color: "#f5d0fe" },
                 "bwm.oussama8824": { displayName: "OUSSAMA BA", color: "#ec4899" },
                 "bwm.oussama3910": { displayName: "OUSSAMA GA", color: "#fda4af" },
-                "bwm.rabiaa6712": {px displayName: "RABIAA EL", color: "#06b6d4" },
+                "bwm.rabiaa6712": { displayName: "RABIAA EL", color: "#06b6d4" },
                 "bwm.rajaa1904": { displayName: "RAJAA NO", color: "#fca5a5" },
                 "bwm.rania3940": { displayName: "RANIA BA", color: "#10b981" },
                 "bwm.reda4019": { displayName: "REDA HA", color: "#f43f5e" },
@@ -412,23 +408,6 @@
             allLiveSelections: []
         };
 
-        /* ═══════════════════════════════════════════════
-           THEME TOGGLE CONTROLLER FUNCTION
-        ═══════════════════════════════════════════════ */
-        function toggleTheme() {
-            const root = document.documentElement;
-            const btn = document.getElementById('themeSwitcher');
-            const currentTheme = root.getAttribute('data-theme') || 'dark';
-            
-            if (currentTheme === 'dark') {
-                root.setAttribute('data-theme', 'light');
-                btn.innerText = "🌙";
-            } else {
-                root.setAttribute('data-theme', 'dark');
-                btn.innerText = "☀️";
-            }
-        }
-
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -458,6 +437,7 @@
                 "Content-Type": "application/json",
                 "Prefer": "return=representation"
             };
+            // Safely structures url endpoint without appending nested paths
             const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, { ...options, headers });
             if (!response.ok) {
                 throw new Error(await response.text());
@@ -627,6 +607,22 @@
             document.getElementById('selectionsListWrapper').innerHTML = '';
             document.getElementById('bottomNav').style.display = 'none';
             navigateTo('screenLogin');
+        }
+
+        /* ═══════════════════════════════════════════════
+           ADDED: THEME TOGGLE FUNCTION
+        ═══════════════════════════════════════════════ */
+        function toggleTheme() {
+            const wrapper = document.getElementById('phoneWrapper');
+            const btn = document.getElementById('themeBtn');
+            
+            if (wrapper.classList.contains('light-mode')) {
+                wrapper.classList.remove('light-mode');
+                btn.innerText = "☀️";
+            } else {
+                wrapper.classList.add('light-mode');
+                btn.innerText = "🌙";
+            }
         }
     </script>
 </body>
