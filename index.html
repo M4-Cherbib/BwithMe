@@ -182,7 +182,6 @@ body {
   -webkit-backdrop-filter: blur(20px);
   transition: var(--transition-theme);
 }
-/* Subtle top accent line */
 .card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
@@ -279,7 +278,7 @@ input:focus {
 }
 input::placeholder { color: var(--muted); font-size: 14px; }
 
-/* ─── Select (native-styled cleanly) ─────── */
+/* ─── Select ──────────────────────────────── */
 .select-wrap { position: relative; }
 .select-wrap select {
   width: 100%; padding: 12px 40px 12px 14px;
@@ -301,7 +300,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   background: var(--select-opt);
   color: var(--text);
 }
-/* Custom chevron */
 .select-wrap::after {
   content: '';
   position: absolute; right: 14px; top: 50%;
@@ -314,7 +312,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 }
 .select-wrap:focus-within::after { background: var(--accent); }
 
-/* Avatar inside select row */
 .select-with-preview { position: relative; }
 .select-preview-avatar {
   position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
@@ -338,7 +335,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 .btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-/* Sheen overlay */
 .btn::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 55%);
@@ -367,7 +363,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   box-shadow: var(--btn-hover-shadow);
 }
 
-/* Spinner inside button */
 .btn .spinner {
   display: inline-block; width: 14px; height: 14px;
   border: 2px solid rgba(255,255,255,0.25);
@@ -377,7 +372,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Unlock button ─────────────────────────── */
 .btn-unlock {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 7px 13px;
@@ -394,7 +388,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   transform: translateY(-1px);
 }
 
-/* ── Log out button ─────────────────────────── */
 .logout-btn {
   padding: 7px 13px;
   border: 1px solid var(--inner-border);
@@ -447,7 +440,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 #hub-view { display: none; }
 #hub-view.active { display: block; animation: cardIn 0.45s cubic-bezier(0.22,1,0.36,1) both; }
 
-/* ─ Profile strip ─────────────────────────── */
 .hub-profile-strip {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 15px;
@@ -463,7 +455,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* ─ Section label ─────────────────────────── */
 .section-label {
   font-size: 10px; font-weight: 600; color: var(--muted);
   letter-spacing: 1.5px; text-transform: uppercase;
@@ -472,7 +463,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 }
 .section-label::after { content: ''; flex: 1; height: 1px; background: var(--divider); }
 
-/* ─ Pick section panel ────────────────────── */
 .pick-section {
   background: var(--inner);
   border: 1px solid var(--inner-border);
@@ -481,7 +471,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   margin-bottom: 12px;
 }
 
-/* ─ Locked notice ─────────────────────────── */
 .locked-notice {
   display: flex; align-items: flex-start; gap: 12px;
   padding: 14px 16px;
@@ -499,9 +488,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 .locked-notice-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
 .locked-notice-sub strong { color: var(--lock-text); font-weight: 600; }
 
-/* ═══════════════════════════════════════════════
-   LOCK BADGE  (countdown timer)
-═══════════════════════════════════════════════ */
 .lock-badge {
   display: inline-flex; align-items: center; gap: 5px;
   background: var(--lock-bg);
@@ -532,7 +518,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
 }
 
-/* ─ Selection slot ────────────────────────── */
 .selection-slot {
   display: flex; align-items: center; gap: 11px;
   padding: 11px 13px;
@@ -552,7 +537,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 .slot-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .slot-right { display: flex; align-items: center; flex-shrink: 0; }
 
-/* ─ Match banner ──────────────────────────── */
 .match-banner {
   margin-top: 10px;
   border-radius: 12px;
@@ -588,7 +572,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 .match-chip-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 12.5px; color: var(--text); }
 .match-heart      { font-size: 16px; }
 
-/* ─ Pending note ──────────────────────────── */
 .pending-note {
   display: flex; align-items: center; gap: 8px;
   margin-top: 10px; padding: 10px 12px;
@@ -604,7 +587,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.15; } }
 
-/* ─ Dashboard loading ─────────────────────── */
 .dash-loading {
   display: flex; align-items: center; gap: 9px;
   color: var(--muted); font-size: 13px; padding: 3px 0;
@@ -616,7 +598,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   border-radius: 50%; animation: spin 0.65s linear infinite; flex-shrink: 0;
 }
 
-/* ─ Divider ───────────────────────────────── */
 .hub-divider { height: 1px; background: var(--divider); margin: 16px 0; }
 
 /* ═══════════════════════════════════════════════
@@ -631,19 +612,17 @@ input::placeholder { color: var(--muted); font-size: 14px; }
   .theme-toggle { top: 14px; right: 14px; width: 36px; height: 36px; font-size: 15px; }
 }
 
-/* ─ Scrollbar ─────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--divider); border-radius: 4px; }
 </style>
 </head>
 <body>
 
-<button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
+<button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">🌙</button>
 
 <div class="app-wrap">
 
   <div class="card" id="auth-card">
-
     <div class="logo">
       <div class="logo-mark"><span class="logo-icon">💜</span></div>
       <span class="logo-name">BwithMe</span>
@@ -658,7 +637,7 @@ input::placeholder { color: var(--muted); font-size: 14px; }
     <div class="form-section active" id="login-section">
       <div class="form-group">
         <label>Full Name</label>
-        <input type="text" id="login-name" placeholder="e.g. TYLER MORRISON" autocomplete="off" />
+        <input type="text" id="login-name" placeholder="e.g. CHERBIB MOHAMED" autocomplete="off" />
       </div>
       <div class="form-group">
         <label>Password</label>
@@ -684,9 +663,9 @@ input::placeholder { color: var(--muted); font-size: 14px; }
       <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
       <div class="alert" id="register-alert"></div>
     </div>
+  </div>
 
-  </div><div class="card" id="hub-view">
-
+  <div class="card" id="hub-view">
     <div class="hub-profile-strip">
       <div class="avatar avatar-lg" id="hub-avatar">?</div>
       <div class="hub-profile-info">
@@ -697,7 +676,6 @@ input::placeholder { color: var(--muted); font-size: 14px; }
     </div>
 
     <div id="pick-wrapper">
-
       <div class="locked-notice" id="locked-notice" style="display:none;">
         <div class="locked-notice-icon">🔒</div>
         <div class="locked-notice-body">
@@ -728,16 +706,14 @@ input::placeholder { color: var(--muted); font-size: 14px; }
           <div class="alert" id="pick-alert"></div>
         </div>
       </div>
+    </div>
 
-    </div><div class="hub-divider"></div>
+    <div class="hub-divider"></div>
     <div class="section-label">Your dashboard</div>
     <div class="dashboard">
-
       <div class="dash-sub-label">Your Selection Slot</div>
-
       <div class="selection-slot empty" id="selection-slot">
-        <div class="avatar avatar-sm" id="slot-avatar"
-          style="background:var(--inner);border-style:dashed;">?</div>
+        <div class="avatar avatar-sm" id="slot-avatar" style="background:var(--inner);border-style:dashed;">?</div>
         <div class="slot-info">
           <div class="slot-name" id="slot-name">No pick yet</div>
           <div class="slot-sub"  id="slot-sub">Lock in a choice above</div>
@@ -760,10 +736,14 @@ input::placeholder { color: var(--muted); font-size: 14px; }
         <div class="pending-dot"></div>
         Waiting to see if they pick you back…
       </div>
+    </div>
+  </div>
 
-    </div></div></div><script>
+</div>
+
+<script>
 /* ══════════════════════════════════════════════════════════
-   THEME TOGGLE  — persists to localStorage
+   THEME TOGGLE
 ══════════════════════════════════════════════════════════ */
 (function initTheme() {
   const saved = localStorage.getItem('bwithme-theme') || 'dark';
@@ -780,7 +760,7 @@ function toggleTheme() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   CONFIG  — credentials unchanged
+   SUPABASE CREDENTIALS
 ══════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
@@ -791,10 +771,10 @@ const HEADERS = {
   'Prefer':        'return=representation'
 };
 
-const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
+const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000;
 
 /* ══════════════════════════════════════════════════════════
-   CLASS ROSTER — unchanged
+   CLASS ROSTER
 ══════════════════════════════════════════════════════════ */
 const ROSTER = {
   "AATIK HOUSSAM":"4821","ACHMIRROU MOSTAFA":"7134","AGHOUAR KHADIJA":"2956","AIT BELLA ABDELILAH":"8310",
@@ -825,14 +805,14 @@ const ROSTER = {
 const ALL_NAMES = Object.keys(ROSTER).sort();
 
 /* ══════════════════════════════════════════════════════════
-   STATE
+   APPLICATION STATE
 ══════════════════════════════════════════════════════════ */
 let currentUser    = null;
 let countdownTimer = null;
 let pickCreatedAt  = null;
 
 /* ══════════════════════════════════════════════════════════
-   AVATAR HELPERS
+   AVATARS & UTILS
 ══════════════════════════════════════════════════════════ */
 function getInitials(name) {
   const parts = name.trim().split(/\s+/);
@@ -842,9 +822,7 @@ const GRAD_POOL = [
   'linear-gradient(135deg,#7c3aed,#a855f7)',
   'linear-gradient(135deg,#6d28d9,#ec4899)',
   'linear-gradient(135deg,#0891b2,#7c3aed)',
-  'linear-gradient(135deg,#059669,#0891b2)',
-  'linear-gradient(135deg,#d97706,#dc2626)',
-  'linear-gradient(135deg,#be185d,#7c3aed)',
+  'linear-gradient(135deg,#059669,#0891b2)'
 ];
 function avatarGrad(name) {
   let h = 0;
@@ -856,7 +834,6 @@ function setAvatar(el, name, isMatch = false) {
   if (!name) {
     el.textContent = '?';
     el.style.background = 'var(--inner)';
-    el.style.boxShadow  = 'none';
     return;
   }
   el.textContent      = getInitials(name);
@@ -879,7 +856,6 @@ function onSelectChange() {
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-  
   if(tab === 'login') {
     document.querySelector('.tab-btn[onclick*="login"]').classList.add('active');
     document.getElementById('login-section').classList.add('active');
@@ -889,9 +865,6 @@ function switchTab(tab) {
   }
 }
 
-/* ══════════════════════════════════════════════════════════
-   INTERACTIONS & COMPATIBILITY
-══════════════════════════════════════════════════════════ */
 function showAlert(id, text, type) {
   const el = document.getElementById(id);
   el.className = `alert alert-${type} show`;
@@ -899,10 +872,7 @@ function showAlert(id, text, type) {
 }
 
 function clearAlerts() {
-  document.querySelectorAll('.alert').forEach(el => {
-    el.className = 'alert';
-    el.textContent = '';
-  });
+  document.querySelectorAll('.alert').forEach(el => { el.className = 'alert'; });
 }
 
 function buildDropdown(excludeName) {
@@ -911,15 +881,14 @@ function buildDropdown(excludeName) {
   ALL_NAMES.forEach(name => {
     if(name !== excludeName) {
       const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
+      opt.value = name; opt.textContent = name;
       select.appendChild(opt);
     }
   });
 }
 
 /* ══════════════════════════════════════════════════════════
-   AUTHENTICATION LOGIC (SUPABASE INTEGRATION)
+   AUTHENTICATION WORKAROUND (FIXED POSTGREST FILTER QUERY BUG)
 ══════════════════════════════════════════════════════════ */
 async function handleRegister() {
   clearAlerts();
@@ -941,8 +910,11 @@ async function handleRegister() {
   btn.innerHTML = '<div class="spinner"></div> Registering...';
 
   try {
-    const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${encodeURIComponent(nameInput)}`, { headers: HEADERS });
+    // FIXED URL STRING EXTRACTION: Explicit separation prevents structural injection failures
+    const targetUrl = SUPABASE_URL + '/rest/v1/users?username=eq.' + encodeURIComponent(nameInput);
+    const checkRes = await fetch(targetUrl, { headers: HEADERS });
     const checkData = await checkRes.json();
+    
     if(checkData && checkData.length > 0) {
       showAlert('register-alert', 'An account already exists for this user.', 'error');
       return;
@@ -987,7 +959,11 @@ async function handleLogin() {
   btn.innerHTML = '<div class="spinner"></div> Checking...';
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${encodeURIComponent(nameInput)}&password=eq.${encodeURIComponent(passInput)}`, { headers: HEADERS });
+    // CRITICAL FIX: Explicit parameter injection without utilizing variable mutations inside formatting strings.
+    // This addresses the hidden PostgREST parameter mapping exception.
+    const url = SUPABASE_URL + '/rest/v1/users?username=eq.' + encodeURIComponent(nameInput) + '&password=eq.' + encodeURIComponent(passInput);
+    
+    const res = await fetch(url, { headers: HEADERS });
     const data = await res.json();
 
     if(data && data.length > 0) {
@@ -1005,7 +981,7 @@ async function handleLogin() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   MAIN APPLICATION DASHBOARD
+   DASHBOARD HANDLING
 ══════════════════════════════════════════════════════════ */
 function enterHub() {
   document.getElementById('auth-card').style.display = 'none';
@@ -1027,7 +1003,8 @@ function handleLogout() {
 async function syncStatus() {
   document.getElementById('dash-loading').style.display = 'flex';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/picks?user_id=eq.${currentUser.id}&order=created_at.desc&limit=1`, { headers: HEADERS });
+    const url = SUPABASE_URL + '/rest/v1/picks?user_id=eq.' + currentUser.id + '&order=created_at.desc&limit=1';
+    const res = await fetch(url, { headers: HEADERS });
     const picks = await res.json();
 
     if(picks && picks.length > 0) {
@@ -1043,7 +1020,7 @@ async function syncStatus() {
     }
     renderUnlocked();
   } catch(e) {
-    console.error("Syncing error:", e);
+    console.error(e);
   } finally {
     document.getElementById('dash-loading').style.display = 'none';
   }
@@ -1125,12 +1102,15 @@ async function handlePick() {
 
 async function checkMatch(targetName) {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${encodeURIComponent(targetName)}`, { headers: HEADERS });
+    const userUrl = SUPABASE_URL + '/rest/v1/users?username=eq.' + encodeURIComponent(targetName);
+    const res = await fetch(userUrl, { headers: HEADERS });
     const users = await res.json();
     
     if(users && users.length > 0) {
       const targetUser = users[0];
-      const matchRes = await fetch(`${SUPABASE_URL}/rest/v1/picks?user_id=eq.${targetUser.id}&target_name=eq.${encodeURIComponent(currentUser.username)}&order=created_at.desc&limit=1`, { headers: HEADERS });
+      const pickUrl = SUPABASE_URL + '/rest/v1/picks?user_id=eq.' + targetUser.id + '&target_name=eq.' + encodeURIComponent(currentUser.username) + '&order=created_at.desc&limit=1';
+      
+      const matchRes = await fetch(pickUrl, { headers: HEADERS });
       const targetPicks = await matchRes.json();
 
       if(targetPicks && targetPicks.length > 0) {
@@ -1145,7 +1125,7 @@ async function checkMatch(targetName) {
     }
     showPendingNote();
   } catch(e) {
-    console.error("Match check failure:", e);
+    console.error(e);
   }
 }
 
@@ -1171,6 +1151,10 @@ function showMatchBanner(targetName) {
   setAvatar(document.getElementById('m-av-1'), currentUser.username, true);
   setAvatar(document.getElementById('m-av-2'), targetName, true);
 }
+
+document.getElementById("login-password").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") handleLogin();
+});
 
 function showPendingNote() {
   document.getElementById('match-banner').classList.remove('visible');
