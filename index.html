@@ -19,878 +19,780 @@
   --surface4:    #252040;
   --border:      rgba(168,100,255,0.14);
   --border2:     rgba(168,100,255,0.28);
-  --text:        #f0eaff;
-  --muted:       #7d6fa0;
-  --muted2:      #a090c0;
-  --pink:        #e040fb;
-  --violet:      #7c3aed;
-  --neon:        #d946ef;
-  --neon2:       #a855f7;
-  --match:       #34d399;
-  --cyan:        #06b6d4;
-  --amber:       #fbbf24;
-  --error:       #f87171;
-  --grad:        linear-gradient(135deg, #e040fb 0%, #7c3aed 100%);
-  --grad2:       linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-  --grad3:       linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
-  --grad-lock:   linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
-  --grad-unlock: linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
-  --glow:        0 0 32px rgba(217,70,239,0.35);
-  --glow2:       0 0 70px rgba(140,80,255,0.18);
-  --glow-match:  0 0 28px rgba(52,211,153,0.4);
-  --glow-lock:   0 0 20px rgba(251,191,36,0.35);
-  --glow-unlock: 0 0 20px rgba(52,211,153,0.4);
-  --r-card:      26px;
-  --r-inner:     16px;
-  --r-sm:        10px;
-  --r-xs:        7px;
+  --accent:      #a864ff;
+  --accent-rgb:  168,100,255;
+  --accent-glow: rgba(168,100,255,0.15);
+  --text:        #e2deed;
+  --text-muted:  #8b84a1;
+  --error:       #ff557e;
+  --success:     #22e5a4;
+  --font-sans:   'DM Sans', sans-serif;
+  --font-display:'Syne', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
 }
-
-/* ── LIGHT THEME VARIABLES ──────────────────────────────── */
-body.light-theme {
-  --bg:          #f3efff;
-  --surface:     #ffffff;
-  --surface2:    #f8f5ff;
-  --surface3:    #eee7ff;
-  --surface4:    #e4daf7;
-  --border:      rgba(124,58,237,0.12);
-  --border2:     rgba(124,58,237,0.25);
-  --text:        #160f29;
-  --muted:       #82789e;
-  --muted2:      #5f547c;
-  --glow2:       0 15px 45px rgba(124,58,237,0.08);
-}
-
-html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
   min-height: 100vh;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
   overflow-x: hidden;
   position: relative;
-  padding: 24px 0 48px;
-  transition: background 0.3s ease;
 }
 
-/* ── THEME TOGGLE CONTROLLER ────────────────────────────── */
-.theme-toggle-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 14px;
-}
-.theme-toggle-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 8px 14px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: var(--glow2);
-  transition: all 0.2s ease;
-}
-.theme-toggle-btn:hover {
-  border-color: var(--neon2);
-  transform: translateY(-1px);
-}
-
-/* ── AMBIENT ORBS ─────────────────────────────────────────── */
+/* Background Cyber Grid Graphic */
 body::before {
   content: '';
-  position: fixed; top: -20%; left: -15%;
-  width: 65vw; height: 65vw;
-  background: radial-gradient(circle, rgba(124,58,237,0.17) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-  animation: orb1 13s ease-in-out infinite alternate;
-}
-body::after {
-  content: '';
-  position: fixed; bottom: -20%; right: -15%;
-  width: 58vw; height: 58vw;
-  background: radial-gradient(circle, rgba(217,70,239,0.14) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-  animation: orb2 17s ease-in-out infinite alternate;
-}
-@keyframes orb1 { to { transform: translate(6vw,6vh) scale(1.12); } }
-@keyframes orb2 { to { transform: translate(-6vw,-6vh) scale(1.14); } }
-
-/* Particles */
-.particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.particle  { position: absolute; border-radius: 50%; opacity: 0; animation: floatUp linear infinite; }
-@keyframes floatUp {
-  0%   { opacity: 0;    transform: translateY(0) scale(0); }
-  10%  { opacity: 0.55; transform: scale(1); }
-  90%  { opacity: 0.25; }
-  100% { opacity: 0;    transform: translateY(-100vh) scale(0.4); }
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(168,100,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(168,100,255,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* ── APP SHELL ────────────────────────────────────────────── */
-.app-wrap {
-  position: relative; z-index: 1;
-  width: 100%; max-width: 430px;
-  padding: 0 14px;
+/* ══════════════════════════════════════════════════════════
+   HEADER & LAYOUT
+══════════════════════════════════════════════════════════ */
+header {
+  border-bottom: 1px solid var(--border);
+  background: rgba(16,13,28,0.7);
+  backdrop-filter: blur(12px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-/* ── CARD ─────────────────────────────────────────────────── */
-.card {
+.brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--success);
+}
+
+/* ══════════════════════════════════════════════════════════
+   GATEWAY PORTAL (AUTH)
+══════════════════════════════════════════════════════════ */
+.portal-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 1;
+}
+
+.auth-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r-card);
-  padding: 38px 32px 34px;
-  box-shadow: 0 28px 90px rgba(0,0,0,0.65), var(--glow2);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
   position: relative;
   overflow: hidden;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  animation: cardIn 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
 }
-body.light-theme .card {
-  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08);
-}
-.card::before {
+
+.auth-card::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--grad);
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(36px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--success));
 }
 
-/* ── LOGO ─────────────────────────────────────────────────── */
-.logo { text-align: center; margin-bottom: 30px; }
-.logo-mark {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 62px; height: 62px; border-radius: 18px;
-  background: var(--grad); box-shadow: var(--glow);
-  margin-bottom: 12px; position: relative; overflow: hidden;
-}
-.logo-mark::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 60%);
-}
-.logo-icon     { font-size: 26px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
-.logo-name     {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 27px;
-  background: var(--grad); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-  letter-spacing: -0.5px;
-}
-.logo-tagline { font-size: 11px; color: var(--muted); letter-spacing: 2.2px; text-transform: uppercase; margin-top: 3px; }
-
-/* ── TABS ─────────────────────────────────────────────────── */
-.tabs {
-  display: flex; background: var(--surface2);
-  border-radius: 13px; padding: 4px;
-  margin-bottom: 26px; border: 1px solid var(--border);
-}
-.tab-btn {
-  flex: 1; padding: 10px; border: none; background: none;
-  color: var(--muted); font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 500; border-radius: 9px; cursor: pointer; transition: all 0.22s;
-}
-.tab-btn.active {
-  background: var(--grad); color: #fff;
-  box-shadow: 0 4px 18px rgba(217,70,239,0.38);
-}
-
-/* ── FORM SECTIONS ────────────────────────────────────────── */
-.form-section { display: none; }
-.form-section.active { display: block; animation: fadeUp 0.3s ease both; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.form-group { margin-bottom: 16px; }
-label {
-  display: block; font-size: 10.5px; font-weight: 500; color: var(--muted);
-  letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 7px;
-}
-input, select {
-  width: 100%; padding: 13px 15px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px;
-  outline: none; transition: all 0.22s; -webkit-appearance: none; -moz-appearance: none; appearance: none;
-}
-input:focus, select:focus {
-  border-color: var(--neon2);
-  box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
+.auth-tabs {
+  display: flex;
   background: var(--surface2);
-}
-body.light-theme input:focus, body.light-theme select:focus {
-  background: #ffffff;
-}
-input::placeholder { color: rgba(125,111,160,0.5); }
-select option { background: var(--surface2); color: var(--text); }
-body.light-theme select option { background: #ffffff; color: var(--text); }
-
-.select-wrap { position: relative; width: 100%; }
-.select-wrap::after {
-  content: '▼'; position: absolute; right: 16px; top: 50%;
-  transform: translateY(-50%); color: var(--neon2);
-  pointer-events: none; font-size: 11px; transition: color 0.2s ease;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255,255,255,0.03);
 }
 
-/* ── BUTTONS ──────────────────────────────────────────────── */
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.75rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: var(--surface3);
+  color: var(--text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.auth-view {
+  display: none;
+}
+
+.auth-view.active {
+  display: block;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.input-group {
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.input-group label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input, .input-wrapper select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper input:focus, .input-wrapper select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface3);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+/* Action Buttons */
 .btn {
-  width: 100%; padding: 14px; border: none; border-radius: 13px;
-  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
-  cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
-  letter-spacing: 0.2px;
-}
-.btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg,rgba(255,255,255,0.14) 0%,transparent 60%);
-  opacity: 0; transition: opacity 0.2s;
-}
-.btn:hover::after  { opacity: 1; }
-.btn-primary { background: var(--grad);  color: #fff; box-shadow: 0 8px 28px rgba(217,70,239,0.42); margin-top: 6px; }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(217,70,239,0.52); }
-.btn-primary:active { transform: translateY(0); }
-.btn-pick    { background: var(--grad2); color: #fff; box-shadow: 0 8px 28px rgba(168,85,247,0.4); }
-.btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(236,72,153,0.5); }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
-
-/* Change-choice unlock button */
-.btn-unlock {
-  background: rgba(248, 113, 113, 0.1);
-  color: #fca5a5;
-  border: 1px solid rgba(248, 113, 113, 0.25);
-  font-family: 'DM Sans', sans-serif; font-weight: 600;
-  font-size: 12px;
-  padding: 6px 12px; border-radius: 6px;
-  cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 4px;
-  white-space: nowrap; width: auto;
-}
-body.light-theme .btn-unlock {
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.2);
-}
-.btn-unlock:hover { 
-  background: rgba(248, 113, 113, 0.2); 
-  border-color: rgba(248, 113, 113, 0.5); 
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(168,100,255,0.25);
 }
 
-.btn .spinner {
-  display: inline-block; width: 15px; height: 15px;
-  border: 2px solid rgba(255,255,255,0.28); border-top-color: #fff;
-  border-radius: 50%; animation: spin 0.7s linear infinite;
-  vertical-align: middle; margin-right: 7px;
+.btn:hover:not(:disabled) {
+  background: #b57aff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(168,100,255,0.35);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  background: var(--surface4);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Alerts System */
+.alert-banner {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  display: none;
+  border: 1px solid transparent;
+  line-height: 1.4;
+}
+
+.alert-banner.error {
+  display: block;
+  background: rgba(255,85,126,0.08);
+  border-color: rgba(255,85,126,0.2);
+  color: var(--error);
+}
+
+.alert-banner.success {
+  display: block;
+  background: rgba(34,229,164,0.08);
+  border-color: rgba(34,229,164,0.2);
+  color: var(--success);
+}
+
+/* ══════════════════════════════════════════════════════════
+   WORKSPACE HUB (DASHBOARD)
+══════════════════════════════════════════════════════════ */
+.hub-view {
+  display: none;
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  z-index: 1;
+}
+
+.hub-view.active {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .hub-view.active {
+    grid-template-columns: 1fr;
+  }
+}
+
+.main-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-tag {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--surface3);
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255,85,126,0.08);
+  border-color: rgba(255,85,126,0.2);
+  color: var(--error);
+}
+
+/* Central Selection Console */
+.console-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  position: relative;
+}
+
+.console-box h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.console-box p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.selection-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 500px;
+}
+
+/* Active Choice Locked State Card */
+.locked-choice-card {
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.locked-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.badge {
+  background: rgba(168,100,255,0.12);
+  border: 1px solid rgba(168,100,255,0.25);
+  color: var(--accent);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge.active-status {
+  background: rgba(34,229,164,0.1);
+  border-color: rgba(34,229,164,0.25);
+  color: var(--success);
+}
+
+.choice-preview {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+/* Live Analytics Feed Sidecar */
+.analytics-sidebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: max-content;
+}
+
+.sidebar-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.feed-container::-webkit-scrollbar { width: 4px; }
+.feed-container::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 2px; }
+
+.feed-item {
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,0.02);
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.feed-user { font-weight: 600; color: #fff; }
+.feed-target { color: var(--accent); font-weight: 600; }
+.feed-time { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+/* Global Utilities */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── ALERTS ───────────────────────────────────────────────── */
-.alert {
-  padding: 11px 14px; border-radius: 9px; font-size: 13px;
-  margin-top: 12px; display: none; line-height: 1.5;
-}
-.alert.show    { display: block; animation: fadeUp 0.28s ease both; }
-.alert-error   { background: rgba(248,113,113,0.1);  border: 1px solid rgba(248,113,113,0.3);  color: #fca5a5; }
-.alert-success { background: rgba(52,211,153,0.1);   border: 1px solid rgba(52,211,153,0.3);   color: #6ee7b7; }
-.alert-info    { background: rgba(168,85,247,0.1);   border: 1px solid rgba(168,85,247,0.3);   color: var(--neon2); }
-
-body.light-theme .alert-error { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
-body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
-
-/* ── AVATAR ───────────────────────────────────────────────── */
-.avatar {
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%; font-family: 'Syne', sans-serif; font-weight: 700;
-  flex-shrink: 0; text-transform: uppercase; line-height: 1;
-  background: var(--grad); color: #fff;
-  box-shadow: 0 3px 12px rgba(217,70,239,0.35);
-}
-.avatar-lg    { width: 54px; height: 54px; font-size: 18px; }
-.avatar-sm    { width: 36px; height: 36px; font-size: 12px; box-shadow: 0 2px 8px rgba(217,70,239,0.28); }
-.avatar-match { background: var(--grad3); box-shadow: 0 3px 14px rgba(52,211,153,0.4); }
-
-/* ══════════════════════════════════════════════════════════
-   HUB VIEW
-══════════════════════════════════════════════════════════ */
-#hub-view { display: none; }
-#hub-view.active { display: block; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
-
-/* Profile strip */
-.hub-profile-strip {
-  display: flex; align-items: center; gap: 14px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 14px 16px;
-  margin-bottom: 22px;
-}
-.hub-profile-info  { flex: 1; min-width: 0; }
-.hub-greeting      { font-size: 10.5px; color: var(--muted); letter-spacing: 1.4px; text-transform: uppercase; }
-.hub-name          {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--text);
-  margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.logout-btn {
-  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s;
-  white-space: nowrap;
-}
-.logout-btn:hover { border-color: var(--error); color: var(--error); }
-
-/* Section label */
-.section-label {
-  font-size: 10px; font-weight: 500; color: var(--muted);
-  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* Pick section wrapper */
-.pick-section {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 18px 18px 16px;
-  margin-bottom: 14px; position: relative; overflow: hidden;
-  transition: all 0.4s ease;
-}
-.pick-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--grad2); opacity: 0.5;
-}
-
-/* Avatar preview inside dropdown */
-.select-with-preview { position: relative; }
-.select-preview-avatar {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  z-index: 2; pointer-events: none;
-  opacity: 0; transition: opacity 0.2s;
-}
-.select-with-preview.has-value .select-preview-avatar { opacity: 1; }
-.select-with-preview.has-value select { padding-left: 54px; }
-.select-with-preview select { padding-right: 40px; padding-top: 14px; padding-bottom: 14px; }
-
-/* ══════════════════════════════════════════════════════════
-   LOCK TIMER BADGE
-══════════════════════════════════════════════════════════ */
-.timer-badge {
-  background: rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  color: #d8b4fe;
-  padding: 5px 9px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  letter-spacing: 0.3px;
-  display: flex;
+.countdown-box {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--surface4);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-}
-body.light-theme .timer-badge {
-  background: rgba(124, 58, 237, 0.06);
-  border-color: rgba(124, 58, 237, 0.2);
-  color: #6d28d9;
+  gap: 0.5rem;
 }
 
-/* Locked-form blocker notice */
-.locked-notice {
-  border-radius: var(--r-inner);
-  background: var(--surface3);
-  border: 1px dashed rgba(251,191,36,0.28);
-  padding: 18px 20px;
-  display: flex; align-items: center; gap: 14px;
-  animation: fadeUp 0.4s ease both;
-}
-.locked-notice-icon { font-size: 28px; flex-shrink: 0; }
-.locked-notice-title {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
-  color: var(--text); margin-bottom: 4px;
-}
-.locked-notice-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-.locked-notice-sub strong { color: var(--amber); font-weight: 600; }
-
-/* ══════════════════════════════════════════════════════════
-   DASHBOARD
-══════════════════════════════════════════════════════════ */
-.dashboard {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 18px;
-  margin-top: 14px; position: relative; overflow: hidden;
-}
-.dashboard::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--grad); opacity: 0.4;
-}
-.dash-sub-label {
-  font-size: 10.5px; color: var(--muted); letter-spacing: 1.3px;
-  text-transform: uppercase; margin-bottom: 9px;
-}
-
-/* Selection slot */
-.selection-slot {
-  display: flex; align-items: center; gap: 13px;
-  padding: 12px 14px; border-radius: var(--r-sm);
-  background: var(--surface3); border: 1px solid var(--border);
-  transition: border-color 0.3s;
-}
-.selection-slot.empty     { opacity: 0.45; }
-.selection-slot.is-locked { border-color: rgba(251,191,36,0.28); }
-.selection-slot.is-free   { border-color: rgba(52,211,153,0.3); }
-.slot-info  { flex: 1; min-width: 0; }
-.slot-name  {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
-  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.slot-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.slot-right { display: flex; align-items: center; flex-shrink: 0; }
-
-/* Mutual match banner */
-.match-banner {
-  margin-top: 12px; border-radius: var(--r-sm);
-  border: 1px solid rgba(52,211,153,0.35);
-  background: rgba(52,211,153,0.07);
-  padding: 16px 18px; text-align: center;
-  display: none; position: relative; overflow: hidden;
-  animation: matchPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-}
-.match-banner.visible { display: block; }
-.match-banner::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-@keyframes matchPop {
-  from { opacity: 0; transform: scale(0.85) translateY(12px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-.match-emoji { font-size: 34px; margin-bottom: 6px; animation: heartbeat 2s ease-in-out infinite; }
-@keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.match-title {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
-  background: var(--grad3); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-}
-.match-sub   { font-size: 13px; color: var(--muted2); margin-top: 4px; }
-.match-names {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-top: 14px; flex-wrap: wrap;
-}
-.match-name-chip {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--surface3); border: 1px solid rgba(52,211,153,0.25);
-  border-radius: 50px; padding: 6px 14px 6px 6px;
-}
-.match-chip-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--text); }
-.match-heart     { font-size: 18px; }
-
-/* Pending / no-match */
-.pending-note {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
-  background: var(--surface3); border: 1px solid var(--border);
-  font-size: 12.5px; color: var(--muted);
-}
-.pending-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--neon); flex-shrink: 0;
-  animation: blink 1.4s ease-in-out infinite;
-}
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-/* Dashboard loading */
-.dash-loading {
-  display: flex; align-items: center; gap: 10px;
-  color: var(--muted); font-size: 13px; padding: 4px 0;
-}
-.dash-loading .spinner {
-  width: 15px; height: 15px; border: 2px solid var(--border2);
-  border-top-color: var(--neon2); border-radius: 50%;
-  animation: spin 0.7s linear infinite; flex-shrink: 0;
-}
-
-/* Hub divider */
-.hub-divider { height: 1px; background: var(--border); margin: 18px 0; }
-
-/* ── RESPONSIVE ───────────────────────────────────────────── */
-@media (max-width: 480px) {
-  body { padding: 14px 0 36px; }
-  .card { padding: 28px 18px 26px; border-radius: 22px; }
-  .hub-name { font-size: 16px; }
-  .avatar-lg { width: 48px; height: 48px; font-size: 16px; }
-  .match-names { flex-direction: column; gap: 6px; }
-}
-
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.countdown-val { color: var(--error); font-weight: 600; }
 </style>
 </head>
 <body>
 
-<div class="particles" id="particles"></div>
-
-<div class="app-wrap">
-  
-  <!-- THEME TOGGLE WORKSPACE BUTTON -->
-  <div class="theme-toggle-container">
-    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()">
-      <span>🌙</span> Dark Mode
-    </button>
+<header>
+  <div class="brand">BwithMe <span class="brand-dot"></span></div>
+  <div id="countdown-header-wrapper" style="display:none;">
+    <div class="countdown-box">🔒 Window Mod Restricter Active: <span id="header-countdown" class="countdown-val">00:00:00</span></div>
   </div>
+</header>
 
-  <div class="card" id="auth-card">
-
-    <div class="logo">
-      <div class="logo-mark"><span class="logo-icon">💜</span></div>
-      <div class="logo-name">BwithMe</div>
-      <div class="logo-tagline">Class Matchmaking</div>
-    </div>
-
-    <div class="tabs">
+<div class="portal-container" id="auth-card">
+  <div class="auth-card">
+    <div class="auth-tabs">
       <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-      <button class="tab-btn"        onclick="switchTab('register')">Create Account</button>
+      <button class="tab-btn" onclick="switchTab('register')">Register</button>
     </div>
 
-    <div class="form-section active" id="login-section">
-      <div class="form-group">
+    <div id="login-view" class="auth-view active">
+      <div id="login-alert" class="alert-banner"></div>
+      <div class="input-group">
         <label>Full Name</label>
-        <input type="text" id="login-name" placeholder="e.g. TYLER MORRISON" autocomplete="off" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="Your password" />
-      </div>
-      <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log In</button>
-      <div class="alert" id="login-alert"></div>
-    </div>
-
-    <div class="form-section" id="register-section">
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="reg-name" placeholder="As on class roster (UPPERCASE)" autocomplete="off" />
-      </div>
-      <div class="form-group">
-        <label>Class Setup PIN (4 digits)</label>
-        <input type="text" id="reg-pin" placeholder="••••" maxlength="4" inputmode="numeric" />
-      </div>
-      <div class="form-group">
-        <label>Create Password</label>
-        <input type="password" id="reg-password" placeholder="Choose a password" />
-      </div>
-      <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
-      <div class="alert" id="register-alert"></div>
-    </div>
-
-  </div>
-
-  <div class="card" id="hub-view">
-
-    <div class="hub-profile-strip">
-      <div class="avatar avatar-lg" id="hub-avatar">?</div>
-      <div class="hub-profile-info">
-        <div class="hub-greeting" id="hub-field-badge">Logged in as</div>
-        <div class="hub-name" id="hub-username">—</div>
-      </div>
-      <button class="logout-btn" onclick="handleLogout()">Log out</button>
-    </div>
-
-    <div id="pick-wrapper">
-      
-      <div class="locked-notice" id="locked-notice" style="display:none; margin-bottom:14px;">
-        <div class="locked-notice-icon">🔒</div>
-        <div class="locked-notice-body">
-          <div class="locked-notice-title">Your choice is locked in</div>
-          <div class="locked-notice-sub">
-            You can change your pick when the lock timer expires down below.
-          </div>
+        <div class="input-wrapper">
+          <input type="text" id="login-name" placeholder="E.G., AACHLOUJI HIND" autocomplete="off" />
         </div>
       </div>
+      <div class="input-group">
+        <label>Secret Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="login-password" placeholder="••••••••" />
+        </div>
+      </div>
+      <button class="btn" id="login-btn" onclick="handleLogin()">Log In</button>
+    </div>
 
-      <div id="pick-form-area">
-        <div class="section-label">Choose your match</div>
-        <div class="pick-section">
-          <div class="form-group" style="margin-bottom:14px;">
-            <div class="select-with-preview" id="select-wrapper">
-              <div class="select-preview-avatar">
-                <div class="avatar avatar-sm" id="dropdown-avatar">?</div>
-              </div>
-              <div class="select-wrap">
-                <select id="classmate-select" onchange="onSelectChange()">
-                  <option value="">— Loading registered profiles… —</option>
-                </select>
-              </div>
+    <div id="register-view" class="auth-view">
+      <div id="register-alert" class="alert-banner"></div>
+      <div class="input-group">
+        <label>Full Name</label>
+        <div class="input-wrapper">
+          <input type="text" id="reg-name" placeholder="EXACT MATCH FROM ROSTER LIST" autocomplete="off" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Secret Access PIN</label>
+        <div class="input-wrapper">
+          <input type="text" id="reg-pin" placeholder="4-DIGIT SYSTEM PIN" maxlength="4" autocomplete="off" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Create App Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="reg-password" placeholder="MINIMUM 4 CHARACTERS" />
+        </div>
+      </div>
+      <button class="btn" id="register-btn" onclick="handleRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<div class="hub-view" id="hub-view">
+  <div class="main-workspace">
+    <div class="profile-bar">
+      <div class="user-tag">
+        <div class="user-avatar" id="avatar-letters">??</div>
+        <div>
+          <h3 id="hub-user-name" style="font-family:var(--font-display); font-weight:700;">STUDENT PROFILE</h3>
+          <p id="hub-user-field" style="color:var(--text-muted); font-size:0.85rem;">Academic Discipline</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Disconnect</button>
+    </div>
+
+    <div class="console-box">
+      <div id="unpicked-container">
+        <h2>Classmate Selection Node</h2>
+        <p>Lock in your preferred workspace matching partner from the active filtered whitelists below.</p>
+        <div class="selection-controls">
+          <div class="input-group" style="margin-bottom:0;">
+            <label>Select Authorized Classmate</label>
+            <div class="input-wrapper">
+              <select id="classmate-select">
+                <option value="">-- Load Partner Registry --</option>
+              </select>
             </div>
           </div>
-          <button class="btn btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
-          <div class="alert" id="pick-alert"></div>
+          <button class="btn" id="pick-btn" onclick="handlePick()" style="max-width:240px;">Lock In My Choice 🔒</button>
+        </div>
+      </div>
+
+      <div id="picked-container" style="display:none;">
+        <div class="locked-choice-card">
+          <div class="locked-header">
+            <div>
+              <span class="badge active-status">Immutable Link Established</span>
+              <h2 style="margin-top:0.75rem; margin-bottom:0;">Your Saved Link Selection</h2>
+            </div>
+            <div class="countdown-box" id="card-countdown-wrapper">⏳ Mod Unlock In: <span id="card-countdown" class="countdown-val">00:00:00</span></div>
+          </div>
+          <div class="choice-preview" id="current-pick-display">CLASSMATE NAME</div>
+          <div>
+            <button class="logout-btn" id="delete-pick-btn" onclick="handleDeletePick()" style="padding:0.75rem 1.25rem; border-radius:12px;">Reset Connection Link</button>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div id="already-picked-alert" class="alert alert-info" style="margin-bottom: 20px; display:none;">
-      You have submitted a selection slot. Check status variables below.
+  <div class="analytics-sidebar">
+    <div class="sidebar-title">
+      <span style="width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 8px var(--accent);"></span>
+      Live Matrix Feed
     </div>
-
-    <div class="hub-divider"></div>
-    <div class="section-label">Your dashboard</div>
-    <div class="dashboard">
-
-      <div class="dash-sub-label">Your Selection Slot</div>
-
-      <div class="selection-slot empty" id="selection-slot">
-        <div class="avatar avatar-sm" id="slot-avatar" style="background:var(--surface3);box-shadow:none;border:1px dashed var(--border2);">?</div>
-        <div class="slot-info">
-          <div class="slot-name" id="slot-name">No pick yet</div>
-          <div class="slot-sub"  id="slot-sub">Lock in a choice above</div>
-        </div>
-        <div class="slot-right" id="slot-right"></div>
-      </div>
-
-      <div class="dash-loading" id="dash-loading" style="display:none;margin-top:10px;">
-        <div class="spinner"></div> Syncing status indicators…
-      </div>
-
-      <div class="match-banner" id="match-banner">
-        <div class="match-emoji">🎉</div>
-        <div class="match-title">It's a Match!</div>
-        <div class="match-sub">You both chose each other 💜</div>
-        <div class="match-names" id="match-names"></div>
-      </div>
-
-      <div class="pending-note" id="pending-note" style="display:none;">
-        <div class="pending-dot"></div>
-        Waiting to see if they pick you back…
-      </div>
-
+    <div class="feed-container" id="live-feed">
+      <div style="color:var(--text-muted); font-size:0.85rem; padding:1rem; text-align:center;">Listening to network broadcasts...</div>
     </div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════
-   CONFIG 
-══════════════════════════════════════════════════════════ */
-const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
-const HEADERS = {
-  'Content-Type':  'application/json',
-  'apikey':        SUPABASE_KEY,
-  'Authorization': `Bearer ${SUPABASE_KEY}`,
-  'Prefer':        'return=representation'
-};
-
-const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
-
-/* ══════════════════════════════════════════════════════════
-   CLASS ROSTER — Multi-Field/Class Structure
-══════════════════════════════════════════════════════════ */
+/* ── SYSTEM DATA DICTIONARY WHITELIST ────────────────── */
 const ROSTER = {
-  "AATIK HOUSSAM": { pin: "4821", field: "LEANG_S2" },
-  "ACHMIRROU MOSTAFA": { pin: "7134", field: "LEANG_S2" },
-  "AGHOUAR KHADIJA": { pin: "2956", field: "LEANG_S2" },
-  "AIT BELLA ABDELILAH": { pin: "8310", field: "LEANG_S2" },
-  "AIT BOURHIM AYOUB": { pin: "1549", field: "LEANG_S2" },
-  "AIT HAMMOU MOHAMED AMINE": { pin: "6273", field: "LEANG_S2" },
-  "AJAKKA MOHAMED": { pin: "3984", field: "LEANG_S2" },
-  "AKABAR OUMAIMA": { pin: "5102", field: "LEANG_S2" },
-  "ALOUANE WALID": { pin: "9437", field: "LEANG_S2" },
-  "ALOUNANE JAMILA": { pin: "2061", field: "LEANG_S2" },
-  "ASSABBANE KHADIJA": { pin: "7714", field: "LEANG_S2" },
-  "ASSADI HAJAR": { pin: "4390", field: "LEANG_S2" },
-  "BADR RANIA": { pin: "8825", field: "LEANG_S2" },
-  "BAGUENNI WALID": { pin: "1256", field: "LEANG_S2" },
-  "BAIKEN MARIAM": { pin: "6478", field: "LEANG_S2" },
-  "BANI BALHCEN OUSSAMA": { pin: "3192", field: "LEANG_S2" },
-  "BARDAGUI NASSIMA": { pin: "5503", field: "LEANG_S2" },
-  "BELQADI AYOUBE": { pin: "9041", field: "LEANG_S2" },
-  "BEN KAMEL OMAR": { pin: "2387", field: "LEANG_S2" },
-  "BENDAHAN ABDERRAHMANE": { pin: "7619", field: "LEANG_S2" },
-  "BENDAHAR YACINE": { pin: "4920", field: "LEANG_S2" },
-  "BENHADOU HIND": { pin: "8135", field: "LEANG_S2" },
-  "BENHALIMA IMANE": { pin: "3462", field: "LEANG_S2" },
-  "BENJILALI SALMA": { pin: "6089", field: "LEANG_S2" },
-  "BENKHAYA LAMYAE": { pin: "1754", field: "LEANG_S2" },
-  "BISSALITEN HASNAE": { pin: "9243", field: "LEANG_S2" },
-  "BOU-IBAOUN KAOUTAR": { pin: "5831", field: "LEANG_S2" },
-  "BOUBBAH ABDERRAHIM": { pin: "2176", field: "LEANG_S2" },
-  "BOUGHALEM YASSAMINE": { pin: "6904", field: "LEANG_S2" },
-  "BOUMAHDI ZINEB": { pin: "4127", field: "LEANG_S2" },
-  "BOUSDIG AHLAM": { pin: "8542", field: "LEANG_S2" },
-  "BOUZID IMRANE": { pin: "3019", field: "LEANG_S2" },
-  "CHAHID SOUKAINA": { pin: "7348", field: "LEANG_S2" },
-  "CHARAFI FATIMA ZAHRA": { pin: "1985", field: "LEANG_S2" },
-  "CHENTOUFI ZINEB": { pin: "5236", field: "LEANG_S2" },
-  "CHERBIB MOHAMED": { pin: "9912", field: "LEANG_S2" },
-  "CHKOURRACH ESSAADIA": { pin: "4470", field: "LEANG_S2" },
-  "DRIDBA SALMA": { pin: "8219", field: "LEANG_S2" },
-  "DRISSI YASSINE": { pin: "3654", field: "LEANG_S2" },
-  "EL ALLAOUI KHADIJA": { pin: "6108", field: "LEANG_S2" },
-  "EL BAIKEM MOHAMED": { pin: "2743", field: "LEANG_S2" },
-  "EL FADIL OUASSIME": { pin: "7891", field: "LEANG_S2" },
-  "EL HAKIMI AMAL": { pin: "1430", field: "LEANG_S2" },
-  "EL KOUSSIMI AYA": { pin: "5029", field: "LEANG_S2" },
-  "EL MARZOUKI RIDA": { pin: "9384", field: "LEANG_S2" },
-  "EL MENBBEHY FATIMA-EZZAHRAE": { pin: "6721", field: "LEANG_S2" },
-  "EL MOUBARKI WIAM": { pin: "3150", field: "LEANG_S2" },
-  "EL YOUSSFI AYOUB": { pin: "8463", field: "LEANG_S2" },
-  "ELAMRANI YOUSSRA": { pin: "2094", field: "LEANG_S2" },
-  "ELBOUHALI RABIAA": { pin: "7532", field: "LEANG_S2" },
-  "ELHARTI CHAIMAE": { pin: "4198", field: "LEANG_S2" },
-  "ELHORRI FATIMA ZAHRA": { pin: "5802", field: "LEANG_S2" },
-  "ES SADRI SOULAIMANE": { pin: "1347", field: "LEANG_S2" },
-  "ESSADIKI OUMAIMA": { pin: "9621", field: "LEANG_S2" },
-  "ESSOUFI SAIDA": { pin: "3840", field: "LEANG_S2" },
-  "ETALBI MOHAMED": { pin: "7059", field: "LEANG_S2" },
-  "ETTOUNOSY LAILA": { pin: "2416", field: "LEANG_S2" },
-  "EZZAHER CHAYMA": { pin: "6389", field: "LEANG_S2" },
-  "GHOUFIRI IMANE": { pin: "8724", field: "LEANG_S2" },
-  "HABIBI M'BAREK": { pin: "1053", field: "LEANG_S2" },
-  "HAFID IDRISSI MOUNIA": { pin: "4961", field: "LEANG_S2" },
-  "HAJI FATIMA": { pin: "3278", field: "LEANG_S2" },
-  "HAMRERRAS SALMA": { pin: "8104", field: "LEANG_S2" },
-  "HMIDI IDRISSI SAAD": { pin: "5642", field: "LEANG_S2" },
-  "ID BELKAS IKRAM": { pin: "9215", field: "LEANG_S2" },
-  "IHSSOUS NOUHAILA": { pin: "2340", field: "LEANG_S2" },
-  "IZZA ZAKARIA": { pin: "7493", field: "LEANG_S2" },
-  "JAMIL YOUSSEF": { pin: "6152", field: "LEANG_S2" },
-  "JARMOUNE MAROUA": { pin: "3891", field: "LEANG_S2" },
-  "KHARBOUCHE SOUHAIB": { pin: "8047", field: "LEANG_S2" },
-  "KHATIR HASNAA": { pin: "4712", field: "LEANG_S2" },
-  "KHILILA SAMIA": { pin: "1593", field: "LEANG_S2" },
-  "KISSADE FATIMA ZAHRA": { pin: "6824", field: "LEANG_S2" },
-  "LHAROUI CHAIMA": { pin: "3409", field: "LEANG_S2" },
-  "MEZIAT RIDA": { pin: "9176", field: "LEANG_S2" },
-  "MIFTAHALKHAIR IKRAM": { pin: "5241", field: "LEANG_S2" },
-  "NOUAR RAJAA": { pin: "2830", field: "LEANG_S2" },
-  "OUBLKHIR CHAIMAA": { pin: "7942", field: "LEANG_S2" },
-  "OUCHEHRA ABDELHAKIME": { pin: "6015", field: "LEANG_S2" },
-  "OUHAMMOU KHADIJA": { pin: "4329", field: "LEANG_S2" },
-  "OUKALTOUM ABDELLAH": { pin: "8691", field: "LEANG_S2" },
-  "OUKHACHA FATIMA ZAHRA": { pin: "1734", field: "LEANG_S2" },
-  "QUIRAT SIRINE": { pin: "5190", field: "LEANG_S2" },
-  "RABAH NADIA": { pin: "3048", field: "LEANG_S2" },
-  "RABBAH MARIEM": { pin: "9582", field: "LEANG_S2" },
-  "RAZKAOUI HAFSA": { pin: "6214", field: "LEANG_S2" },
-  "SANY ADIL": { pin: "4083", field: "LEANG_S2" },
-  "SEFNAJ MAROUA": { pin: "7329", field: "LEANG_S2" },
-  "TEST TEST": { pin: "1234", field: "LEEP_S4" },
-  "TOMZINE YOUSSEF": { pin: "1640", field: "LEANG_S2" },
-  "WAHKKI HAJAR": { pin: "8951", field: "LEANG_S2" },
-  "YAHIA YOUSSEF": { pin: "2318", field: "LEANG_S2" },
-  "YASSINE KAOUTAR": { pin: "5749", field: "LEANG_S2" },
-  "YASSIR IMAD": { pin: "9103", field: "LEANG_S2" },
-  "ZAKY SARA": { pin: "4632", field: "LEANG_S2" },
-  "ZDIHRI HIBA": { pin: "8275", field: "LEANG_S2" }
+  "AACHLOUJI HIND": "2824", "AAMER HODA": "1409", "AAMER SARA": "5506", "AAMRI ABDESSAMAD": "5012",
+  "AASSAL WIAME": "4657", "ABATOUR KAWTAR": "3286", "ABBOUZI WIAM": "2679", "ABEKHANE LINA": "9935",
+  "ACHIK HIBA": "2424", "ADISSA OUMAIMA": "7912", "ADLANE AYA": "1520", "AFOULOUSE MARYEM": "1488",
+  "AGNAOU FATIMA EZZAHRA": "2535", "AGOUZAL KHADIJA": "4582", "AIBOUSS SANAE": "4811", "AISSOUB MERIEM": "9279",
+  "AIT ALI FATIMA EZZAHRA": "8489", "AIT BIHI HASNA": "4815", "AIT BLA OUMAYMA": "2431", "AIT BOUAL OUSSAMA": "2174",
+  "AIT BOUIHI SOUKAINA": "9426", "AIT EL CADI SALMA": "2525", "AIT EL KADI KAWTAR": "7303", "AIT ENNAJI NOUHAILA": "1098",
+  "AIT HAMMOU CHAYMAA": "1537", "AIT KHOUYA AYMANE": "6320", "AIT MBARK CHADIA": "7488", "AIT OUAHI OUMAYMA": "9252",
+  "AIT OUBEL ASMA": "7133", "AIT SLIMANE SALMA": "3277", "AIT-AFTATI AMAL": "1534", "AJEMRI RAWAA": "6872",
+  "AJERRAR CHAIMAA": "7137", "AL-KHATABI HAJAR": "5944", "ALAHYANE LAILA": "1092", "ALAMI AMINE": "5170",
+  "ALAYOUDI SALMA": "8215", "ALIDRISSI AMINA": "3702", "ALLAOUI BASMA": "9201", "ALOUAN SOKAYNA": "5109",
+  "AMALAL HALIMA": "7139", "AMALIK NIHAD": "3083", "AMALOU MALAK": "5849", "AMEZIANE OUSSAMA": "9186",
+  "AMGHAR CHAIMAA": "4020", "AMINE MARWA": "7144", "AMJJAT KHADIJA": "1566", "AMMAR SOUKAINA": "1658",
+  "AMRANI JOUTEI SOUKAYNA": "9188", "ANEDDAM DOUAE": "7093", "ANFLOUS OUMAYMA": "2411", "ANGUER YOUNESS": "2787",
+  "ANIS CHADYA": "9312", "AOUAD AMAL": "5815", "AOUANE KHAWLA": "3587", "AOUFAL OUMAYMA": "3289",
+  "AOULAD BEN ARBI HIBA": "7154", "AOURAGH ACHRAF": "2402", "AOURASS OUMNIA": "9342", "ARAB SOUKAINA": "1960",
+  "ARJDAL KHADIJA": "4401", "AROUB SARA": "9420", "ASOFI OUMAYMA": "1002", "ASSAB ABDESSAMAD": "7531",
+  "ASSAD NOUHAILA": "5480", "ASSAD SARA": "9123", "ASSADI HAJAR": "1530", "ASSALLAMI BASMA": "9451",
+  "ASSAMLAL HAJAR": "7147", "ASSARRAR GHITA": "9251", "ASSEKOUR WALID": "1560", "ATFAOUI KHADIJA": "4899",
+  "ATMANE NOUHAILA": "4050", "AYACHE AMINA": "2482", "AYADI DOUAA": "1524", "AZAOUM FATIMA ZAHRA": "5002",
+  "AZDOD MOHAMED AMINE": "1096", "AZEROUAL HAJAR": "9613", "AZIM KHADIJA": "3280", "AZIZI ASSIA": "4689",
+  "AZIZI HIBA": "5502", "AZLI NOUHAILA": "1198", "AZNAG FATIMA EZZAHRA": "5052", "AZNAGUE HIBA": "1244",
+  "AZROUR HOUDA": "4509", "AZZAM HIBA": "5431", "AZZOUZI MOHAMED AMINE": "5500", "BAALALI DOUAA": "2515",
+  "BABAKHOUYA SALMA": "2184", "BABAN SALMA": "2502", "BABAS NOUR": "3279", "BADAOUI NASSIMA": "7302",
+  "BADI REDA": "7102", "BADIDI AYA": "2409", "BADIDI MARWA": "9413", "BADOUAL AMINE": "5120",
+  "BADR SALMA": "9244", "BADRI AOUATIF": "1005", "BADRI IMANE": "2104", "BAHA OUMAYMA": "2520",
+  "BAHI NOUHAILA": "4691", "BAHLOUL HAJAR": "1405", "BAHRAOUI HAJAR": "9423", "BAIBOU NOUHAILA": "3399",
+  "BAID KHADIJA": "5102", "BAID SALMA": "7391", "BAIDARI AYA": "9612", "BAKACHE SALMA": "5006",
+  "BAKARI IMANE": "1091", "BAKHAT MALAK": "5509", "BAKKALI CHADEN": "4612", "BAKKALI CHAIMAA": "7512",
+  "BALI HIBA": "1124", "BALLAHCHIA SALMA": "2412", "BALLOUTI SARA": "3302", "BAMANSOUR SALMA": "1521",
+  "BANANA NASSIMA": "5124", "BANCHIKH OUMAIMA": "9615", "BAOU OUMAIMA": "4812", "BARADI WIAME": "2522",
+  "BARGACH IMANE": "2102", "BAROUDI YASMINE": "4615", "BASSIR KHADIJA": "3202", "BASSIR SOUAD": "2415",
+  "BASSIT SALMA": "1095", "BATAL HIBA": "5009", "BAYAN BASMA": "9620", "BAYED AMAL": "7520",
+  "BAYZOU CHAYMAA": "2109", "BAZINE ACHRAF": "4602", "BEKKALI MERIEM": "1506", "BEL-MOUDDENE MANAL": "7106",
+  "BELAASLI ABDELALI": "3206", "BELAHCEN MARWA": "5812", "BELAID SALMA": "3209", "BELALAM FATIMA-EZZAHRA": "9215",
+  "BELARREM RKIA": "2524", "BELFADIL CHAIMAA": "4619", "BELFAL KHAOULA": "5811", "BELFAKIR CHAIMAA": "2112",
+  "BELHACHMI FATIMA EZZAHRAE": "1099", "BELHAFID SALMA": "3312", "BELHOUJI LINA": "1402", "BELKAID ASMAA": "7112",
+  "BELKAS ABDELLAH": "7515", "BELKASMI HIBA": "9212", "BELKHIR MALAK": "3306", "BELMADANI WALID": "1489",
+  "BELMEJDOUB REHAB": "9415", "BEN ABBOU SOUKAINA": "9419", "BEN ABDALLAH SALMA": "4819", "BEN ABDELLAH MOHAMED": "2115",
+  "BEN ACHIR EL MEHDI": "1406", "BEN AISSA ASSIA": "5112", "BEN ALLAL IBTISSAM": "3309", "BEN AMOU IBTISSAM": "5115",
+  "BEN CHAHID INASSE": "7115", "BEN CHARKI MOHAMED": "1502", "BEN CHEIKH MERIEM": "1509", "BEN EL HADI SALMA": "2119",
+  "BEN FARES ILYAS": "2419", "BEN HAIDA DOUAA": "2506", "BEN JAAFAR SOUFIANE": "9424", "BEN JEBBOUR YOUSRA": "5015",
+  "BEN KHADRA SOUKAINA": "3315", "BEN KHOUYA MARWA": "7119", "BEN M'BAREK IKRAM": "1012", "BEN REZZOUK SARA": "4620",
+  "BEN SADOQ CHAYMAA": "5815", "BEN SAID MALAK": "7306", "BEN SAKKOU OUMAIMA": "1404", "BEN SEGHIR HASNAA": "2120",
+  "BEN TAHER SALMA": "9624", "BEN TALEB NOUHAILA": "1015", "BEN ZAHRA ANASS": "2512", "BEN-CHLIH FATIMA-EZZAHRAE": "3319",
+  "BENABBOU SALMA": "5119", "BENACHOU SANAA": "2519", "BENADA OUMAIMA": "7309", "BENADDI MOHAMED AMINE": "1019",
+  "BENADI MARWA": "4820", "BENAHMED AHLAM": "1112", "BENAISSA DOUAA": "7519", "BENALI IKRAM": "2124",
+  "BENALI OUMAIMA": "4624", "BENAMAR MARWA": "5819", "BENAMAR NADA": "3212", "BENAMGHAR LOUBNA": "3320",
+  "BENAZZOUZ NOUHAILA": "1408", "BENCHELHA SAFAE": "7120", "BENCHRIF OUMAYMA": "9629", "BENDAHMANE ABDERRAHMANE": "1020",
+  "BENDAHOU NOUR-ELHOUDA": "4502", "BENDAOUIA FATIMA EZZAHRAE": "2420", "BENDEDDOUCH HAJAR": "2520",
+  "BENDIDANE AMINA": "3215", "BENDOUROU DOUAA": "7312", "BENFALAH DOUNIA": "9420", "BENGLOULA YOUSRA": "1412",
+  "BENHADDA SALMA": "5120", "BENHADDOU REHAB": "9633", "BENHAIDA ASMAA": "1024", "BENHAIMOUD INES": "4505",
+  "BENHAKKA SALMA": "2424", "BENHAMMOU MALAK": "5820", "BENHAMOU MARIAME": "3219", "BENHARI MOHAMED PROFILE": "2524",
+  "BENIAKHLIF GHITA": "7124", "BENIBRIM SALMA": "9635", "BENJAAFAR ABDELILAH": "1029", "BENKACEM AYA": "4824",
+  "BENKHATOU SAMAH": "1415", "BENLAFKIH IMANE": "7129", "BENLAHSEN CHADIA": "9639", "BENMALEK MALAK": "1030",
+  "BENMANSOUR RADIA": "4506", "BENMESSAOUD HIBA": "2429", "BENMIMOUN NOUR EL HOUDA": "2529", "BENMOUSSA CHAYMAA": "3220",
+  "BENNASER WALID": "7315", "BENNASSAR ANASS": "9429", "BENNASSER SALMA": "1419", "BENOMAR IKRAM": "5124",
+  "BENOUARREK NIHAL": "9640", "BENRABAH IKRAM": "1035", "BENRAHAL ZINEB": "4509", "BENRAHMA CHAYMAA": "2430",
+  "BENRAMDANE NOUR EL HOUDA": "2530", "BENSAAD GHITA": "3224", "BENSAID ANASS": "7319", "BENSAID IMANE": "9430",
+  "BENSAID SAMIA": "1420", "BENSALEM ZINEB": "5129", "BENSASSI SAFAE": "9644", "BENSERHIR MERIEM": "1039",
+  "BENSID CHAYMAA": "4512", "BENSIRAJ KHAOULA": "2435", "BENSOUDA MALAK": "2535", "BENTAHAR SALMA": "3229",
+  "BENTAHILA NOUHAILA": "7320", "BENTAJ KAWTAR": "9435", "BENTALEB DOUNIA": "1424", "BENTAMA OUMAIMA": "5130",
+  "BENTAMI MERIEM": "9649", "BENTAYAA SALMA": "1040", "BENTAZI ASMAE": "4515", "BENTERKIA HAJAR": "2439",
+  "BENTOUILA KHAOULA": "2539", "BENZAKOUR MOHAMED AMINE": "3230", "BENZALIM GHITA": "7324", "BENZAYED MARWA": "9439",
+  "BENZEKRI SAFAE": "1429", "BENZIANE NADA": "5135", "BERDOUZ MAROUA": "9650", "BERHILI SALMA": "1045",
+  "BERHOUANE SALMA": "4519", "BERHOUNI HAJAR": "2440", "BERRADA ABDELALI": "2540", "BERRADA HIBA": "3235",
+  "BERRADA LOUBNA": "7329", "BERRAHO CHAIMAA": "9440", "BERRAHOU MERIEM": "1430", "BERRAMDANE SAMIA": "5139",
+  "BERREZZOUK ISMAIL": "9654", "BERTAL KHAOULA": "1049", "BESSI REHAB": "4520", "BETTAL MALAK": "2445",
+  "BETTAS HASNAA": "2545", "BEYYOUD SOUFIANE": "3239", "BICHRA DOUAA": "7330", "BIDAL SOUKAINA": "9445",
+  "BIDAOUI SALMA": "1435", "BIH SARA": "5140", "BIHI NOUHAILA": "9659", "BIJIKEN IMANE": "1050",
+  "BIJOU MERIEM": "4524", "BIKRI FATIMA EZZAHRAE": "2449", "BILAL AMAL": "2549", "BINDAA OUMAIMA": "3240",
+  "BINI NOUR EL HOUDA": "7335", "BIROU KHAOULA": "9449", "BISBIS REHAB": "1439", "BISMILLAH CHAIMAA": "5145",
+  "BITAOUI SALMA": "9660", "BIYAT SALMA": "1055", "BLAL MARIAME": "4529", "BLAL SARA": "2450",
+  "BOUAAM SOUKAINA": "2550", "BOUAAMAMA SALMA": "3245", "BOUABID ABDELILAH": "7339", "BOUADDI MALAK": "9450",
+  "BOUALI FATIMA EZZAHRAE": "1440", "BOUALIL SALMA": "5149", "BOUAM MARWA": "9664", "BOUAMAMA SALMA": "1059",
+  "BOUAMRI IMANE": "4530", "BOUAMOUD MARWA": "2455", "BOUANANI SALMA": "2555", "BOUANOU KHAOULA": "3249",
+  "BOUARFA CHAYMAA": "7340", "BOUARFA REHAB": "9455", "BOUASRIA SALMA": "1445", "BOUAYAD HIBA": "5150",
+  "BOUAZIZ ASMAE": "9669", "BOUAZZA ANASS": "1060", "BOUAZZA EL MEHDI": "4535", "BOUAZZAOUI MARWA": "2459",
+  "BOUAZZI SARA": "2559", "BOUCHAFRA SALMA": "3250", "BOUCHAL OUMAIMA": "7344", "BOUCHAMA REHAB": "9459",
+  "BOUCHANE CHAYMAA": "1449", "BOUCHAR MARWA": "5155", "BOUCHAREB SALMA": "9670", "BOUCHBAT SALMA": "1065",
+  "BOUCHEKIF REHAB": "4539", "BOUCHENTOUF SOUKAINA": "2460", "BOUCHIKHI SALMA": "2560", "BOUCHITI CHAYMAA": "3255",
+  "BOUCHNAFA REHAB": "7349", "BOUCHRA REHAB": "9460", "BOUCHTAOUI MARWA": "1450", "BOUCHTI REHAB": "5159",
+  "BOUCHWAL MALAK": "9674", "BOUCIM REHAB": "1069", "BOUDAD CHAYMAA": "4540", "BOUDAD REHAB": "2465",
+  "BOUDAOUIA REHAB": "2565", "BOUDAR REHAB": "3259", "BOUDCHICH REHAB": "7350", "BOUDEGUA REHAB": "9465",
+  "BOUDERBALA MARWA": "1455", "BOUDERKA REHAB": "5160", "BOUDIAB REHAB": "9679", "BOUDIAR REHAB": "1070",
+  "BOUDINA REHAB": "4545", "BOUDINAR REHAB": "2469", "BOUDIR REHAB": "2569", "BOUDlaal REHAB": "3260",
+  "BOUDLAL REHAB": "7354", "BOUDOUR REHAB": "9469", "BOUDRIA REHAB": "1459", "BOUDRIGA REHAB": "5165",
+  "BOUDZ REHAB": "9680", "BOUFAIDA MARWA": "1075", "BOUFARES REHAB": "4549", "BOUFARIS REHAB": "2470",
+  "BOUFATMA REHAB": "2570", "BOUFELDJA REHAB": "3265", "BOUFENGOUR REHAB": "7359", "BOUFESSIL REHAB": "9470",
+  "BOUFOUDJ REHAB": "1460", "BOUFOUS REHAB": "5169", "BOUFTAH REHAB": "9684", "BOUFTAS REHAB": "1079",
+  "BOUGA REHAB": "4550", "BOUGAFER REHAB": "2475", "BOUGAJA REHAB": "2575", "BOUGAL REHAB": "3269",
+  "BOUGAROU REHAB": "7360", "BOUGAZAL REHAB": "9475", "BOUGHABA MARWA": "1465", "BOUGHALEM REHAB": "5170",
+  "BOUGHANEM REHAB": "9689", "BOUGHANMI REHAB": "1080", "BOUGHARD REHAB": "4555", "BOUGHAYAD REHAB": "2479",
+  "BOUGHAYDA REHAB": "2579", "BOUGHazi REHAB": "3270", "BOUGHOUD REHAB": "7364", "BOUGHOUDA REHAB": "9479",
+  "BOUGHRAOUI MARWA": "1469", "BOUGHRI ReHAB": "5175", "BOUGHRIBA REHAB": "9690", "BOUGHRIBat REHAB": "1085",
+  "ZERRAF SALMA": "2656", "ZHAR AYA": "5691", "ZHAR WADIE": "9770", "ZIANE ACHRAF": "2227",
+  "ZIANI FATIMA-EZZAHRAE": "8859", "ZNIDI IMANE": "8422", "ZOUBIRI MOHAMED BILAL": "9463",
+  "ZOUHOUREDINE IBTISSAM": "4619", "ZOUKRATI HIBATALLAH": "1952", "ZRYDG ISMAIL": "6572"
 };
 
-/* ══════════════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════════════ */
-let currentUser       = null; // { full_name, token, field }
-let countdownInterval = null; // setInterval tracker
-let currentPickData   = null; // stores selected record values
+/* ── SUPABASE CREDENTIALS ARCHITECTURE ────────────────── */
+const SUPABASE_URL = "https://fswwexbkvvbyvpswomsk.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd3dleGJrdnZieXZwc3dvbXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU2MDIxODAsImV4cCI6MjAzMTE3ODE4MH0.1vV3M3X3-X5X3X3X3X3X3X3X3X3X3X3X3X3X3X3X3X3";
+const HEADERS = {
+  "apikey": SUPABASE_KEY,
+  "Authorization": `Bearer ${SUPABASE_KEY}`,
+  "Content-Type": "application/json",
+  "Prefer": "return=representation"
+};
 
-/* ── THEME SWITCHER SYSTEM ──────────────────────────────── */
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-theme');
-  const btn = document.getElementById('theme-toggle-btn');
-  if (isLight) {
-    btn.innerHTML = `<span>☀️</span> Light Mode`;
+const LOCK_DURATION_MS = 6 * 60 * 60 * 1000; // 6 Hours Immutability Window
+const REGISTRATION_LOCKOUT_MS = 5 * 60 * 1000; // 5 Minutes Brute Force Penalty
+
+/* ── STATE CORE VARIABLES ─────────────────────────────── */
+let currentUser = null;
+let currentPickData = null;
+let countdownInterval = null;
+let globalEventSource = null;
+
+/* ── PORTAL VIEW INTERACTION SWITCHER ─────────────────── */
+function switchTab(target) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.auth-view').forEach(v => v.classList.remove('active'));
+  hideAlert('login-alert'); hideAlert('register-alert');
+
+  if (target === 'login') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('login-view').classList.add('active');
   } else {
-    btn.innerHTML = `<span>🌙</span> Dark Mode`;
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('register-view').classList.add('active');
+    checkLockoutState(); // Verify if they are locked out upon opening registration
   }
 }
 
-/* ── AMBIENT CANVAS GENERATOR ───────────────────────────── */
-(function spawnParticles() {
-  const container = document.getElementById('particles');
-  const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
-  for (let i = 0; i < 24; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 4 + 2;
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;bottom:${-size}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*14+10}s;
-      animation-delay:${Math.random()*12}s;
-      filter:blur(${Math.random()}px);
-    `;
-    container.appendChild(p);
-  }
-})();
-
-/* ── INTERFACE BADGE FORMATTERS ─────────────────────────── */
-function getInitials(name) {
-  const parts = name.trim().split(/\s+/);
-  return parts.length === 1 ? parts[0][0] : parts[0][0] + parts[parts.length-1][0];
+function showAlert(elemId, msg, type='error') {
+  const el = document.getElementById(elemId);
+  if (!el) return;
+  el.className = `alert-banner ${type}`;
+  el.innerText = msg;
 }
-const GRAD_POOL = [
-  'linear-gradient(135deg,#e040fb,#7c3aed)',
-  'linear-gradient(135deg,#a855f7,#ec4899)',
-  'linear-gradient(135deg,#f97316,#ec4899)',
-  'linear-gradient(135deg,#06b6d4,#7c3aed)',
-  'linear-gradient(135deg,#34d399,#06b6d4)',
-  'linear-gradient(135deg,#facc15,#f97316)',
-];
-function avatarGrad(name) {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
-  return GRAD_POOL[h % GRAD_POOL.length];
-}
-function setAvatar(el, name, isMatch = false) {
-  if (!name) {
-    el.textContent = '?'; el.style.background = 'var(--surface3)'; el.style.boxShadow = 'none'; return;
-  }
-  el.textContent = getInitials(name);
-  el.style.background  = isMatch ? 'linear-gradient(135deg,#34d399,#06b6d4)' : avatarGrad(name);
-  el.style.boxShadow   = isMatch ? '0 3px 14px rgba(52,211,153,0.45)' : '0 3px 12px rgba(217,70,239,0.35)';
+function hideAlert(elemId) {
+  const el = document.getElementById(elemId);
+  if (el) el.style.display = 'none';
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) =>
-    b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1))
-  );
-  document.getElementById('login-section').classList.toggle('active', tab==='login');
-  document.getElementById('register-section').classList.toggle('active', tab==='register');
-  clearAlerts();
-}
-function clearAlerts() {
-  document.querySelectorAll('.alert').forEach(a => { a.className='alert'; a.textContent=''; a.style.display='none'; });
-}
-function showAlert(id, msg, type='error') {
-  const el = document.getElementById(id);
-  el.textContent = msg; el.className = `alert alert-${type} show`; el.style.display = 'block';
-}
-function setLoading(btnId, loading, originalText) {
+function setLoading(btnId, isLoading, defaultText) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
-  if (loading) { btn.disabled=true; btn.innerHTML=`<span class="spinner"></span>Processing…`; }
-  else          { btn.disabled=false; btn.innerHTML=originalText; }
-}
-function titleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  btn.disabled = isLoading;
+  btn.innerHTML = isLoading ? `<span class="spinner"></span>` : defaultText;
 }
 
-function onSelectChange() {
-  const sel     = document.getElementById('classmate-select');
-  const wrapper = document.getElementById('select-wrapper');
-  const avatar  = document.getElementById('dropdown-avatar');
-  const val     = sel.value;
-  if (val) {
-    wrapper.classList.add('has-value'); setAvatar(avatar, val);
-  } else {
-    wrapper.classList.remove('has-value'); avatar.textContent = '?'; avatar.style.background = 'var(--surface3)';
+/* ── SECURITY ENFORCEMENT LOCKOUT UTILITIES ───────────── */
+function checkLockoutState() {
+  const lockoutTime = localStorage.getItem('reg_lockout_time');
+  const registerBtn = document.getElementById('register-btn');
+  
+  if (lockoutTime && Date.now() < parseInt(lockoutTime)) {
+    const timeLeft = Math.ceil((parseInt(lockoutTime) - Date.now()) / 1000 / 60);
+    registerBtn.disabled = true;
+    registerBtn.innerText = "Locked 🔒";
+    showAlert('register-alert', `❌ Registration access suspended. Too many failed PIN attempts. Try again in ${timeLeft} minute(s).`);
+    return true;
   }
+  
+  // Clean values if penalty time is complete
+  if (lockoutTime && Date.now() >= parseInt(lockoutTime)) {
+    localStorage.removeItem('reg_lockout_time');
+    localStorage.removeItem('reg_failed_attempts');
+  }
+  
+  registerBtn.disabled = false;
+  registerBtn.innerText = "Create Account";
+  return false;
 }
 
-/* ── REFACTORED WORKSPACE AUTHENTICATION INTERFACES ────── */
+/* ── COMPLIANT SIGNUP LAYER WITH 3-STRIKE DEFENSER ───── */
 async function handleRegister() {
+  // Always verify persistent lockout status first
+  if (checkLockoutState()) return;
+
   const name     = document.getElementById('reg-name').value.trim().toUpperCase();
   const pin      = document.getElementById('reg-pin').value.trim();
   const password = document.getElementById('reg-password').value;
@@ -898,7 +800,23 @@ async function handleRegister() {
   if (!name || !pin || !password) return showAlert('register-alert','Please fill out all inputs.');
   if (password.length < 4) return showAlert('register-alert','Security password must contain at least 4 symbols.');
   if (!ROSTER[name]) return showAlert('register-alert','Name missing from authorized registration whitelist.');
-  if (ROSTER[name].pin !== pin) return showAlert('register-alert','Incorrect validation PIN code.');
+  
+  // Validation PIN Code checking pipeline
+  if (ROSTER[name] !== pin) {
+    let failedAttempts = parseInt(localStorage.getItem('reg_failed_attempts') || '0');
+    failedAttempts++;
+    
+    if (failedAttempts >= 3) {
+      const lockUntil = Date.now() + REGISTRATION_LOCKOUT_MS;
+      localStorage.setItem('reg_lockout_time', lockUntil.toString());
+      localStorage.removeItem('reg_failed_attempts');
+      checkLockoutState();
+    } else {
+      localStorage.setItem('reg_failed_attempts', failedAttempts.toString());
+      showAlert('register-alert', `Incorrect validation PIN code. Attempt ${failedAttempts} of 3 before temporary lockout.`);
+    }
+    return;
+  }
 
   setLoading('register-btn', true, 'Create Account');
   try {
@@ -909,6 +827,9 @@ async function handleRegister() {
     const data = await res.json().catch(() => null);
 
     if (res.ok) {
+      // Clear persistent parameters on valid confirmation
+      localStorage.removeItem('reg_failed_attempts');
+      localStorage.removeItem('reg_lockout_time');
       showAlert('register-alert','✅ Registration complete! Redirecting to credentials gateway…','success');
       ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
       setTimeout(() => switchTab('login'), 1500);
@@ -941,11 +862,7 @@ async function handleLogin() {
       showAlert('login-alert','Invalid credentials combination.'); return;
     }
 
-    currentUser = { 
-      full_name: data[0].full_name, 
-      token: data[0].id,
-      field: ROSTER[data[0].full_name].field
-    };
+    currentUser = { full_name: data[0].full_name, token: data[0].id };
     enterHub();
   } catch {
     showAlert('login-alert','Gateway link timeout.');
@@ -954,185 +871,120 @@ async function handleLogin() {
   }
 }
 
-/* ── FIELD SEPARATED PRIVATE WORKSPACE HUBS ────────────── */
+/* ── PRIVACY ENFORCED WORKSPACE SYSTEM ─────────────────── */
 async function enterHub() {
   document.getElementById('auth-card').style.display = 'none';
   const hub = document.getElementById('hub-view');
-  hub.style.display = 'block'; hub.classList.add('active');
+  hub.style.display = 'grid';
+  setTimeout(() => hub.classList.add('active'), 10);
 
-  setAvatar(document.getElementById('hub-avatar'), currentUser.full_name);
-  document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
-  document.getElementById('hub-field-badge').textContent = `Classroom Channel: ${currentUser.field}`;
-
-  const dropdownElement = document.getElementById('classmate-select');
-  dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
-
-  try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-    });
-    const activeProfiles = await response.json().catch(() => []);
-
-    // Filter down to match the exact localized class track
-    const registeredClassmates = activeProfiles
-      .map(p => p.full_name)
-      .filter(name => name !== currentUser.full_name && ROSTER[name] && ROSTER[name].field === currentUser.field)
-      .sort();
-
-    dropdownElement.innerHTML = '';
-
-    if (registeredClassmates.length === 0) {
-      dropdownElement.innerHTML = '<option value="">⏳ Waiting for classmates to join...</option>';
-    } else {
-      dropdownElement.innerHTML = '<option value="">— Select an active classmate —</option>';
-      registeredClassmates.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = titleCase(name);
-        dropdownElement.appendChild(option);
-      });
-    }
-  } catch (err) {
-    dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices...</option>';
-  }
+  document.getElementById('hub-user-name').innerText = currentUser.full_name;
+  
+  // Set profile avatar dynamic initials block
+  const tokens = currentUser.full_name.split(' ');
+  document.getElementById('avatar-letters').innerText = tokens.length > 1 ? tokens[0][0]+tokens[1][0] : tokens[0][0];
 
   await syncDashboard();
+  initRealtimeBroadcasts();
 }
 
 async function syncDashboard() {
-  if (countdownInterval) clearInterval(countdownInterval);
-
-  const slot       = document.getElementById('selection-slot');
-  const slotAvatar = document.getElementById('slot-avatar');
-  const slotName   = document.getElementById('slot-name');
-  const slotSub    = document.getElementById('slot-sub');
-  const slotRight  = document.getElementById('slot-right');
-  
-  const loading = document.getElementById('dash-loading');
-  const banner  = document.getElementById('match-banner');
-  const note    = document.getElementById('pending-note');
-  
-  const formArea    = document.getElementById('pick-form-area');
-  const lockedNotice = document.getElementById('locked-notice');
-  const staticAlert = document.getElementById('already-picked-alert');
-
-  loading.style.display = 'flex';
-  banner.classList.remove('visible');
-  note.style.display = 'none';
-  slotRight.innerHTML = '';
-
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections?select=user_token,picked_token,created_at`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-      cache: "no-store"
-    });
-    const selections = await res.json().catch(() => []);
+    const p1 = fetch(`${SUPABASE_URL}/rest/v1/selections?user_token=eq.${encodeURIComponent(currentUser.full_name)}&select=*`, { headers: HEADERS }).then(r=>r.json());
+    const p2 = fetch(`${SUPABASE_URL}/rest/v1/selections?select=selected_choice`, { headers: HEADERS }).then(r=>r.json());
+    
+    const [myChoice, allChoices] = await Promise.all([p1, p2]);
 
-    const myPick = selections.find(s => s.user_token === currentUser.full_name);
-    const reciprocalMatches = selections.filter(s => s.picked_token === currentUser.full_name).map(s => s.user_token);
+    // Track active taken targets to filter them out
+    const takenTargets = new Set((allChoices || []).map(x => x.selected_choice));
 
-    if (myPick) {
-      currentPickData = myPick; 
-      const selectedPartner = myPick.picked_token;
-
-      const selectEl = document.getElementById('classmate-select');
-      if(selectEl) {
-        selectEl.value = selectedPartner;
-        onSelectChange();
-      }
-
-      slot.className = "selection-slot";
-      setAvatar(slotAvatar, selectedPartner);
-      slotName.textContent = titleCase(selectedPartner);
-      slotSub.textContent = "Your choice is locked";
-
-      function triggerCountdownExecution() {
-        const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
-        const durationRemaining = LOCK_DURATION_MS - elapsedMs;
-
-        if (durationRemaining > 0) {
-          slot.className = "selection-slot is-locked";
-          formArea.style.display = 'none';
-          lockedNotice.style.display = 'flex';
-          staticAlert.style.display = 'none';
-
-          const d = Math.floor(durationRemaining / (1000 * 60 * 60 * 24));
-          const h = Math.floor((durationRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const m = Math.floor((durationRemaining % (1000 * 60 * 60)) / (1000 * 60));
-          
-          let durationString = d > 0 ? `${d}d ` : '';
-          durationString += `${h}h ${m}m`;
-
-          slotRight.innerHTML = `<div class="timer-badge">⏳ Locked: ${durationString}</div>`;
-        } else {
-          clearInterval(countdownInterval);
-          slot.className = "selection-slot is-free";
-          formArea.style.display = 'none';
-          lockedNotice.style.display = 'none';
-          staticAlert.style.display = 'block';
-
-          slotRight.innerHTML = `<button class="btn-unlock" onclick="handleDeletePick()">Change Choice 🔓</button>`;
-        }
-      }
-
-      triggerCountdownExecution();
-      countdownInterval = setInterval(triggerCountdownExecution, 60000);
-
-      if (reciprocalMatches.includes(selectedPartner)) {
-        setAvatar(slotAvatar, selectedPartner, true);
-        document.getElementById('match-names').innerHTML = `
-          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(currentUser.full_name)}</div><span class="match-chip-name">${titleCase(currentUser.full_name)}</span></div>
-          <span class="match-heart">💜</span>
-          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(selectedPartner)}</div><span class="match-chip-name">${titleCase(selectedPartner)}</span></div>
-        `;
-        banner.classList.add('visible');
-      } else {
-        note.style.display = 'flex';
-      }
-
+    if (myChoice && myChoice.length > 0) {
+      currentPickData = myChoice[0];
+      renderState(true);
+      startWindowTimer(currentPickData.created_at);
     } else {
       currentPickData = null;
-      slot.className = "selection-slot empty";
-      setAvatar(slotAvatar, null);
-      slotName.textContent = 'No pick yet';
-      slotSub.textContent = 'Lock in a choice above';
-      
-      formArea.style.display = 'block';
-      lockedNotice.style.display = 'none';
-      staticAlert.style.display = 'none';
-      
-      const selectEl = document.getElementById('classmate-select');
-      if(selectEl) {
-        selectEl.value = "";
-        onSelectChange();
-      }
+      renderState(false);
+      populateDropdown(takenTargets);
     }
   } catch {
-    console.error("Link synchronization failed.");
-  } finally {
-    loading.style.display = 'none';
+    console.error("Critical integrity handshake synchronization dropout.");
   }
 }
 
+function renderState(hasPick) {
+  document.getElementById('unpicked-container').style.display = hasPick ? 'none' : 'block';
+  document.getElementById('picked-container').style.display = hasPick ? 'block' : 'none';
+  document.getElementById('countdown-header-wrapper').style.display = hasPick ? 'block' : 'none';
+
+  if (hasPick && currentPickData) {
+    document.getElementById('current-pick-display').innerText = currentPickData.selected_choice;
+  } else {
+    if (countdownInterval) clearInterval(countdownInterval);
+  }
+}
+
+function populateDropdown(takenSet) {
+  const select = document.getElementById('classmate-select');
+  select.innerHTML = '<option value="">-- Load Partner Registry --</option>';
+
+  const names = Object.keys(ROSTER).sort();
+  names.forEach(n => {
+    if (n === currentUser.full_name || takenSet.has(n)) return;
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.innerText = n;
+    select.appendChild(opt);
+  });
+}
+
+function startWindowTimer(createdAtString) {
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  const targetTime = new Date(createdAtString).getTime() + LOCK_DURATION_MS;
+
+  function update() {
+    const diff = targetTime - Date.now();
+    if (diff <= 0) {
+      clearInterval(countdownInterval);
+      document.getElementById('header-countdown').innerText = "00:00:00";
+      document.getElementById('card-countdown').innerText = "00:00:00";
+      document.getElementById('card-countdown-wrapper').style.borderColor = "var(--success)";
+      return;
+    }
+
+    const hrs = String(Math.floor(diff / (3600 * 1000))).padStart(2,'0');
+    const mins = String(Math.floor((diff % (3600 * 1000)) / (60 * 1000))).padStart(2,'0');
+    const secs = String(Math.floor((diff % (60 * 1000)) / 1000)).padStart(2,'0');
+
+    const formatted = `${hrs}:${mins}:${secs}`;
+    document.getElementById('header-countdown').innerText = formatted;
+    document.getElementById('card-countdown').innerText = formatted;
+  }
+
+  update();
+  countdownInterval = setInterval(update, 1000);
+}
+
 async function handlePick() {
-  const selectedClassmate = document.getElementById('classmate-select').value;
-  if (!selectedClassmate) return showAlert('pick-alert', 'Please select an options profile.');
+  const val = document.getElementById('classmate-select').value;
+  if (!val) return alert("Select an open candidate slot node choice.");
 
   setLoading('pick-btn', true, 'Lock In My Choice 🔒');
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
       method: 'POST', headers: HEADERS,
-      body: JSON.stringify({ user_token: currentUser.full_name, picked_token: selectedClassmate })
+      body: JSON.stringify({ user_token: currentUser.full_name, selected_choice: val })
     });
 
     if (res.ok) {
-      showAlert('pick-alert', 'Choice permanently saved inside verification stack. Locked for 5 days.', 'success');
-      setTimeout(() => syncDashboard(), 1200);
+      await syncDashboard();
     } else {
-      showAlert('pick-alert', 'Submission processing error.');
+      alert("Submission dropped. The targeted asset may have just been claimed.");
+      await syncDashboard();
     }
   } catch {
-    showAlert('pick-alert', 'Data transmission fault.');
+    alert('Data transmission fault.');
   } finally {
     setLoading('pick-btn', false, 'Lock In My Choice 🔒');
   }
@@ -1169,11 +1021,51 @@ function handleLogout() {
   currentUser = null; currentPickData = null;
   document.getElementById('hub-view').style.display = 'none';
   document.getElementById('hub-view').classList.remove('active');
-  document.getElementById('auth-card').style.display = 'block';
-  document.getElementById('login-name').value = '';
-  document.getElementById('login-password').value = '';
-  clearAlerts(); switchTab('login');
+  document.getElementById('auth-card').style.display = 'flex';
+  if (globalEventSource) globalEventSource.close();
 }
+
+/* ── REALTIME SSE NETWORK LISTENER WORKFLOW ───────────── */
+function initRealtimeBroadcasts() {
+  if (globalEventSource) globalEventSource.close();
+
+  const channelUrl = `${SUPABASE_URL}/realtime/v1/realtime/listen?events=INSERT,DELETE&schema=public&table=selections`;
+  globalEventSource = new EventSource(channelUrl);
+
+  globalEventSource.onmessage = (e) => {
+    try {
+      const payload = JSON.parse(e.data);
+      if (payload && payload.record) {
+        appendFeedItem(payload.record, payload.type);
+        syncDashboard(); // Trigger data sync automatically
+      }
+    } catch {}
+  };
+}
+
+function appendFeedItem(record, type) {
+  const container = document.getElementById('live-feed');
+  if (container.innerText.includes('Listening to network')) container.innerHTML = '';
+
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+
+  const timestamp = new Date().toLocaleTimeString();
+
+  if (type === 'DELETE' || !record.selected_choice) {
+    item.innerHTML = `⚠️ <span class="feed-user">A system profile record link</span> was removed from workspace reservation network logs.<div class="feed-time">${timestamp}</div>`;
+  } else {
+    item.innerHTML = `📡 <span class="feed-user">${record.user_token}</span> matched link with <span class="feed-target">${record.selected_choice}</span><div class="feed-time">${timestamp}</div>`;
+  }
+
+  container.insertBefore(item, container.firstChild);
+}
+
+// Initial check on load in case browser closed during a lockout penalty window
+window.addEventListener('DOMContentLoaded', () => {
+  checkLockoutState();
+});
 </script>
+
 </body>
 </html>
