@@ -46,6 +46,21 @@
   --r-xs:        7px;
 }
 
+/* ── LIGHT THEME VARIABLES ──────────────────────────────── */
+body.light-theme {
+  --bg:          #f3efff;
+  --surface:     #ffffff;
+  --surface2:    #f8f5ff;
+  --surface3:    #eee7ff;
+  --surface4:    #e4daf7;
+  --border:      rgba(124,58,237,0.12);
+  --border2:     rgba(124,58,237,0.25);
+  --text:        #160f29;
+  --muted:       #82789e;
+  --muted2:      #5f547c;
+  --glow2:       0 15px 45px rgba(124,58,237,0.08);
+}
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -58,6 +73,33 @@ body {
   overflow-x: hidden;
   position: relative;
   padding: 24px 0 48px;
+  transition: background 0.3s ease;
+}
+
+/* ── THEME TOGGLE CONTROLLER ────────────────────────────── */
+.theme-toggle-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.theme-toggle-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--glow2);
+  transition: all 0.2s ease;
+}
+.theme-toggle-btn:hover {
+  border-color: var(--neon2);
+  transform: translateY(-1px);
 }
 
 /* ── AMBIENT ORBS ─────────────────────────────────────────── */
@@ -106,7 +148,11 @@ body::after {
   box-shadow: 0 28px 90px rgba(0,0,0,0.65), var(--glow2);
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   animation: cardIn 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+body.light-theme .card {
+  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08);
 }
 .card::before {
   content: '';
@@ -174,21 +220,25 @@ input, select {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: var(--r-inner); color: var(--text);
   font-family: 'DM Sans', sans-serif; font-size: 15px;
-  outline: none; transition: all 0.22s; -webkit-appearance: none;
+  outline: none; transition: all 0.22s; -webkit-appearance: none; -moz-appearance: none; appearance: none;
 }
 input:focus, select:focus {
   border-color: var(--neon2);
   box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
-  background: rgba(24,20,38,0.9);
+  background: var(--surface2);
+}
+body.light-theme input:focus, body.light-theme select:focus {
+  background: #ffffff;
 }
 input::placeholder { color: rgba(125,111,160,0.5); }
-select option { background: #1a1428; color: var(--text); }
+select option { background: var(--surface2); color: var(--text); }
+body.light-theme select option { background: #ffffff; color: var(--text); }
 
-.select-wrap { position: relative; }
+.select-wrap { position: relative; width: 100%; }
 .select-wrap::after {
-  content: '⌄'; position: absolute; right: 15px; top: 50%;
-  transform: translateY(-52%); color: var(--neon2);
-  pointer-events: none; font-size: 19px;
+  content: '▼'; position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%); color: var(--neon2);
+  pointer-events: none; font-size: 11px; transition: color 0.2s ease;
 }
 
 /* ── BUTTONS ──────────────────────────────────────────────── */
@@ -223,6 +273,11 @@ select option { background: #1a1428; color: var(--text); }
   display: flex; align-items: center; gap: 4px;
   white-space: nowrap; width: auto;
 }
+body.light-theme .btn-unlock {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
+}
 .btn-unlock:hover { 
   background: rgba(248, 113, 113, 0.2); 
   border-color: rgba(248, 113, 113, 0.5); 
@@ -245,6 +300,9 @@ select option { background: #1a1428; color: var(--text); }
 .alert-error   { background: rgba(248,113,113,0.1);  border: 1px solid rgba(248,113,113,0.3);  color: #fca5a5; }
 .alert-success { background: rgba(52,211,153,0.1);   border: 1px solid rgba(52,211,153,0.3);   color: #6ee7b7; }
 .alert-info    { background: rgba(168,85,247,0.1);   border: 1px solid rgba(168,85,247,0.3);   color: var(--neon2); }
+
+body.light-theme .alert-error { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
 
 /* ── AVATAR ───────────────────────────────────────────────── */
 .avatar {
@@ -308,13 +366,13 @@ select option { background: #1a1428; color: var(--text); }
 /* Avatar preview inside dropdown */
 .select-with-preview { position: relative; }
 .select-preview-avatar {
-  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
   z-index: 2; pointer-events: none;
   opacity: 0; transition: opacity 0.2s;
 }
 .select-with-preview.has-value .select-preview-avatar { opacity: 1; }
-.select-with-preview.has-value select { padding-left: 52px; }
-.select-with-preview select { padding-right: 36px; }
+.select-with-preview.has-value select { padding-left: 54px; }
+.select-with-preview select { padding-right: 40px; padding-top: 14px; padding-bottom: 14px; }
 
 /* ══════════════════════════════════════════════════════════
    LOCK TIMER BADGE
@@ -332,6 +390,11 @@ select option { background: #1a1428; color: var(--text); }
   display: flex;
   align-items: center;
   gap: 4px;
+}
+body.light-theme .timer-badge {
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.2);
+  color: #6d28d9;
 }
 
 /* Locked-form blocker notice */
@@ -471,6 +534,13 @@ select option { background: #1a1428; color: var(--text); }
 <div class="particles" id="particles"></div>
 
 <div class="app-wrap">
+  
+  <!-- THEME TOGGLE WORKSPACE BUTTON -->
+  <div class="theme-toggle-container">
+    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()">
+      <span>🌙</span> Dark Mode
+    </button>
+  </div>
 
   <div class="card" id="auth-card">
 
@@ -515,7 +585,9 @@ select option { background: #1a1428; color: var(--text); }
       <div class="alert" id="register-alert"></div>
     </div>
 
-  </div><div class="card" id="hub-view">
+  </div>
+
+  <div class="card" id="hub-view">
 
     <div class="hub-profile-strip">
       <div class="avatar avatar-lg" id="hub-avatar">?</div>
@@ -594,7 +666,11 @@ select option { background: #1a1428; color: var(--text); }
         Waiting to see if they pick you back…
       </div>
 
-    </div></div></div><script>
+    </div>
+  </div>
+</div>
+
+<script>
 /* ══════════════════════════════════════════════════════════
    CONFIG 
 ══════════════════════════════════════════════════════════ */
@@ -645,6 +721,17 @@ const ROSTER = {
 let currentUser       = null; // { full_name, token }
 let countdownInterval = null; // setInterval tracker
 let currentPickData   = null; // stores selected record values
+
+/* ── THEME SWITCHER SYSTEM ──────────────────────────────── */
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (isLight) {
+    btn.innerHTML = `<span>☀️</span> Light Mode`;
+  } else {
+    btn.innerHTML = `<span>🌙</span> Dark Mode`;
+  }
+}
 
 /* ── AMBIENT CANVAS GENERATOR ───────────────────────────── */
 (function spawnParticles() {
@@ -805,13 +892,11 @@ async function enterHub() {
   dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
 
   try {
-    // We strictly query the database directly to verify who actually registered. Unregistered users do not exist here.
     const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name`, {
       headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
     });
     const activeProfiles = await response.json().catch(() => []);
 
-    // Filter out our own identity profile
     const registeredClassmates = activeProfiles
       .map(p => p.full_name)
       .filter(name => name !== currentUser.full_name)
@@ -870,21 +955,26 @@ async function syncDashboard() {
     const reciprocalMatches = selections.filter(s => s.picked_token === currentUser.full_name).map(s => s.user_token);
 
     if (myPick) {
-      currentPickData = myPick; // Save structural state internally
+      currentPickData = myPick; 
       const selectedPartner = myPick.picked_token;
+
+      // Sync custom dropdown preview values in background
+      const selectEl = document.getElementById('classmate-select');
+      if(selectEl) {
+        selectEl.value = selectedPartner;
+        onSelectChange();
+      }
 
       slot.className = "selection-slot";
       setAvatar(slotAvatar, selectedPartner);
       slotName.textContent = titleCase(selectedPartner);
       slotSub.textContent = "Your choice is locked";
 
-      // Evaluate Remaining Delta Parameters 
       function triggerCountdownExecution() {
         const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
         const durationRemaining = LOCK_DURATION_MS - elapsedMs;
 
         if (durationRemaining > 0) {
-          // ACTIVE TIME LOCK
           slot.className = "selection-slot is-locked";
           formArea.style.display = 'none';
           lockedNotice.style.display = 'flex';
@@ -899,7 +989,6 @@ async function syncDashboard() {
 
           slotRight.innerHTML = `<div class="timer-badge">⏳ Locked: ${durationString}</div>`;
         } else {
-          // LOCK LIFECYCLE TERMINATED
           clearInterval(countdownInterval);
           slot.className = "selection-slot is-free";
           formArea.style.display = 'none';
@@ -926,7 +1015,6 @@ async function syncDashboard() {
       }
 
     } else {
-      // CLEAR UNLOCKED SLOTS STATE
       currentPickData = null;
       slot.className = "selection-slot empty";
       setAvatar(slotAvatar, null);
@@ -937,8 +1025,11 @@ async function syncDashboard() {
       lockedNotice.style.display = 'none';
       staticAlert.style.display = 'none';
       
-      document.getElementById('classmate-select').value = "";
-      onSelectChange();
+      const selectEl = document.getElementById('classmate-select');
+      if(selectEl) {
+        selectEl.value = "";
+        onSelectChange();
+      }
     }
   } catch {
     console.error("Link synchronization failed.");
@@ -974,7 +1065,6 @@ async function handlePick() {
 async function handleDeletePick() {
   if (!currentPickData) return;
 
-  // STRICT CLIENT SIDE COMPLIANCE CHECK
   const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
   if (elapsedMs < LOCK_DURATION_MS) {
     alert("Compliance Violations: Direct access modification locked down until countdown expires.");
@@ -988,6 +1078,7 @@ async function handleDeletePick() {
     const res = await fetch(url, { method: 'DELETE', headers: HEADERS });
 
     if (res.ok) {
+      currentPickData = null;
       await syncDashboard();
     } else {
       alert("Database rejected modification command.");
