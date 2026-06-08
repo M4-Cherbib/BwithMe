@@ -19,1153 +19,1232 @@
   --surface4:    #252040;
   --border:      rgba(168,100,255,0.14);
   --border2:     rgba(168,100,255,0.28);
-  --text:        #f0eaff;
-  --muted:       #7d6fa0;
-  --muted2:      #a090c0;
-  --pink:        #e040fb;
-  --violet:      #7c3aed;
-  --neon:        #d946ef;
-  --neon2:       #a855f7;
-  --match:       #34d399;
-  --cyan:        #06b6d4;
-  --amber:       #fbbf24;
-  --error:       #f87171;
-  --grad:        linear-gradient(135deg, #e040fb 0%, #7c3aed 100%);
-  --grad2:       linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-  --grad3:       linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
-  --grad-lock:   linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
-  --grad-unlock: linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
-  --glow:        0 0 32px rgba(217,70,239,0.35);
-  --glow2:       0 0 70px rgba(140,80,255,0.18);
-  --glow-match:  0 0 28px rgba(52,211,153,0.4);
-  --glow-lock:   0 0 20px rgba(251,191,36,0.35);
-  --glow-unlock: 0 0 20px rgba(52,211,153,0.4);
-  --r-card:      26px;
-  --r-inner:     16px;
-  --r-sm:        10px;
-  --r-xs:        7px;
+  --text:        #f3f1f8;
+  --text-muted:  #8e8a9f;
+  --primary:     #a855f7;
+  --primary-glow:rgba(168,85,247,0.4);
+  --accent:      #e040fb;
+  --accent-glow: rgba(224,64,251,0.3);
+  --success:     #22c55e;
+  --font-display:'Syne', sans-serif;
+  --font-sans:   'DM Sans', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:   0 8px 24px rgba(0,0,0,0.5);
+  --shadow-lg:   0 16px 48px rgba(0,0,0,0.6);
+  --transition:  all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── LIGHT THEME VARIABLES ──────────────────────────────── */
 body.light-theme {
-  --bg:          #f3efff;
+  --bg:          #f7f5fa;
   --surface:     #ffffff;
-  --surface2:    #f8f5ff;
-  --surface3:    #eee7ff;
-  --surface4:    #e4daf7;
+  --surface2:    #f1edf7;
+  --surface3:    #e8e2f2;
+  --surface4:    #dfd7ed;
   --border:      rgba(124,58,237,0.12);
-  --border2:     rgba(124,58,237,0.25);
-  --text:        #160f29;
-  --muted:       #82789e;
-  --muted2:      #5f547c;
-  --glow2:       0 15px 45px rgba(124,58,237,0.08);
+  --border2:     rgba(124,58,237,0.24);
+  --text:        #120f1a;
+  --text-muted:  #625e70;
+  --primary:     #7c3aed;
+  --primary-glow:rgba(124,58,237,0.2);
+  --accent:      #db2777;
+  --accent-glow: rgba(219,39,119,0.15);
+  --success:     #16a34a;
 }
 
-html { scroll-behavior: smooth; }
-
+/* ══════════════════════════════════════════════════════════
+   BASE STYLES
+══════════════════════════════════════════════════════════ */
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
   min-height: 100vh;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   overflow-x: hidden;
   position: relative;
-  padding: 24px 0 48px;
-  transition: background 0.3s ease;
+  padding: 20px;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* ── THEME TOGGLE CONTROLLER ────────────────────────────── */
-.theme-toggle-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 14px;
+/* Canvas background glow */
+#particles {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+  overflow: hidden;
 }
-.theme-toggle-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 8px 14px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: var(--glow2);
-  transition: all 0.2s ease;
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+  animation: floatUp linear infinite;
 }
-.theme-toggle-btn:hover {
-  border-color: var(--neon2);
-  transform: translateY(-1px);
-}
-
-/* ── AMBIENT ORBS ─────────────────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed; top: -20%; left: -15%;
-  width: 65vw; height: 65vw;
-  background: radial-gradient(circle, rgba(124,58,237,0.17) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-  animation: orb1 13s ease-in-out infinite alternate;
-}
-body::after {
-  content: '';
-  position: fixed; bottom: -20%; right: -15%;
-  width: 58vw; height: 58vw;
-  background: radial-gradient(circle, rgba(217,70,239,0.14) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-  animation: orb2 17s ease-in-out infinite alternate;
-}
-@keyframes orb1 { to { transform: translate(6vw,6vh) scale(1.12); } }
-@keyframes orb2 { to { transform: translate(-6vw,-6vh) scale(1.14); } }
-
-/* Particles */
-.particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.particle  { position: absolute; border-radius: 50%; opacity: 0; animation: floatUp linear infinite; }
 @keyframes floatUp {
-  0%   { opacity: 0;    transform: translateY(0) scale(0); }
-  10%  { opacity: 0.55; transform: scale(1); }
-  90%  { opacity: 0.25; }
-  100% { opacity: 0;    transform: translateY(-100vh) scale(0.4); }
+  0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.25; }
+  90% { opacity: 0.25; }
+  100% { transform: translateY(-105vh) scale(0.8) rotate(360deg); opacity: 0; }
 }
 
-/* ── APP SHELL ────────────────────────────────────────────── */
-.app-wrap {
-  position: relative; z-index: 1;
-  width: 100%; max-width: 430px;
-  padding: 0 14px;
-}
-
-/* ── CARD ─────────────────────────────────────────────────── */
-.card {
+/* ══════════════════════════════════════════════════════════
+   COMPONENTS & UTILITIES
+══════════════════════════════════════════════════════════ */
+.interactive-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r-card);
-  padding: 38px 32px 34px;
-  box-shadow: 0 28px 90px rgba(0,0,0,0.65), var(--glow2);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--shadow-lg);
   position: relative;
-  overflow: hidden;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  animation: cardIn 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+  z-index: 1;
+  backdrop-filter: blur(8px);
+  transition: var(--transition);
 }
-body.light-theme .card {
-  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08);
-}
-.card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--grad);
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(36px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.interactive-card:hover {
+  border-color: var(--border2);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
-/* ── LOGO ─────────────────────────────────────────────────── */
-.logo { text-align: center; margin-bottom: 30px; }
-.logo-mark {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 62px; height: 62px; border-radius: 18px;
-  background: var(--grad); box-shadow: var(--glow);
-  margin-bottom: 12px; position: relative; overflow: hidden;
+.brand-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.5rem;
+  letter-spacing: -0.04em;
+  text-align: center;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text) 30%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.logo-mark::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 60%);
+.brand-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 32px;
+  font-weight: 400;
 }
-.logo-icon     { font-size: 26px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
-.logo-name     {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 27px;
-  background: var(--grad); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-  letter-spacing: -0.5px;
-}
-.logo-tagline { font-size: 11px; color: var(--muted); letter-spacing: 2.2px; text-transform: uppercase; margin-top: 3px; }
 
-/* ── TABS ─────────────────────────────────────────────────── */
-.tabs {
-  display: flex; background: var(--surface2);
-  border-radius: 13px; padding: 4px;
-  margin-bottom: 26px; border: 1px solid var(--border);
+/* Tabs switcher styling */
+.tab-row {
+  display: flex;
+  background: var(--surface2);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
 }
 .tab-btn {
-  flex: 1; padding: 10px; border: none; background: none;
-  color: var(--muted); font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 500; border-radius: 9px; cursor: pointer; transition: all 0.22s;
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 10px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: var(--transition);
 }
 .tab-btn.active {
-  background: var(--grad); color: #fff;
-  box-shadow: 0 4px 18px rgba(217,70,239,0.38);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
 }
 
-/* ── FORM SECTIONS ────────────────────────────────────────── */
-.form-section { display: none; }
-.form-section.active { display: block; animation: fadeUp 0.3s ease both; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* Form inputs styling */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
 }
-
-.form-group { margin-bottom: 16px; }
-label {
-  display: block; font-size: 10.5px; font-weight: 500; color: var(--muted);
-  letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 7px;
+.form-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  color: var(--text-muted);
 }
-input, select {
-  width: 100%; padding: 13px 15px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px;
-  outline: none; transition: all 0.22s; -webkit-appearance: none; -moz-appearance: none; appearance: none;
+.input-wrapper {
+  position: relative;
 }
-input:focus, select:focus {
-  border-color: var(--neon2);
-  box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
+.input-wrapper span {
+  position: absolute;
+  left: 16px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.form-input {
+  width: 100%;
   background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px 14px 46px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition);
 }
-body.light-theme input:focus, body.light-theme select:focus {
-  background: #ffffff;
-}
-input::placeholder { color: rgba(125,111,160,0.5); }
-select option { background: var(--surface2); color: var(--text); }
-body.light-theme select option { background: #ffffff; color: var(--text); }
-
-.select-wrap { position: relative; width: 100%; }
-.select-wrap::after {
-  content: '▼'; position: absolute; right: 16px; top: 50%;
-  transform: translateY(-50%); color: var(--neon2);
-  pointer-events: none; font-size: 11px; transition: color 0.2s ease;
-}
-
-/* ── BUTTONS ──────────────────────────────────────────────── */
-.btn {
-  width: 100%; padding: 14px; border: none; border-radius: 13px;
-  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
-  cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
-  letter-spacing: 0.2px;
-}
-.btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg,rgba(255,255,255,0.14) 0%,transparent 60%);
-  opacity: 0; transition: opacity 0.2s;
-}
-.btn:hover::after  { opacity: 1; }
-.btn-primary { background: var(--grad);  color: #fff; box-shadow: 0 8px 28px rgba(217,70,239,0.42); margin-top: 6px; }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(217,70,239,0.52); }
-.btn-primary:active { transform: translateY(0); }
-.btn-pick    { background: var(--grad2); color: #fff; box-shadow: 0 8px 28px rgba(168,85,247,0.4); }
-.btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(236,72,153,0.5); }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
-
-/* Change-choice unlock button */
-.btn-unlock {
-  background: rgba(248, 113, 113, 0.1);
-  color: #fca5a5;
-  border: 1px solid rgba(248, 113, 113, 0.25);
-  font-family: 'DM Sans', sans-serif; font-weight: 600;
-  font-size: 12px;
-  padding: 6px 12px; border-radius: 6px;
-  cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 4px;
-  white-space: nowrap; width: auto;
-}
-body.light-theme .btn-unlock {
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.2);
-}
-.btn-unlock:hover { 
-  background: rgba(248, 113, 113, 0.2); 
-  border-color: rgba(248, 113, 113, 0.5); 
+.form-input:focus {
+  border-color: var(--primary);
+  background: var(--surface3);
+  box-shadow: 0 0 0 4px var(--primary-glow);
 }
 
-.btn .spinner {
-  display: inline-block; width: 15px; height: 15px;
-  border: 2px solid rgba(255,255,255,0.28); border-top-color: #fff;
-  border-radius: 50%; animation: spin 0.7s linear infinite;
-  vertical-align: middle; margin-right: 7px;
+/* Actions buttons styling */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--primary-glow);
+  filter: brightness(1.1);
+}
+.btn-primary:active { transform: translateY(1px); }
 
-/* ── ALERTS ───────────────────────────────────────────────── */
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Alerts panels */
 .alert {
-  padding: 11px 14px; border-radius: 9px; font-size: 13px;
-  margin-top: 12px; display: none; line-height: 1.5;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+  font-weight: 500;
+  display: none;
+  line-height: 1.4;
 }
 .alert.show    { display: block; animation: fadeUp 0.28s ease both; }
 .alert-error   { background: rgba(248,113,113,0.1);  border: 1px solid rgba(248,113,113,0.3);  color: #fca5a5; }
-.alert-success { background: rgba(52,211,153,0.1);   border: 1px solid rgba(52,211,153,0.3);   color: #6ee7b7; }
-.alert-info    { background: rgba(168,85,247,0.1);   border: 1px solid rgba(168,85,247,0.3);   color: var(--neon2); }
+.alert-success { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.3);   color: #86efac; }
 
 body.light-theme .alert-error { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
-body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
+body.light-theme .alert-success { background: #dcfce7; border-color: #bbf7d0; color: #166534; }
 
-/* ── AVATAR ───────────────────────────────────────────────── */
-.avatar {
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%; font-family: 'Syne', sans-serif; font-weight: 700;
-  flex-shrink: 0; text-transform: uppercase; line-height: 1;
-  background: var(--grad); color: #fff;
-  box-shadow: 0 3px 12px rgba(217,70,239,0.35);
-}
-.avatar-lg    { width: 54px; height: 54px; font-size: 18px; }
-.avatar-sm    { width: 36px; height: 36px; font-size: 12px; box-shadow: 0 2px 8px rgba(217,70,239,0.28); }
-.avatar-match { background: var(--grad3); box-shadow: 0 3px 14px rgba(52,211,153,0.4); }
-
-/* ══════════════════════════════════════════════════════════
-   HUB VIEW
-══════════════════════════════════════════════════════════ */
-#hub-view { display: none; }
-#hub-view.active { display: block; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
-
-/* Profile strip */
-.hub-profile-strip {
-  display: flex; align-items: center; gap: 14px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 14px 16px;
-  margin-bottom: 22px;
-}
-.hub-profile-info  { flex: 1; min-width: 0; }
-.hub-greeting      { font-size: 10.5px; color: var(--muted); letter-spacing: 1.4px; text-transform: uppercase; }
-.hub-name          {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--text);
-  margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.logout-btn {
-  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s;
-  white-space: nowrap;
-}
-.logout-btn:hover { border-color: var(--error); color: var(--error); }
-
-/* Section label */
-.section-label {
-  font-size: 10px; font-weight: 500; color: var(--muted);
-  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* Pick section wrapper */
-.pick-section {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 18px 18px 16px;
-  margin-bottom: 14px; position: relative; overflow: hidden;
-  transition: all 0.4s ease;
-}
-.pick-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--grad2); opacity: 0.5;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Avatar preview inside dropdown */
-.select-with-preview { position: relative; }
-.select-preview-avatar {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  z-index: 2; pointer-events: none;
-  opacity: 0; transition: opacity 0.2s;
-}
-.select-with-preview.has-value .select-preview-avatar { opacity: 1; }
-.select-with-preview.has-value select { padding-left: 54px; }
-.select-with-preview select { padding-right: 40px; padding-top: 14px; padding-bottom: 14px; }
-
-/* ══════════════════════════════════════════════════════════
-   LOCK TIMER BADGE
-══════════════════════════════════════════════════════════ */
-.timer-badge {
-  background: rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  color: #d8b4fe;
-  padding: 5px 9px;
-  font-size: 11px;
+/* Theme Floating Button */
+.theme-btn {
+  position: fixed;
+  top: 24px; right: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 10px 16px;
+  border-radius: 30px;
+  color: var(--text);
+  font-family: var(--font-sans);
   font-weight: 600;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  letter-spacing: 0.3px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
-body.light-theme .timer-badge {
-  background: rgba(124, 58, 237, 0.06);
-  border-color: rgba(124, 58, 237, 0.2);
-  color: #6d28d9;
-}
-
-/* Locked-form blocker notice */
-.locked-notice {
-  border-radius: var(--r-inner);
-  background: var(--surface3);
-  border: 1px dashed rgba(251,191,36,0.28);
-  padding: 18px 20px;
-  display: flex; align-items: center; gap: 14px;
-  animation: fadeUp 0.4s ease both;
-}
-.locked-notice-icon { font-size: 28px; flex-shrink: 0; }
-.locked-notice-title {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
-  color: var(--text); margin-bottom: 4px;
-}
-.locked-notice-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-.locked-notice-sub strong { color: var(--amber); font-weight: 600; }
+.theme-btn:hover { background: var(--surface2); border-color: var(--border2); }
 
 /* ══════════════════════════════════════════════════════════
-   DASHBOARD
+   DASHBOARD / WORKSPACE HUB VIEW
 ══════════════════════════════════════════════════════════ */
-.dashboard {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 18px;
-  margin-top: 14px; position: relative; overflow: hidden;
+.hub-wrapper {
+  width: 100%;
+  max-width: 960px;
+  z-index: 1;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
-.dashboard::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--grad); opacity: 0.4;
+.hub-wrapper.active { display: block; opacity: 1; }
+
+.hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  background: var(--surface);
+  padding: 20px 32px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
 }
-.dash-sub-label {
-  font-size: 10.5px; color: var(--muted); letter-spacing: 1.3px;
-  text-transform: uppercase; margin-bottom: 9px;
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.avatar-circle {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+.user-info h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+.user-info p { color: var(--text-muted); font-size: 0.82rem; font-family: var(--font-mono); font-weight: 600; margin-top: 2px; }
+
+.btn-logout {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-logout:hover { background: var(--surface3); border-color: var(--border2); }
+
+/* Grid Dashboard Matrix */
+.hub-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 28px;
+}
+@media (max-width: 768px) {
+  .hub-grid { grid-template-columns: 1fr; }
 }
 
-/* Selection slot */
-.selection-slot {
-  display: flex; align-items: center; gap: 13px;
-  padding: 12px 14px; border-radius: var(--r-sm);
-  background: var(--surface3); border: 1px solid var(--border);
-  transition: border-color 0.3s;
+.hub-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
 }
-.selection-slot.empty     { opacity: 0.45; }
-.selection-slot.is-locked { border-color: rgba(251,191,36,0.28); }
-.selection-slot.is-free   { border-color: rgba(52,211,153,0.3); }
-.slot-info  { flex: 1; min-width: 0; }
-.slot-name  {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
-  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.slot-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.slot-right { display: flex; align-items: center; flex-shrink: 0; }
 
-/* Mutual match banner */
-.match-banner {
-  margin-top: 12px; border-radius: var(--r-sm);
-  border: 1px solid rgba(52,211,153,0.35);
-  background: rgba(52,211,153,0.07);
-  padding: 16px 18px; text-align: center;
-  display: none; position: relative; overflow: hidden;
-  animation: matchPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+/* Custom Dropdown Styling */
+.select-container {
+  position: relative;
+  margin-bottom: 24px;
 }
-.match-banner.visible { display: block; }
-.match-banner::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.15) 0%, transparent 70%);
+.custom-select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 14px 40px 14px 18px;
+  border-radius: 14px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  transition: var(--transition);
+}
+.custom-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
+.select-container::after {
+  content: '▼';
+  font-size: 0.75rem;
+  position: absolute;
+  right: 18px; top: 50%;
+  transform: translateY(-50%);
   pointer-events: none;
-}
-@keyframes matchPop {
-  from { opacity: 0; transform: scale(0.85) translateY(12px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-.match-emoji { font-size: 34px; margin-bottom: 6px; animation: heartbeat 2s ease-in-out infinite; }
-@keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.match-title {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
-  background: var(--grad3); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-}
-.match-sub   { font-size: 13px; color: var(--muted2); margin-top: 4px; }
-.match-names {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-top: 14px; flex-wrap: wrap;
-}
-.match-name-chip {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--surface3); border: 1px solid rgba(52,211,153,0.25);
-  border-radius: 50px; padding: 6px 14px 6px 6px;
-}
-.match-chip-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--text); }
-.match-heart     { font-size: 18px; }
-
-/* Pending / no-match */
-.pending-note {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
-  background: var(--surface3); border: 1px solid var(--border);
-  font-size: 12.5px; color: var(--muted);
-}
-.pending-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--neon); flex-shrink: 0;
-  animation: blink 1.4s ease-in-out infinite;
-}
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-/* Dashboard loading */
-.dash-loading {
-  display: flex; align-items: center; gap: 10px;
-  color: var(--muted); font-size: 13px; padding: 4px 0;
-}
-.dash-loading .spinner {
-  width: 15px; height: 15px; border: 2px solid var(--border2);
-  border-top-color: var(--neon2); border-radius: 50%;
-  animation: spin 0.7s linear infinite; flex-shrink: 0;
+  opacity: 0.6;
 }
 
-/* Hub divider */
-.hub-divider { height: 1px; background: var(--border); margin: 18px 0; }
-
-/* ── RESPONSIVE ───────────────────────────────────────────── */
-@media (max-width: 480px) {
-  body { padding: 14px 0 36px; }
-  .card { padding: 28px 18px 26px; border-radius: 22px; }
-  .hub-name { font-size: 16px; }
-  .avatar-lg { width: 48px; height: 48px; font-size: 16px; }
-  .match-names { flex-direction: column; gap: 6px; }
+/* Current selection status block */
+.status-display {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  margin-top: auto;
+  position: relative;
+  overflow: hidden;
+}
+.status-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.status-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+.status-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  padding: 10px 0;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+}
+.btn-secondary:hover { background: rgba(248,113,113,0.06); border-color: #f87171; color: #f87171; }
+
+/* Global processing overlay spinner */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.2);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Countdown Lock Screen UI styling */
+.lock-timer-box {
+  background: rgba(168,85,247,0.03);
+  border: 1px dashed var(--primary);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+.lock-timer-box.active { display: flex; animation: fadeUp 0.24s ease both; }
+.timer-stream { font-family: var(--font-mono); font-weight: 700; color: var(--accent); font-size: 1.05rem; }
+
+/* Real-time configuration list output container */
+.feed-container {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 380px;
+}
+.feed-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 40px 0;
+}
+.feed-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeUp 0.2s ease both;
+}
+.feed-item:last-child { margin-bottom: 0; }
+.feed-user { font-weight: 600; font-size: 0.92rem; }
+.feed-choice {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--primary);
+  background: var(--surface3);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
 </style>
 </head>
 <body>
 
-<div class="particles" id="particles"></div>
+<div id="particles"></div>
 
-<div class="app-wrap">
-  
-  <!-- THEME TOGGLE WORKSPACE BUTTON -->
-  <div class="theme-toggle-container">
-    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()">
-      <span>🌙</span> Dark Mode
+<button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()"><span>🌙</span> Dark Mode</button>
+
+<div class="interactive-card" id="auth-card">
+  <div class="brand-title">BwithMe</div>
+  <div class="brand-subtitle">Secure Partner Optimization Matrix</div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+    <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register Profile</button>
+  </div>
+
+  <div class="alert" id="auth-alert"></div>
+
+  <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+    <div class="form-group">
+      <label class="form-label">Full Name Identity</label>
+      <div class="input-wrapper">
+        <span>👤</span>
+        <input type="text" id="auth-name" class="form-input" placeholder="e.g. AACHLOUJI HIND" required autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="form-group" id="pin-field-group" style="display: none;">
+      <label class="form-label">System Validation PIN</label>
+      <div class="input-wrapper">
+        <span>🔢</span>
+        <input type="text" id="auth-pin" class="form-input" placeholder="4-Digit Authorization Code" maxlength="4" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Secret Access Password</label>
+      <div class="input-wrapper">
+        <span>🔒</span>
+        <input type="password" id="auth-password" class="form-input" placeholder="••••••••" required />
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary" id="auth-submit-btn">
+      <span class="spinner" id="auth-spinner"></span>
+      <span id="auth-btn-text">Authenticate Gateway ⚡</span>
     </button>
-  </div>
+  </form>
+</div>
 
-  <div class="card" id="auth-card">
-
-    <div class="logo">
-      <div class="logo-mark"><span class="logo-icon">💜</span></div>
-      <div class="logo-name">BwithMe</div>
-      <div class="logo-tagline">Class Matchmaking</div>
+<div class="hub-wrapper" id="hub-view">
+  <header class="hub-header">
+    <div class="user-badge">
+      <div class="avatar-circle" id="user-avatar">??</div>
+      <div class="user-info">
+        <h3 id="user-display-name">Loading Student Profile...</h3>
+        <p id="user-display-field">COHORT: UNKNOWN</p>
+      </div>
     </div>
+    <button class="btn-logout" onclick="handleLogout()">Disconnect 🚪</button>
+  </header>
 
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-      <button class="tab-btn"        onclick="switchTab('register')">Create Account</button>
-    </div>
+  <main class="hub-grid">
+    <section class="hub-panel">
+      <h2 class="panel-title"><span>🎯</span> Selection Allocation</h2>
+      <div class="alert" id="pick-alert"></div>
 
-    <div class="form-section active" id="login-section">
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="login-name" placeholder="e.g. TYLER MORRISON" autocomplete="off" />
+      <div id="selection-controls-container">
+        <label class="form-label">Select Target Classmate</label>
+        <div class="select-container">
+          <select id="classmate-select" class="custom-select">
+            <option value="">-- Scan Cohort Stream --</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="pick-btn" onclick="handleLockChoice()">
+          <span class="spinner" id="pick-spinner"></span>
+          <span id="pick-btn-text">Lock In My Choice 🔒</span>
+        </button>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="Your password" />
-      </div>
-      <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log In</button>
-      <div class="alert" id="login-alert"></div>
-    </div>
 
-    <div class="form-section" id="register-section">
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="reg-name" placeholder="As on class roster (UPPERCASE)" autocomplete="off" />
-      </div>
-      <div class="form-group">
-        <label>Class Setup PIN (4 digits)</label>
-        <input type="text" id="reg-pin" placeholder="••••" maxlength="4" inputmode="numeric" />
-      </div>
-      <div class="form-group">
-        <label>Create Password</label>
-        <input type="password" id="reg-password" placeholder="Choose a password" />
-      </div>
-      <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
-      <div class="alert" id="register-alert"></div>
-    </div>
-
-  </div>
-
-  <div class="card" id="hub-view">
-
-    <div class="hub-profile-strip">
-      <div class="avatar avatar-lg" id="hub-avatar">?</div>
-      <div class="hub-profile-info">
-        <div class="hub-greeting" id="hub-field-badge">Logged in as</div>
-        <div class="hub-name" id="hub-username">—</div>
-      </div>
-      <button class="logout-btn" onclick="handleLogout()">Log out</button>
-    </div>
-
-    <div id="pick-wrapper">
-      
-      <div class="locked-notice" id="locked-notice" style="display:none; margin-bottom:14px;">
-        <div class="locked-notice-icon">🔒</div>
-        <div class="locked-notice-body">
-          <div class="locked-notice-title">Your choice is locked in</div>
-          <div class="locked-notice-sub">
-            You can change your pick when the lock timer expires down below.
+      <div class="status-display">
+        <div class="status-title">Current Linked Matrix Record</div>
+        <div id="status-content">
+          <div class="status-empty">Checking secure database telemetry...</div>
+        </div>
+        
+        <div class="lock-timer-box" id="lock-countdown-box">
+          <span>⏳</span>
+          <div style="text-align: left;">
+            <div style="font-size: 0.72rem; font-weight:700; text-transform:uppercase; color: var(--text-muted);">Modification Window Encrypted</div>
+            <div class="timer-stream" id="countdown-clock">00h 00m 00s</div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div id="pick-form-area">
-        <div class="section-label">Choose your match</div>
-        <div class="pick-section">
-          <div class="form-group" style="margin-bottom:14px;">
-            <div class="select-with-preview" id="select-wrapper">
-              <div class="select-preview-avatar">
-                <div class="avatar avatar-sm" id="dropdown-avatar">?</div>
-              </div>
-              <div class="select-wrap">
-                <select id="classmate-select" onchange="onSelectChange()">
-                  <option value="">— Loading registered profiles… —</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <button class="btn btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
-          <div class="alert" id="pick-alert"></div>
-        </div>
+    <section class="hub-panel">
+      <h2 class="panel-title"><span>📡</span> Stream Allocation Feed</h2>
+      <div class="alert" id="feed-alert"></div>
+      <div class="feed-container" id="feed-list">
+        <div class="feed-empty">Connecting data sync stream pipelines...</div>
       </div>
-    </div>
-
-    <div id="already-picked-alert" class="alert alert-info" style="margin-bottom: 20px; display:none;">
-      You have submitted a selection slot. Check status variables below.
-    </div>
-
-    <div class="hub-divider"></div>
-    <div class="section-label">Your dashboard</div>
-    <div class="dashboard">
-
-      <div class="dash-sub-label">Your Selection Slot</div>
-
-      <div class="selection-slot empty" id="selection-slot">
-        <div class="avatar avatar-sm" id="slot-avatar" style="background:var(--surface3);box-shadow:none;border:1px dashed var(--border2);">?</div>
-        <div class="slot-info">
-          <div class="slot-name" id="slot-name">No pick yet</div>
-          <div class="slot-sub"  id="slot-sub">Lock in a choice above</div>
-        </div>
-        <div class="slot-right" id="slot-right"></div>
-      </div>
-
-      <div class="dash-loading" id="dash-loading" style="display:none;margin-top:10px;">
-        <div class="spinner"></div> Syncing status indicators…
-      </div>
-
-      <div class="match-banner" id="match-banner">
-        <div class="match-emoji">🎉</div>
-        <div class="match-title">It's a Match!</div>
-        <div class="match-sub">You both chose each other 💜</div>
-        <div class="match-names" id="match-names"></div>
-      </div>
-
-      <div class="pending-note" id="pending-note" style="display:none;">
-        <div class="pending-dot"></div>
-        Waiting to see if they pick you back…
-      </div>
-
-    </div>
-  </div>
+    </section>
+  </main>
 </div>
 
 <script>
 /* ══════════════════════════════════════════════════════════
-   CONFIG 
+   DATABASE RECONCILIATION LAYER (SUPABASE ROUTING)
 ══════════════════════════════════════════════════════════ */
-const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
+const SUPABASE_URL = "https://wzajvewuvvtsfglqgvew.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YWp2ZXd1dnZ0c2ZnbHFndmV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2OTg2OTAsImV4cCI6MjA1NjI3NDY5MH0.z0K8i_A9tG9pZ_v118pEun0Cshlq_0gSgA9DbyvE7uY"; 
+
 const HEADERS = {
-  'Content-Type':  'application/json',
-  'apikey':        SUPABASE_KEY,
-  'Authorization': `Bearer ${SUPABASE_KEY}`,
-  'Prefer':        'return=representation'
+  "apikey": SUPABASE_KEY,
+  "Authorization": `Bearer ${SUPABASE_KEY}`,
+  "Content-Type": "application/json",
+  "Prefer": "return=representation"
 };
 
-const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
+const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // Mandatory 5 Days Compliance Freeze
+let currentViewState   = 'login'; // 'login' or 'register'
 
 /* ══════════════════════════════════════════════════════════
-   CLASS ROSTER — Multi-Field/Class Structure
+   MASTER VERIFICATION WHITELIST DATA STRUCTURE (ROSTER)
 ══════════════════════════════════════════════════════════ */
 const ROSTER = {
-  "ABOULOUAFA OUSSAMA": { pin: "2354", field: "LEANG_S2" },
-  "ACHMIRROU MOSTAFA": { pin: "8825", field: "LEANG_S2" },
-  "AFERFASE MANAL": { pin: "3839", field: "LEANG_S2" },
-  "AGOURAM MARYAM": { pin: "9671", field: "LEANG_S2" },
-  "AIT ALI MOHAMED": { pin: "1007", field: "LEANG_S2" },
-  "AIT BIHI LAILA": { pin: "7082", field: "LEANG_S2" },
-  "AIT BOURHIM AYOUB": { pin: "7154", field: "LEANG_S2" },
-  "AIT EL BADAOUI KHAOULA": { pin: "4801", field: "LEANG_S2" },
-  "AIT HAMMOU HAFSSA": { pin: "2077", field: "LEANG_S2" },
-  "AIT HAMMOU KHADIJA": { pin: "7270", field: "LEANG_S2" },
-  "AIT HAMMOU KHADIJA (5614)": { pin: "7567", field: "LEANG_S2" },
-  "AIT HSAYNE FATIMA ZAHRA": { pin: "2600", field: "LEANG_S2" },
-  "AKABAR OUMAIMA": { pin: "1710", field: "LEANG_S2" },
-  "AKOUCHTAH SARA": { pin: "2944", field: "LEANG_S2" },
-  "ALOUNANE JAMILA": { pin: "4466", field: "LEANG_S2" },
-  "AMARIRE HANANE": { pin: "7152", field: "LEANG_S2" },
-  "AMIMAR SAAD": { pin: "2627", field: "LEANG_S2" },
-  "AMNAD FIRDAOUS": { pin: "7740", field: "LEANG_S2" },
-  "AMZIL RACHID": { pin: "1806", field: "LEANG_S2" },
-  "BAIKEN DOHA": { pin: "1456", field: "LEANG_S2" },
-  "BARDAGUI NASSIMA": { pin: "9359", field: "LEANG_S2" },
-  "BELMOUKADDEM AFAFE": { pin: "2094", field: "LEANG_S2" },
-  "BELQADI AYOUBE": { pin: "4182", field: "LEANG_S2" },
-  "BEN KAMEL OMAR": { pin: "4102", field: "LEANG_S2" },
-  "BENDAHAR YACINE": { pin: "1436", field: "LEANG_S2" },
-  "BENKHAYA LAMYAE": { pin: "4734", field: "LEANG_S2" },
-  "BENMCHICH MOHAMED AMINE": { pin: "7514", field: "LEANG_S2" },
-  "BOU-IBAOUN KAOUTAR": { pin: "8541", field: "LEANG_S2" },
-  "BOUADDI KHADIJA": { pin: "6807", field: "LEANG_S2" },
-  "BOUDAOUCH MAROUANE": { pin: "9515", field: "LEANG_S2" },
-  "BOUDI ZAKARIA": { pin: "1501", field: "LEANG_S2" },
-  "BOULAID HAMID": { pin: "2815", field: "LEANG_S2" },
-  "BOUNABI IKRAM": { pin: "9947", field: "LEANG_S2" },
-  "BOURHILA AYA": { pin: "4245", field: "LEANG_S2" },
-  "CHAJRI ZINEB": { pin: "4410", field: "LEANG_S2" },
-  "CHAKIR AYA": { pin: "2998", field: "LEANG_S2" },
-  "CHAMSSI AMINA": { pin: "4988", field: "LEANG_S2" },
-  "CHAOUB IMANE": { pin: "1530", field: "LEANG_S2" },
-  "CHHAIMI HANANE": { pin: "2901", field: "LEANG_S2" },
-  "EDDAHBY YASSINE": { pin: "3230", field: "LEANG_S2" },
-  "EL ASRANY MOHAMED ALHOUSSAINE": { pin: "7028", field: "LEANG_S2" },
-  "EL FAGUASS AMINA": { pin: "2418", field: "LEANG_S2" },
-  "EL GHANDOURI JAMILA": { pin: "8546", field: "LEANG_S2" },
-  "EL HAMRI AYA": { pin: "5550", field: "LEANG_S2" },
-  "EL KARDOUDI AYMEN": { pin: "8254", field: "LEANG_S2" },
-  "EL KHANBOUBI NADA": { pin: "3884", field: "LEANG_S2" },
-  "EL MARZOUKI RIDA": { pin: "6310", field: "LEANG_S2" },
-  "EL MENBBEHY FATIMA-EZZAHRAE": { pin: "9640", field: "LEANG_S2" },
-  "EL MOUBARKI WIAM": { pin: "8318", field: "LEANG_S2" },
-  "EL OUDDAH ZINEB": { pin: "9709", field: "LEANG_S2" },
-  "EL WAZZIKI MOHAMMED": { pin: "8478", field: "LEANG_S2" },
-  "EL-HARISS SOUAAD": { pin: "7539", field: "LEANG_S2" },
-  "ELAMRANI YOUSSRA": { pin: "2185", field: "LEANG_S2" },
-  "ELBOUR FATIMA EZZAHRA": { pin: "8071", field: "LEANG_S2" },
-  "ELGHANDOURY HAJJAR": { pin: "1466", field: "LEANG_S2" },
-  "ELHANI FATIMA EZZAHRA": { pin: "6427", field: "LEANG_S2" },
-  "ELHAR TAHA": { pin: "5008", field: "LEANG_S2" },
-  "ELHARTI CHAIMAE": { pin: "6640", field: "LEANG_S2" },
-  "ES-SADDAM ISAM": { pin: "4717", field: "LEANG_S2" },
-  "ESSOUFI SAIDA": { pin: "9912", field: "LEANG_S2" },
-  "ETTADLY BOUCHAIB": { pin: "9703", field: "LEANG_S2" },
-  "ETTOUNOSY LAILA": { pin: "6112", field: "LEANG_S2" },
-  "EZ ZAHOUANY IMANE": { pin: "3636", field: "LEANG_S2" },
-  "FAKHIR AYMEN": { pin: "5586", field: "LEANG_S2" },
-  "FERDOSS AYA": { pin: "6426", field: "LEANG_S2" },
-  "GOUT ASMA": { pin: "5821", field: "LEANG_S2" },
-  "GUATBI ABIR": { pin: "6915", field: "LEANG_S2" },
-  "HACHIMI IMANE": { pin: "2237", field: "LEANG_S2" },
-  "HADDAKI MAISSAE": { pin: "3404", field: "LEANG_S2" },
-  "HAFID IDRISSI MOUNIA": { pin: "5516", field: "LEANG_S2" },
-  "HAMIM OUMAIMA": { pin: "9939", field: "LEANG_S2" },
-  "HANIF HIBA": { pin: "5497", field: "LEANG_S2" },
-  "HARRAZ YAMNA": { pin: "3431", field: "LEANG_S2" },
-  "HILOUANE YASSMINE": { pin: "1005", field: "LEANG_S2" },
-  "HRAGA SEJOUD": { pin: "6751", field: "LEANG_S2" },
-  "ID ALI BRAHIM": { pin: "9976", field: "LEANG_S2" },
-  "ID BELKAS IKRAM": { pin: "9832", field: "LEANG_S2" },
-  "IDROUSS KHADIJA": { pin: "3519", field: "LEANG_S2" },
-  "IDYASSINE AZZEDDINE": { pin: "9229", field: "LEANG_S2" },
-  "IGHMOUR ILHAM": { pin: "7286", field: "LEANG_S2" },
-  "IMAHMOUDEN SAADIA": { pin: "6625", field: "LEANG_S2" },
-  "IZOUDA KANZA": { pin: "9422", field: "LEANG_S2" },
-  "IZZA ZAKARIA": { pin: "5036", field: "LEANG_S2" },
-  "JAAFAR MALAK": { pin: "6029", field: "LEANG_S2" },
-  "KADIRI HAFSSA": { pin: "1401", field: "LEANG_S2" },
-  "KARIM SABRIN": { pin: "9277", field: "LEANG_S2" },
-  "KARMOD SAIDA": { pin: "7680", field: "LEANG_S2" },
-  "KASRAOUI WASSILA": { pin: "1543", field: "LEANG_S2" },
-  "KHARBACH NIEMA": { pin: "4370", field: "LEANG_S2" },
-  "KHARRAZ SOUHAIL": { pin: "4391", field: "LEANG_S2" },
-  "KHATIR HASNAA": { pin: "4354", field: "LEANG_S2" },
-  "KHZAMA FATIMA ZAHRA": { pin: "4496", field: "LEANG_S2" },
-  "LGAOUSSE SOUKAINA": { pin: "3349", field: "LEANG_S2" },
-  "LHAROUI CHAIMA": { pin: "8265", field: "LEANG_S2" },
-  "MEZIAT RIDA": { pin: "3476", field: "LEANG_S2" },
-  "MOSLIH TAHA": { pin: "5234", field: "LEANG_S2" },
-  "MOUSSID IKRAM": { pin: "9356", field: "LEANG_S2" },
-  "NASIR AHLAM": { pin: "1186", field: "LEANG_S2" },
-  "NASSIK MOHAMMED": { pin: "2548", field: "LEANG_S2" },
-  "NOUAR RAJAA": { pin: "8108", field: "LEANG_S2" },
-  "OIBIADDA BRAHIM": { pin: "4201", field: "LEANG_S2" },
-  "OMAR YASSINE": { pin: "3331", field: "LEANG_S2" },
-  "OUAGHLA AYOUB": { pin: "3823", field: "LEANG_S2" },
-  "OUCHEHRA ABDELHAKIME": { pin: "4909", field: "LEANG_S2" },
-  "OUDALHA FATIMA": { pin: "6162", field: "LEANG_S2" },
-  "OUHDA KARIMA": { pin: "5249", field: "LEANG_S2" },
-  "OUJEAA ADAM": { pin: "3236", field: "LEANG_S2" },
-  "OUKALTOUM ABDELLAH": { pin: "6240", field: "LEANG_S2" },
-  "OUKHACHA FATIMA ZAHRA": { pin: "6953", field: "LEANG_S2" },
-  "OUSAID AYOUB": { pin: "3466", field: "LEANG_S2" },
-  "RABAH NADIA": { pin: "7466", field: "LEANG_S2" },
-  "RACHIDY ROMAISSAE": { pin: "4755", field: "LEANG_S2" },
-  "RADOUANE SIHAM": { pin: "8385", field: "LEANG_S2" },
-  "RAZKAOUI HAFSA": { pin: "4020", field: "LEANG_S2" },
-  "SAASA LEILA": { pin: "2269", field: "LEANG_S2" },
-  "SEFNAJ MAROUA": { pin: "9355", field: "LEANG_S2" },
-  "SOUGHLA SALMA": { pin: "3510", field: "LEANG_S2" },
-  "SRONDY ASSIA": { pin: "4941", field: "LEANG_S2" },
-  "TAGHZOUT AHLAM": { pin: "7861", field: "LEANG_S2" },
-  "TAIBI WISSAL": { pin: "6166", field: "LEANG_S2" },
-  "TAMRI ABDELKADER": { pin: "4738", field: "LEANG_S2" },
-  "TEST TEST": { pin: "1234", field: "LEEP_S4" },
-  "THABIT YAHYA": { pin: "1163", field: "LEANG_S2" },
-  "TISSENT OUMAIMA": { pin: "6783", field: "LEANG_S2" },
-  "TOUFIQI SAMIR": { pin: "9461", field: "LEANG_S2" },
-  "WAKRIME OMAIMA": { pin: "6854", field: "LEANG_S2" },
-  "ZOUBIRI LEILA": { pin: "7051", field: "LEANG_S2" }
+  // --- MASTER BACKBONE DATA REGISTRY ---
+  "AACHLOUJI HIND": { "pin": "2824", "field": "LEEP_S2" },
+  "AAMER HODA": { "pin": "1409", "field": "LEEP_S2" },
+  "AAMER SARA": { "pin": "5506", "field": "LEEP_S2" },
+  "AAMRI ABDESSAMAD": { "pin": "5012", "field": "LEEP_S2" },
+  "AASSAL WIAME": { "pin": "4657", "field": "LEEP_S2" },
+  "ABATOUR KAWTAR": { "pin": "3286", "field": "LEEP_S2" },
+  "ABBOUZI WIAM": { "pin": "2679", "field": "LEEP_S2" },
+  "ABEKHANE LINA": { "pin": "9935", "field": "LEEP_S2" },
+  "ACHIK HIBA": { "pin": "2424", "field": "LEEP_S2" },
+  "ADISSA OUMAIMA": { "pin": "7912", "field": "LEEP_S2" },
+  "ADLANE AYA": { "pin": "1520", "field": "LEEP_S2" },
+  "AFOULOUSE MARYEM": { "pin": "1488", "field": "LEEP_S2" },
+  "AGNAOU FATIMA EZZAHRA": { "pin": "2535", "field": "LEEP_S2" },
+  "AGOUZAL KHADIJA": { "pin": "4582", "field": "LEEP_S2" },
+  "AIBOUSS SANAE": { "pin": "4811", "field": "LEEP_S2" },
+  "AISSOUB MERIEM": { "pin": "9279", "field": "LEEP_S2" },
+  "AIT ABDELMALEK SOUFIANE": { "pin": "2364", "field": "LEEP_S2" },
+  "AIT ALIA FATIMA EZZAHRA": { "pin": "1910", "field": "LEEP_S2" },
+  "AIT ALLAL FATIMA-EZZAHRAE": { "pin": "9904", "field": "LEEP_S2" },
+  "AIT BABA AMINE": { "pin": "2625", "field": "LEEP_S2" },
+  "AIT CHERAA CHAIMAA": { "pin": "2858", "field": "LEEP_S2" },
+  "AIT EL CADI HASNA": { "pin": "3015", "field": "LEEP_S2" },
+  "AIT EL KADI OUMAIMA": { "pin": "8553", "field": "LEEP_S2" },
+  "AIT ICHOU IMANE": { "pin": "7488", "field": "LEEP_S2" },
+  "AIT IDIR MARIEM": { "pin": "5449", "field": "LEEP_S2" },
+  "AIT OUHAMMOU FATIMA ZAHRA": { "pin": "1801", "field": "LEEP_S2" },
+  "AIT OUMGHAR NOUR EL HOUDA": { "pin": "9722", "field": "LEEP_S2" },
+  "AJBOUR SALMA": { "pin": "8482", "field": "LEEP_S2" },
+  "AKARKAB HASNA": { "pin": "6440", "field": "LEEP_S2" },
+  "ALLALI SALMA": { "pin": "1524", "field": "LEEP_S2" },
+  "AMALI NOUR-EDDINE": { "pin": "6038", "field": "LEEP_S2" },
+  "AMANZOU LATIFA": { "pin": "6423", "field": "LEEP_S2" },
+  "AMEZIANE HIBA": { "pin": "1002", "field": "LEEP_S2" },
+  "AMGHAR CHAIMAE": { "pin": "6724", "field": "LEEP_S2" },
+  "AMIK MOHAMMED": { "pin": "1461", "field": "LEEP_S2" },
+  "AMINE HAJAR": { "pin": "5504", "field": "LEEP_S2" },
+  "AMIRI CHADIA": { "pin": "4261", "field": "LEEP_S2" },
+  "AMJAAD HAJAR": { "pin": "9519", "field": "LEEP_S2" },
+  "AMRAOUI AYOUB": { "pin": "9555", "field": "LEEP_S2" },
+  "AMRHAR KHADIJA": { "pin": "4508", "field": "LEEP_S2" },
+  "AOUAJ SARA": { "pin": "9720", "field": "LEEP_S2" },
+  "AOUINATI INSAF": { "pin": "1004", "field": "LEEP_S2" },
+  "ARAB IMANE": { "pin": "4957", "field": "LEEP_S2" },
+  "ARJDAL GHIZLANE": { "pin": "2183", "field": "LEEP_S2" },
+  "ASRI HASNAA": { "pin": "1822", "field": "LEEP_S2" },
+  "ASSAB IRCHAD": { "pin": "4150", "field": "LEEP_S2" },
+  "ATFAWI FATIMA-EZZAHRA": { "pin": "1414", "field": "LEEP_S2" },
+  "ATTAR MERIEM": { "pin": "8261", "field": "LEEP_S2" },
+  "AZDOU SOUAD": { "pin": "5002", "field": "LEEP_S2" },
+  "AZIZ KHAOULA": { "pin": "1412", "field": "LEEP_S2" },
+  "AZIZ SOUKAINA": { "pin": "9814", "field": "LEEP_S2" },
+  "AZNAG AICHA": { "pin": "2245", "field": "LEEP_S2" },
+  "AZOUD MARIAM": { "pin": "4546", "field": "LEEP_S2" },
+  "BADREDDINE MALAK": { "pin": "5441", "field": "LEEP_S2" },
+  "BAHAJ ASMAA": { "pin": "7531", "field": "LEEP_S2" },
+  "BAHEDDA HASNA": { "pin": "7117", "field": "LEEP_S2" },
+  "BAHOU MERIEM": { "pin": "9941", "field": "LEEP_S2" },
+  "BAHRACH DOUAE": { "pin": "7486", "field": "LEEP_S2" },
+  "BAHSINE MERIEM": { "pin": "3012", "field": "LEEP_S2" },
+  "BAJJA FATIMA EZZAHRAE": { "pin": "3536", "field": "LEEP_S2" },
+  "BAKHAD KHAOULA": { "pin": "1114", "field": "LEEP_S2" },
+  "BALI CHADIA": { "pin": "8440", "field": "LEEP_S2" },
+  "BANA HAFSA": { "pin": "6427", "field": "LEEP_S2" },
+  "BANOU SOUKAINA": { "pin": "1009", "field": "LEEP_S2" },
+  "BARCHANE KHADIJA": { "pin": "2918", "field": "LEEP_S2" },
+  "BARDOUZ IMANE": { "pin": "4391", "field": "LEEP_S2" },
+  "BARKAT CHAIMAE": { "pin": "9215", "field": "LEEP_S2" },
+  "BAROUCH ISMAIL": { "pin": "3349", "field": "LEEP_S2" },
+  "BASRAOUI SOUHAIL": { "pin": "8254", "field": "LEEP_S2" },
+  "BASSIR HAJAR": { "pin": "7510", "field": "LEEP_S2" },
+  "BASSIR NOUREDDINE": { "pin": "4901", "field": "LEEP_S2" },
+  "BAYANE MAROUA": { "pin": "7632", "field": "LEEP_S2" },
+  "BAYBA OUMAIMA": { "pin": "4815", "field": "LEEP_S2" },
+  "BEDRAOUI HAJAR": { "pin": "9414", "field": "LEEP_S2" },
+  "BEJJAT MARWA": { "pin": "1456", "field": "LEEP_S2" },
+  "BEKRI KAWTAR": { "pin": "9703", "field": "LEEP_S2" },
+  "BEL-KHYR BASMA": { "pin": "1530", "field": "LEEP_S2" },
+  "BEL-LAHBI SALMA": { "pin": "1112", "field": "LEEP_S2" },
+  "BELAHCEN ACHRAF": { "pin": "1466", "field": "LEEP_S2" },
+  "BELFKIH HIBA": { "pin": "4166", "field": "LEEP_S2" },
+  "BELHADJ KANZA": { "pin": "2029", "field": "LEEP_S2" },
+  "BELMAHJOUB IMANE": { "pin": "7536", "field": "LEEP_S2" },
+  "BELMKADEM FATIMA ZAHRA": { "pin": "9939", "field": "LEEP_S2" },
+  "BEN ATMANE MERIEM": { "pin": "2269", "field": "LEEP_S2" },
+  "BEN CHIKH AMAL": { "pin": "2915", "field": "LEEP_S2" },
+  "BEN CHIKH RAOUIA": { "pin": "6444", "field": "LEEP_S2" },
+  "BEN KHADRA HASNA": { "pin": "7514", "field": "LEEP_S2" },
+  "BEN LARBI MERIEM": { "pin": "3215", "field": "LEEP_S2" },
+  "BEN SAID MALIKA": { "pin": "4496", "field": "LEEP_S2" },
+  "BEN TAIB CHAIMAE": { "pin": "9318", "field": "LEEP_S2" },
+  "BEN-BOUIHA SALMA": { "pin": "8546", "field": "LEEP_S2" },
+  "BEN-DAHHOU SALMA": { "pin": "9422", "field": "LEEP_S2" },
+  "BEN-SADDIK KHAOULA": { "pin": "3230", "field": "LEEP_S2" },
+  "BENADDI CHAIMAE": { "pin": "7740", "field": "LEEP_S2" },
+  "BENAKKA ASMAA": { "pin": "2094", "field": "LEEP_S2" },
+  "BENALLAL ASMAA": { "pin": "2418", "field": "LEEP_S2" },
+  "BENARFA MOHAMMED AMINE": { "pin": "5586", "field": "LEEP_S2" },
+  "BENARJI FATIMA EZZAHRAE": { "pin": "4102", "field": "LEEP_S2" },
+  "BENCHAKROUN CHAHRAZAD": { "pin": "7270", "field": "LEEP_S2" },
+  "BENCHAOUI MARYEM": { "pin": "6915", "field": "LEEP_S2" },
+  "BENDAHBI SALMA": { "pin": "6112", "field": "LEEP_S2" },
+  "BENDAHMANE OUMAIMA": { "pin": "4734", "field": "LEEP_S2" },
+  "BENDAMI OUSSAMA": { "pin": "1401", "field": "LEEP_S2" },
+  "BENEDDI RANIA": { "pin": "2944", "field": "LEEP_S2" },
+  "BENHADDA SALMA": { "pin": "4201", "field": "LEEP_S2" },
+  "BENIAKHLIEF DOUNIA": { "pin": "3476", "field": "LEEP_S2" },
+  "BENIAR JIHANE": { "pin": "7680", "field": "LEEP_S2" },
+  "BENJEDDOU CHADIA": { "pin": "8108", "field": "LEEP_S2" },
+  "BENKADDOUR ASMAA": { "pin": "5036", "field": "LEEP_S2" },
+  "BENMALECK MALAK": { "pin": "3823", "field": "LEEP_S2" },
+  "BENMANSOUR RADIA": { "pin": "2077", "field": "LEEP_S2" },
+  "BENMOUKHA CHAIMAE": { "pin": "9671", "field": "LEEP_S2" },
+  "BENOUDA SALMA": { "pin": "2548", "field": "LEEP_S2" },
+  "BENSAID NADA": { "pin": "9356", "field": "LEEP_S2" },
+  "BENSERGHIN NIAMA": { "pin": "1501", "field": "LEEP_S2" },
+  "BENSLIMANE MARIAME": { "pin": "1186", "field": "LEEP_S2" },
+  "BENTAHAR MANAL": { "pin": "4182", "field": "LEEP_S2" },
+  "BENZEKRI OUSSAMA": { "pin": "2815", "field": "LEEP_S2" },
+  "BERHILI MERIEM": { "pin": "4370", "field": "LEEP_S2" },
+  "BERRADA AMINA": { "pin": "1007", "field": "LEEP_S2" },
+  "BERRADIA RAJAA": { "pin": "9515", "field": "LEEP_S2" },
+  "BERREHILI RACHIDA": { "pin": "3431", "field": "LEEP_S2" },
+  "BETTACHI WISSAL": { "pin": "4755", "field": "LEEP_S2" },
+  "BEYA ASSIA": { "pin": "4717", "field": "LEEP_S2" },
+  "BIADE HIBA": { "pin": "9355", "field": "LEEP_S2" },
+  "BIDARI IMANE": { "pin": "3331", "field": "LEEP_S2" },
+  "BIHI HIBA": { "pin": "3884", "field": "LEEP_S2" },
+  "BIHI OUMAIMA": { "pin": "1543", "field": "LEEP_S2" },
+  "BIJEDDIGHEN FATIMA ZAHRA": { "pin": "2998", "field": "LEEP_S2" },
+  "BIKRI KHADIJA": { "pin": "1163", "field": "LEEP_S2" },
+  "BILAL SARA": { "pin": "3519", "field": "LEEP_S2" },
+  "BINI FATIMA EZZAHRAE": { "pin": "9947", "field": "LEEP_S2" },
+  "BIRKA CHAIMAE": { "pin": "9709", "field": "LEEP_S2" },
+  "BOUAALAM MALAK": { "pin": "7152", "field": "LEEP_S2" },
+  "BOUAAM SOUKAINA": { "pin": "9229", "field": "LEEP_S2" },
+  "BOUABIDI HIND": { "pin": "4354", "field": "LEEP_S2" },
+  "BOUACHAOUI MALAK": { "pin": "3636", "field": "LEEP_S2" },
+  "BOUACHIK KHADIJA": { "pin": "2237", "field": "LEEP_S2" },
+  "BOUADDI HAJAR": { "pin": "5008", "field": "LEEP_S2" },
+  "BOUAMALA FATIMA": { "pin": "7051", "field": "LEEP_S2" },
+  "BOUAMID GHIZLANE": { "pin": "3404", "field": "LEEP_S2" },
+  "BOUAOUI HAJAR": { "pin": "1005", "field": "LEEP_S2" },
+  "BOUASSA INASS": { "pin": "4801", "field": "LEEP_S2" },
+  "BOUAYAD IKRAM": { "pin": "7861", "field": "LEEP_S2" },
+  "BOUAZZA MANAL": { "pin": "8478", "field": "LEEP_S2" },
+  "BOUAZZAOUY MOHAMED AMINE": { "pin": "6640", "field": "LEEP_S2" },
+  "BOUBEKRI ABDERRAHMANE": { "pin": "3839", "field": "LEEP_S2" },
+  "BOUCHAL HIBA": { "pin": "1436", "field": "LEEP_S2" },
+  "BOUCHAREB SALMA": { "pin": "9912", "field": "LEEP_S2" },
+  "BOUCHNAFA HIBA": { "pin": "2600", "field": "LEEP_S2" },
+  "BOUCHOUAF WISSAL": { "pin": "6751", "field": "LEEP_S2" },
+  "BOUCHTI CHADIA": { "pin": "6166", "field": "LEEP_S2" },
+  "BOUCHTI HIBA": { "pin": "4245", "field": "LEEP_S2" },
+  "BDAOUDI OUSSAMA": { "pin": "7028", "field": "LEEP_S2" },
+  "BOUDDOUFT NOUHAILA": { "pin": "8318", "field": "LEEP_S2" },
+  "BOUDERBALA ABIR": { "pin": "4466", "field": "LEEP_S2" },
+  "BOUDIAB MALAK": { "pin": "7286", "field": "LEEP_S2" },
+  "BOUDINA INSAF": { "pin": "6310", "field": "LEEP_S2" },
+  "BOUDLAL SALMA": { "pin": "4988", "field": "LEEP_S2" },
+  "BOUFARRA RAJAA": { "pin": "4410", "field": "LEEP_S2" },
+  "BOUGAA CHAIMAE": { "pin": "7154", "field": "LEEP_S2" },
+  "BOUGHAZI SANA": { "pin": "5497", "field": "LEEP_S2" },
+  "BOUGHOU JIHANE": { "pin": "2627", "field": "LEEP_S2" },
+  "BOUGHRIBA HIBA": { "pin": "6854", "field": "LEEP_S2" },
+  "BOUGRIA ELMEHDI": { "pin": "1806", "field": "LEEP_S2" },
+  "BOUGUERN OUMAIMA": { "pin": "8541", "field": "LEEP_S2" },
+  "BOUHADDA CHADIA": { "pin": "6426", "field": "LEEP_S2" },
+  "BOUHAJ MAROUA": { "pin": "7082", "field": "LEEP_S2" },
+  "BOUHAJJA IKRAM": { "pin": "9832", "field": "LEEP_S2" },
+  "BOUHALI FATIMA-EZZAHRA": { "pin": "3236", "field": "LEEP_S2" },
+  "BOUHAMIDI SALMA": { "pin": "1710", "field": "LEEP_S2" },
+  "BOUHAMOU SALMA": { "pin": "6807", "field": "LEEP_S2" },
+  "BOUHANE OUSSAMA": { "pin": "5234", "field": "LEEP_S2" },
+  "BOUHARIA WISSAL": { "pin": "6162", "field": "LEEP_S2" },
+  "BOUHOUCH FATIMA ZAHRA": { "pin": "9976", "field": "LEEP_S2" },
+  "BOUHOUT CHAIMAE": { "pin": "4909", "field": "LEEP_S2" },
+  "BOURIBA SALMA": { "pin": "3510", "field": "LEEP_S2" },
+  "BOUHSINA FATIMA-EZZAHRAE": { "pin": "6783", "field": "LEEP_S2" },
+  "BOUHYA MANAL": { "pin": "5821", "field": "LEEP_S2" },
+  "BOUICH MANAL": { "pin": "8071", "field": "LEEP_S2" },
+  "BOUIDID FATIMA-EZZAHRAE": { "pin": "9461", "field": "LEEP_S2" },
+  "BOUIR FATIMA ZAHRA": { "pin": "8825", "field": "LEEP_S2" },
+  "BOUJAADI CHAIMAE": { "pin": "7539", "field": "LEEP_S2" },
+  "BOUJAD OUSSAMA": { "pin": "5550", "field": "LEEP_S2" },
+  "BOUJIDA ASSIA": { "pin": "6240", "field": "LEEP_S2" },
+  "BOUJNANE OUMAIMA": { "pin": "5249", "field": "LEEP_S2" },
+  "BOUK ANNA SARA": { "pin": "8385", "field": "LEEP_S2" },
+  "BOUKABOUS ANAS": { "pin": "4020", "field": "LEEP_S2" },
+  "BOUKDIR SAMIRA": { "pin": "2185", "field": "LEEP_S2" },
+  "BOUKHRIS ABIR": { "pin": "6625", "field": "LEEP_S2" },
+  "BOUKHRISS JIHANE": { "pin": "2901", "field": "LEEP_S2" },
+  "BOULAHYA MERIEM": { "pin": "3466", "field": "LEEP_S2" },
+  "BOULAL MALAK": { "pin": "4738", "field": "LEEP_S2" },
+  "BOULANOUAR ASMAA": { "pin": "9277", "field": "LEEP_S2" },
+  "BOULARBAH SAFAE": { "pin": "6953", "field": "LEEP_S2" },
+  "BOULAYAD FATIMA-EZZAHRAE": { "pin": "5516", "field": "LEEP_S2" },
+  "BOULEFRAFI ISMAIL": { "pin": "9640", "field": "LEEP_S2" },
+  "BOULMANE NADA": { "pin": "1466", "field": "LEEP_S2" },
+  "TEST TEST": { "pin": "1234", "field": "LEEP_S4" },
 
+  // --- NEW ENGLISH S2 TRACK INJECTION MATRIX ---
+  "ABOULOUAFA OUSSAMA": { "pin": "2354", "field": "LEANG_S2" },
+  "ACHMIRROU MOSTAFA": { "pin": "8825", "field": "LEANG_S2" },
+  "AFERFASE MANAL": { "pin": "3839", "field": "LEANG_S2" },
+  "AGOURAM MARYAM": { "pin": "9671", "field": "LEANG_S2" },
+  "AIT ALI MOHAMED": { "pin": "1007", "field": "LEANG_S2" },
+  "AIT BIHI LAILA": { "pin": "7082", "field": "LEANG_S2" },
+  "AIT BOURHIM AYOUB": { "pin": "7154", "field": "LEANG_S2" },
+  "AIT EL BADAOUI KHAOULA": { "pin": "4801", "field": "LEANG_S2" },
+  "AIT HAMMOU HAFSSA": { "pin": "2077", "field": "LEANG_S2" },
+  "AIT HAMMOU KHADIJA": { "pin": "7270", "field": "LEANG_S2" },
+  "AIT HAMMOU KHADIJA (5614)": { "pin": "7567", "field": "LEANG_S2" },
+  "AIT HSAYNE FATIMA ZAHRA": { "pin": "2600", "field": "LEANG_S2" },
+  "AKABAR OUMAIMA": { "pin": "1710", "field": "LEANG_S2" },
+  "AKOUCHTAH SARA": { "pin": "2944", "field": "LEANG_S2" },
+  "ALOUNANE JAMILA": { "pin": "4466", "field": "LEANG_S2" },
+  "AMARIRE HANANE": { "pin": "7152", "field": "LEANG_S2" },
+  "AMIMAR SAAD": { "pin": "2627", "field": "LEANG_S2" },
+  "AMNAD FIRDAOUS": { "pin": "7740", "field": "LEANG_S2" },
+  "AMZIL RACHID": { "pin": "1806", "field": "LEANG_S2" },
+  "BAIKEN DOHA": { "pin": "1456", "field": "LEANG_S2" },
+  "BARDAGUI NASSIMA": { "pin": "9359", "field": "LEANG_S2" },
+  "BELMOUKADDEM AFAFE": { "pin": "2094", "field": "LEANG_S2" },
+  "BELQADI AYOUBE": { "pin": "4182", "field": "LEANG_S2" },
+  "BEN KAMEL OMAR": { "pin": "4102", "field": "LEANG_S2" },
+  "BENDAHAR YACINE": { "pin": "1436", "field": "LEANG_S2" },
+  "BENKHAYA LAMYAE": { "pin": "4734", "field": "LEANG_S2" },
+  "BENMCHICH MOHAMED AMINE": { "pin": "7514", "field": "LEANG_S2" },
+  "BOU-IBAOUN KAOUTAR": { "pin": "8541", "field": "LEANG_S2" },
+  "BOUADDI KHADIJA": { "pin": "6807", "field": "LEANG_S2" },
+  "BOUDAOUCH MAROUANE": { "pin": "9515", "field": "LEANG_S2" },
+  "BOUDI ZAKARIA": { "pin": "1501", "field": "LEANG_S2" },
+  "BOULAID HAMID": { "pin": "2815", "field": "LEANG_S2" },
+  "BOUNABI IKRAM": { "pin": "9947", "field": "LEANG_S2" },
+  "BOURHILA AYA": { "pin": "4245", "field": "LEANG_S2" },
+  "CHAJRI ZINEB": { "pin": "4410", "field": "LEANG_S2" },
+  "CHAKIR AYA": { "pin": "2998", "field": "LEANG_S2" },
+  "CHAMSSI AMINA": { "pin": "4988", "field": "LEANG_S2" },
+  "CHAOUB IMANE": { "pin": "1530", "field": "LEANG_S2" },
+  "CHHAIMI HANANE": { "pin": "2901", "field": "LEANG_S2" },
+  "EDDAHBY YASSINE": { "pin": "3230", "field": "LEANG_S2" },
+  "EL ASRANY MOHAMED ALHOUSSAINE": { "pin": "7028", "field": "LEANG_S2" },
+  "EL FAGUASS AMINA": { "pin": "2418", "field": "LEANG_S2" },
+  "EL GHANDOURI JAMILA": { "pin": "8546", "field": "LEANG_S2" },
+  "EL HAMRI AYA": { "pin": "5550", "field": "LEANG_S2" },
+  "EL KARDOUDI AYMEN": { "pin": "8254", "field": "LEANG_S2" },
+  "EL KHANBOUBI NADA": { "pin": "3884", "field": "LEANG_S2" },
+  "EL MARZOUKI RIDA": { "pin": "6310", "field": "LEANG_S2" },
+  "EL MENBBEHY FATIMA-EZZAHRAE": { "pin": "9640", "field": "LEANG_S2" },
+  "EL MOUBARKI WIAM": { "pin": "8318", "field": "LEANG_S2" },
+  "EL OUDDAH ZINEB": { "pin": "9709", "field": "LEANG_S2" },
+  "EL WAZZIKI MOHAMMED": { "pin": "8478", "field": "LEANG_S2" },
+  "EL-HARISS SOUAAD": { "pin": "7539", "field": "LEANG_S2" },
+  "ELAMRANI YOUSSRA": { "pin": "2185", "field": "LEANG_S2" },
+  "ELBOUR FATIMA EZZAHRA": { "pin": "8071", "field": "LEANG_S2" },
+  "ELGHANDOURY HAJJAR": { "pin": "1466", "field": "LEANG_S2" },
+  "ELHANI FATIMA EZZAHRA": { "pin": "6427", "field": "LEANG_S2" },
+  "ELHAR TAHA": { "pin": "5008", "field": "LEANG_S2" },
+  "ELHARTI CHAIMAE": { "pin": "6640", "field": "LEANG_S2" },
+  "ES-SADDAM ISAM": { "pin": "4717", "field": "LEANG_S2" },
+  "ESSOUFI SAIDA": { "pin": "9912", "field": "LEANG_S2" },
+  "ETTADLY BOUCHAIB": { "pin": "9703", "field": "LEANG_S2" },
+  "ETTOUNOSY LAILA": { "pin": "6112", "field": "LEANG_S2" },
+  "EZ ZAHOUANY IMANE": { "pin": "3636", "field": "LEANG_S2" },
+  "FAKHIR AYMEN": { "pin": "5586", "field": "LEANG_S2" },
+  "FERDOSS AYA": { "pin": "6426", "field": "LEANG_S2" },
+  "GOUT ASMA": { "pin": "5821", "field": "LEANG_S2" },
+  "GUATBI ABIR": { "pin": "6915", "field": "LEANG_S2" },
+  "HACHIMI IMANE": { "pin": "2237", "field": "LEANG_S2" },
+  "HADDAKI MAISSAE": { "pin": "3404", "field": "LEANG_S2" },
+  "HAFID IDRISSI MOUNIA": { "pin": "5516", "field": "LEANG_S2" },
+  "HAMIM OUMAIMA": { "pin": "9939", "field": "LEANG_S2" },
+  "HANIF HIBA": { "pin": "5497", "field": "LEANG_S2" },
+  "HARRAZ YAMNA": { "pin": "3431", "field": "LEANG_S2" },
+  "HILOUANE YASSMINE": { "pin": "1005", "field": "LEANG_S2" },
+  "HRAGA SEJOUD": { "pin": "6751", "field": "LEANG_S2" },
+  "ID ALI BRAHIM": { "pin": "9976", "field": "LEANG_S2" },
+  "ID BELKAS IKRAM": { "pin": "9832", "field": "LEANG_S2" },
+  "IDROUSS KHADIJA": { "pin": "3519", "field": "LEANG_S2" },
+  "IDYASSINE AZZEDDINE": { "pin": "9229", "field": "LEANG_S2" },
+  "IGHMOUR ILHAM": { "pin": "7286", "field": "LEANG_S2" },
+  "IMAHMOUDEN SAADIA": { "pin": "6625", "field": "LEANG_S2" },
+  "IZOUDA KANZA": { "pin": "9422", "field": "LEANG_S2" },
+  "IZZA ZAKARIA": { "pin": "5036", "field": "LEANG_S2" },
+  "JAAFAR MALAK": { "pin": "6029", "field": "LEANG_S2" },
+  "KADIRI HAFSSA": { "pin": "1401", "field": "LEANG_S2" },
+  "KARIM SABRIN": { "pin": "9277", "field": "LEANG_S2" },
+  "KARMOD SAIDA": { "pin": "7680", "field": "LEANG_S2" },
+  "KASRAOUI WASSILA": { "pin": "1543", "field": "LEANG_S2" },
+  "KHARBACH NIEMA": { "pin": "4370", "field": "LEANG_S2" },
+  "KHARRAZ SOUHAIL": { "pin": "4391", "field": "LEANG_S2" },
+  "KHATIR HASNAA": { "pin": "4354", "field": "LEANG_S2" },
+  "KHZAMA FATIMA ZAHRA": { "pin": "4496", "field": "LEANG_S2" },
+  "LGAOUSSE SOUKAINA": { "pin": "3349", "field": "LEANG_S2" },
+  "LHAROUI CHAIMA": { "pin": "8265", "field": "LEANG_S2" },
+  "MEZIAT RIDA": { "pin": "3476", "field": "LEANG_S2" },
+  "MOSLIH TAHA": { "pin": "5234", "field": "LEANG_S2" },
+  "MOUSSID IKRAM": { "pin": "9356", "field": "LEANG_S2" },
+  "NASIR AHLAM": { "pin": "1186", "field": "LEANG_S2" },
+  "NASSIK MOHAMMED": { "pin": "2548", "field": "LEANG_S2" },
+  "NOUAR RAJAA": { "pin": "8108", "field": "LEANG_S2" },
+  "OIBIADDA BRAHIM": { "pin": "4201", "field": "LEANG_S2" },
+  "OMAR YASSINE": { "pin": "3331", "field": "LEANG_S2" },
+  "OUAGHLA AYOUB": { "pin": "3823", "field": "LEANG_S2" },
+  "OUCHEHRA ABDELHAKIME": { "pin": "4909", "field": "LEANG_S2" },
+  "OUDALHA FATIMA": { "pin": "6162", "field": "LEANG_S2" },
+  "OUHDA KARIMA": { "pin": "5249", "field": "LEANG_S2" },
+  "OUJEAA ADAM": { "pin": "3236", "field": "LEANG_S2" },
+  "OUKALTOUM ABDELLAH": { "pin": "6240", "field": "LEANG_S2" },
+  "OUKHACHA FATIMA ZAHRA": { "pin": "6953", "field": "LEANG_S2" },
+  "OUSAID AYOUB": { "pin": "3466", "field": "LEANG_S2" },
+  "RABAH NADIA": { "pin": "7466", "field": "LEANG_S2" },
+  "RACHIDY ROMAISSAE": { "pin": "4755", "field": "LEANG_S2" },
+  "RADOUANE SIHAM": { "pin": "8385", "field": "LEANG_S2" },
+  "RAZKAOUI HAFSA": { "pin": "4020", "field": "LEANG_S2" },
+  "SAASA LEILA": { "pin": "2269", "field": "LEANG_S2" },
+  "SEFNAJ MAROUA": { "pin": "9355", "field": "LEANG_S2" },
+  "SOUGHLA SALMA": { "pin": "3510", "field": "LEANG_S2" },
+  "SRONDY ASSIA": { "pin": "4941", "field": "LEANG_S2" },
+  "TAGHZOUT AHLAM": { "pin": "7861", "field": "LEANG_S2" },
+  "TAIBI WISSAL": { "pin": "6166", "field": "LEANG_S2" },
+  "TAMRI ABDELKADER": { "pin": "4738", "field": "LEANG_S2" },
+  "THABIT YAHYA": { "pin": "1163", "field": "LEANG_S2" },
+  "TISSENT OUMAIMA": { "pin": "6783", "field": "LEANG_S2" },
+  "TOUFIQI SAMIR": { "pin": "9461", "field": "LEANG_S2" },
+  "WAKRIME OMAIMA": { "pin": "6854", "field": "LEANG_S2" },
+  "ZOUBIRI LEILA": { "pin": "7051", "field": "LEANG_S2" }
+};
 
 /* ══════════════════════════════════════════════════════════
-   STATE
+   STATE MANAGEMENT VARIABLES
 ══════════════════════════════════════════════════════════ */
-let currentUser       = null; // { full_name, token, field }
-let countdownInterval = null; // setInterval tracker
-let currentPickData   = null; // stores selected record values
+let currentUser       = null; // Holds login state tokens
+let countdownInterval = null; // System watch tracking block
+let currentPickData   = null; // Selected allocation details
 
-/* ── THEME SWITCHER SYSTEM ──────────────────────────────── */
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-theme');
-  const btn = document.getElementById('theme-toggle-btn');
-  if (isLight) {
-    btn.innerHTML = `<span>☀️</span> Light Mode`;
+/* ── UI VIEW PANEL ALTERATION ──────────────────────────── */
+function switchTab(mode) {
+  currentViewState = mode;
+  document.getElementById('auth-alert').className = 'alert';
+  document.getElementById('auth-alert').style.display = 'none';
+  document.getElementById('auth-form').reset();
+
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const pinGroup = document.getElementById('pin-field-group');
+  const btnText = document.getElementById('auth-btn-text');
+
+  if (mode === 'login') {
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+    pinGroup.style.display = 'none';
+    btnText.textContent = 'Authenticate Gateway ⚡';
   } else {
-    btn.innerHTML = `<span>🌙</span> Dark Mode`;
+    tabLogin.classList.remove('active');
+    tabRegister.classList.add('active');
+    pinGroup.style.display = 'block';
+    btnText.textContent = 'Register Secure Account ✨';
   }
 }
 
-/* ── AMBIENT CANVAS GENERATOR ───────────────────────────── */
-(function spawnParticles() {
-  const container = document.getElementById('particles');
-  const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
-  for (let i = 0; i < 24; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 4 + 2;
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;bottom:${-size}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*14+10}s;
-      animation-delay:${Math.random()*12}s;
-      filter:blur(${Math.random()}px);
-    `;
-    container.appendChild(p);
-  }
-})();
+function setLoading(prefix, isLoad, fallback) {
+  const spin = document.getElementById(`${prefix}-spinner`);
+  const text = document.getElementById(`${prefix}-btn-text`);
+  const btn = document.getElementById(`${prefix}-btn`) || document.getElementById('auth-form').querySelector('button');
 
-/* ── INTERFACE BADGE FORMATTERS ─────────────────────────── */
-function getInitials(name) {
-  const parts = name.trim().split(/\s+/);
-  return parts.length === 1 ? parts[0][0] : parts[0][0] + parts[parts.length-1][0];
-}
-const GRAD_POOL = [
-  'linear-gradient(135deg,#e040fb,#7c3aed)',
-  'linear-gradient(135deg,#a855f7,#ec4899)',
-  'linear-gradient(135deg,#f97316,#ec4899)',
-  'linear-gradient(135deg,#06b6d4,#7c3aed)',
-  'linear-gradient(135deg,#34d399,#06b6d4)',
-  'linear-gradient(135deg,#facc15,#f97316)',
-];
-function avatarGrad(name) {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
-  return GRAD_POOL[h % GRAD_POOL.length];
-}
-function setAvatar(el, name, isMatch = false) {
-  if (!name) {
-    el.textContent = '?'; el.style.background = 'var(--surface3)'; el.style.boxShadow = 'none'; return;
-  }
-  el.textContent = getInitials(name);
-  el.style.background  = isMatch ? 'linear-gradient(135deg,#34d399,#06b6d4)' : avatarGrad(name);
-  el.style.boxShadow   = isMatch ? '0 3px 14px rgba(52,211,153,0.45)' : '0 3px 12px rgba(217,70,239,0.35)';
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) =>
-    b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1))
-  );
-  document.getElementById('login-section').classList.toggle('active', tab==='login');
-  document.getElementById('register-section').classList.toggle('active', tab==='register');
-  clearAlerts();
-}
-function clearAlerts() {
-  document.querySelectorAll('.alert').forEach(a => { a.className='alert'; a.textContent=''; a.style.display='none'; });
-}
-function showAlert(id, msg, type='error') {
-  const el = document.getElementById(id);
-  el.textContent = msg; el.className = `alert alert-${type} show`; el.style.display = 'block';
-}
-function setLoading(btnId, loading, originalText) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  if (loading) { btn.disabled=true; btn.innerHTML=`<span class="spinner"></span>Processing…`; }
-  else          { btn.disabled=false; btn.innerHTML=originalText; }
-}
-function titleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-}
-
-function onSelectChange() {
-  const sel     = document.getElementById('classmate-select');
-  const wrapper = document.getElementById('select-wrapper');
-  const avatar  = document.getElementById('dropdown-avatar');
-  const val     = sel.value;
-  if (val) {
-    wrapper.classList.add('has-value'); setAvatar(avatar, val);
+  if (isLoad) {
+    if (spin) spin.style.display = 'inline-block';
+    if (text) text.textContent = 'Processing Payload...';
+    if (btn) btn.disabled = true;
   } else {
-    wrapper.classList.remove('has-value'); avatar.textContent = '?'; avatar.style.background = 'var(--surface3)';
+    if (spin) spin.style.display = 'none';
+    if (text) text.textContent = fallback;
+    if (btn) btn.disabled = false;
   }
 }
 
-/* ── REFACTORED WORKSPACE AUTHENTICATION INTERFACES ────── */
-async function handleRegister() {
-  const name     = document.getElementById('reg-name').value.trim().toUpperCase();
-  const pin      = document.getElementById('reg-pin').value.trim();
-  const password = document.getElementById('reg-password').value;
+function showAlert(elementId, msg, type = 'error') {
+  const el = document.getElementById(elementId);
+  el.textContent = msg;
+  el.className = `alert alert-${type} show`;
+  el.style.display = 'block';
+}
 
-  if (!name || !pin || !password) return showAlert('register-alert','Please fill out all inputs.');
-  if (password.length < 4) return showAlert('register-alert','Security password must contain at least 4 symbols.');
-  if (!ROSTER[name]) return showAlert('register-alert','Name missing from authorized registration whitelist.');
-  if (ROSTER[name].pin !== pin) return showAlert('register-alert','Incorrect validation PIN code.');
+/* ── CORE COMPLIANCE REGISTRATION LOGIC ────────────────── */
+async function handleAuthSubmit(e) {
+  e.preventDefault();
+  showAlert('auth-alert', '');
+  document.getElementById('auth-alert').style.display = 'none';
 
-  setLoading('register-btn', true, 'Create Account');
-  try {
-    const res  = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
-      method: 'POST', headers: HEADERS,
-      body: JSON.stringify({ full_name: name, password })
-    });
-    const data = await res.json().catch(() => null);
+  const name = document.getElementById('auth-name').value.trim().toUpperCase();
+  const password = document.getElementById('auth-password').value;
+  const pin = document.getElementById('auth-pin').value.trim();
 
-    if (res.ok) {
-      showAlert('register-alert','✅ Registration complete! Redirecting to credentials gateway…','success');
-      ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
-      setTimeout(() => switchTab('login'), 1500);
-    } else if (res.status === 409 || JSON.stringify(data).includes('duplicate')) {
-      showAlert('register-alert','This username profile already signed up.');
-    } else {
-      showAlert('register-alert',`Database fault: ${data?.message || 'Access rejected.'}`);
+  setLoading('auth', true, '');
+
+  if (currentViewState === 'register') {
+    if (!name || !pin || !password) {
+      setLoading('auth', false, 'Register Secure Account ✨');
+      return showAlert('auth-alert', 'Please fill out all inputs.');
     }
-  } catch {
-    showAlert('register-alert','Connection failure.');
-  } finally {
-    setLoading('register-btn', false, 'Create Account');
-  }
-}
-
-async function handleLogin() {
-  const name     = document.getElementById('login-name').value.trim().toUpperCase();
-  const password = document.getElementById('login-password').value;
-
-  if (!name || !password) return showAlert('login-alert','Provide access name and password verification.');
-  if (!ROSTER[name])       return showAlert('login-alert','Identity mismatch with authorization logs.');
-
-  setLoading('login-btn', true, 'Log In');
-  try {
-    const url = `${SUPABASE_URL}/rest/v1/profiles?full_name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=full_name,id`;
-    const res  = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
-    const data = await res.json().catch(() => []);
-
-    if (!res.ok || !Array.isArray(data) || data.length === 0) {
-      showAlert('login-alert','Invalid credentials combination.'); return;
+    if (password.length < 4) {
+      setLoading('auth', false, 'Register Secure Account ✨');
+      return showAlert('auth-alert', 'Security password must contain at least 4 symbols.');
+    }
+    if (!ROSTER[name]) {
+      setLoading('auth', false, 'Register Secure Account ✨');
+      return showAlert('auth-alert', 'Name missing from authorized registration whitelist.');
+    }
+    if (ROSTER[name].pin !== pin) {
+      setLoading('auth', false, 'Register Secure Account ✨');
+      return showAlert('auth-alert', 'Incorrect validation PIN code.');
     }
 
-    currentUser = { 
-      full_name: data[0].full_name, 
-      token: data[0].id,
-      field: ROSTER[data[0].full_name].field
-    };
-    enterHub();
-  } catch {
-    showAlert('login-alert','Gateway link timeout.');
-  } finally {
-    setLoading('login-btn', false, 'Log In');
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ full_name: name, password: password })
+      });
+
+      if (response.ok) {
+        showAlert('auth-alert', '✅ Registration complete! Redirecting to credentials gateway…', 'success');
+        setTimeout(() => { switchTab('login'); setLoading('auth', false, 'Authenticate Gateway ⚡'); }, 1800);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.code === "23505") {
+          showAlert('auth-alert', 'This username profile already signed up.');
+        } else {
+          showAlert('auth-alert', `Database fault: ${errorData?.message || 'Access rejected.'}`);
+        }
+        setLoading('auth', false, 'Register Secure Account ✨');
+      }
+    } catch {
+      showAlert('auth-alert', 'Connection failure.');
+      setLoading('auth', false, 'Register Secure Account ✨');
+    }
+
+  } else {
+    if (!name || !password) {
+      setLoading('auth', false, 'Authenticate Gateway ⚡');
+      return showAlert('auth-alert', 'Provide access name and password verification.');
+    }
+    if (!ROSTER[name]) {
+      setLoading('auth', false, 'Authenticate Gateway ⚡');
+      return showAlert('auth-alert', 'Identity mismatch with authorization logs.');
+    }
+
+    try {
+      const url = `${SUPABASE_URL}/rest/v1/users?full_name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=*`;
+      const res = await fetch(url, { method: 'GET', headers: HEADERS });
+      const data = await res.json();
+
+      if (res.ok && data.length > 0) {
+        currentUser = {
+          full_name: data[0].full_name,
+          field: ROSTER[data[0].full_name].field
+        };
+        enterHub();
+      } else {
+        showAlert('auth-alert', 'Invalid credentials combination.');
+        setLoading('auth', false, 'Authenticate Gateway ⚡');
+      }
+    } catch {
+      showAlert('auth-alert', 'Gateway link timeout.');
+      setLoading('auth', false, 'Authenticate Gateway ⚡');
+    }
   }
 }
 
-/* ── FIELD SEPARATED PRIVATE WORKSPACE HUBS ────────────── */
-async function enterHub() {
+/* ── INTERFACE WORKSPACE CONTROLLERS ────────────────────── */
+function enterHub() {
   document.getElementById('auth-card').style.display = 'none';
   const hub = document.getElementById('hub-view');
-  hub.style.display = 'block'; hub.classList.add('active');
+  hub.style.display = 'block';
+  setTimeout(() => hub.classList.add('active'), 50);
 
-  setAvatar(document.getElementById('hub-avatar'), currentUser.full_name);
-  document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
-  document.getElementById('hub-field-badge').textContent = `Classroom Channel: ${currentUser.field}`;
+  document.getElementById('user-avatar').textContent = currentUser.full_name.substring(0,2).toUpperCase();
+  document.getElementById('user-display-name').textContent = currentUser.full_name;
+  document.getElementById('user-display-field').textContent = `TRACK COHORT: ${currentUser.field}`;
 
-  const dropdownElement = document.getElementById('classmate-select');
-  dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
+  const select = document.getElementById('classmate-select');
+  select.innerHTML = '<option value="">-- Scan Cohort Stream --</option>';
 
-  try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+  Object.keys(ROSTER)
+    .filter(name => name !== currentUser.full_name && ROSTER[name] && ROSTER[name].field === currentUser.field)
+    .sort()
+    .forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
     });
-    const activeProfiles = await response.json().catch(() => []);
 
-    // Filter down to match the exact localized class track
-    const registeredClassmates = activeProfiles
-      .map(p => p.full_name)
-      .filter(name => name !== currentUser.full_name && ROSTER[name] && ROSTER[name].field === currentUser.field)
-      .sort();
-
-    dropdownElement.innerHTML = '';
-
-    if (registeredClassmates.length === 0) {
-      dropdownElement.innerHTML = '<option value="">⏳ Waiting for classmates to join...</option>';
-    } else {
-      dropdownElement.innerHTML = '<option value="">— Select an active classmate —</option>';
-      registeredClassmates.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = titleCase(name);
-        dropdownElement.appendChild(option);
-      });
-    }
-  } catch (err) {
-    dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices...</option>';
-  }
-
-  await syncDashboard();
+  syncDashboard();
 }
 
 async function syncDashboard() {
+  showAlert('pick-alert', '');
+  document.getElementById('pick-alert').style.display = 'none';
   if (countdownInterval) clearInterval(countdownInterval);
 
-  const slot       = document.getElementById('selection-slot');
-  const slotAvatar = document.getElementById('slot-avatar');
-  const slotName   = document.getElementById('slot-name');
-  const slotSub    = document.getElementById('slot-sub');
-  const slotRight  = document.getElementById('slot-right');
-  
-  const loading = document.getElementById('dash-loading');
-  const banner  = document.getElementById('match-banner');
-  const note    = document.getElementById('pending-note');
-  
-  const formArea    = document.getElementById('pick-form-area');
-  const lockedNotice = document.getElementById('locked-notice');
-  const staticAlert = document.getElementById('already-picked-alert');
-
-  loading.style.display = 'flex';
-  banner.classList.remove('visible');
-  note.style.display = 'none';
-  slotRight.innerHTML = '';
-
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections?select=user_token,picked_token,created_at`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-      cache: "no-store"
-    });
-    const selections = await res.json().catch(() => []);
+    const selectionUrl = `${SUPABASE_URL}/rest/v1/selections?user_token=eq.${encodeURIComponent(currentUser.full_name)}&select=*`;
+    const resSel = await fetch(selectionUrl, { method: 'GET', headers: HEADERS });
+    const selData = await resSel.json();
 
-    const myPick = selections.find(s => s.user_token === currentUser.full_name);
-    const reciprocalMatches = selections.filter(s => s.picked_token === currentUser.full_name).map(s => s.user_token);
+    const statusContent = document.getElementById('status-content');
+    const countdownBox = document.getElementById('lock-countdown-box');
 
-    if (myPick) {
-      currentPickData = myPick; 
-      const selectedPartner = myPick.picked_token;
+    if (resSel.ok && selData.length > 0) {
+      currentPickData = selData[0];
+      statusContent.innerHTML = `
+        <div class="status-value">${currentPickData.chosen_partner}</div>
+        <button class="btn-secondary" id="delete-pick-btn" onclick="handleDeletePick()">Revoke Choice Allocation 🔓</button>
+      `;
 
-      const selectEl = document.getElementById('classmate-select');
-      if(selectEl) {
-        selectEl.value = selectedPartner;
-        onSelectChange();
-      }
-
-      slot.className = "selection-slot";
-      setAvatar(slotAvatar, selectedPartner);
-      slotName.textContent = titleCase(selectedPartner);
-      slotSub.textContent = "Your choice is locked";
-
-      function triggerCountdownExecution() {
-        const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
-        const durationRemaining = LOCK_DURATION_MS - elapsedMs;
-
-        if (durationRemaining > 0) {
-          slot.className = "selection-slot is-locked";
-          formArea.style.display = 'none';
-          lockedNotice.style.display = 'flex';
-          staticAlert.style.display = 'none';
-
-          const d = Math.floor(durationRemaining / (1000 * 60 * 60 * 24));
-          const h = Math.floor((durationRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const m = Math.floor((durationRemaining % (1000 * 60 * 60)) / (1000 * 60));
-          
-          let durationString = d > 0 ? `${d}d ` : '';
-          durationString += `${h}h ${m}m`;
-
-          slotRight.innerHTML = `<div class="timer-badge">⏳ Locked: ${durationString}</div>`;
-        } else {
+      const createdTime = new Date(currentPickData.created_at).getTime();
+      const runCountdown = () => {
+        const remaining = (createdTime + LOCK_DURATION_MS) - Date.now();
+        if (remaining <= 0) {
+          countdownBox.classList.remove('active');
           clearInterval(countdownInterval);
-          slot.className = "selection-slot is-free";
-          formArea.style.display = 'none';
-          lockedNotice.style.display = 'none';
-          staticAlert.style.display = 'block';
-
-          slotRight.innerHTML = `<button class="btn-unlock" onclick="handleDeletePick()">Change Choice 🔓</button>`;
+        } else {
+          countdownBox.classList.add('active');
+          const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
+          const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((remaining % (1000 * 60)) / 1000);
+          document.getElementById('countdown-clock').textContent = `${d}d ${h}h ${m}m ${s}s`;
         }
-      }
-
-      triggerCountdownExecution();
-      countdownInterval = setInterval(triggerCountdownExecution, 60000);
-
-      if (reciprocalMatches.includes(selectedPartner)) {
-        setAvatar(slotAvatar, selectedPartner, true);
-        document.getElementById('match-names').innerHTML = `
-          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(currentUser.full_name)}</div><span class="match-chip-name">${titleCase(currentUser.full_name)}</span></div>
-          <span class="match-heart">💜</span>
-          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(selectedPartner)}</div><span class="match-chip-name">${titleCase(selectedPartner)}</span></div>
-        `;
-        banner.classList.add('visible');
-      } else {
-        note.style.display = 'flex';
-      }
+      };
+      runCountdown();
+      countdownInterval = setInterval(runCountdown, 1000);
 
     } else {
       currentPickData = null;
-      slot.className = "selection-slot empty";
-      setAvatar(slotAvatar, null);
-      slotName.textContent = 'No pick yet';
-      slotSub.textContent = 'Lock in a choice above';
-      
-      formArea.style.display = 'block';
-      lockedNotice.style.display = 'none';
-      staticAlert.style.display = 'none';
-      
-      const selectEl = document.getElementById('classmate-select');
-      if(selectEl) {
-        selectEl.value = "";
-        onSelectChange();
-      }
+      countdownBox.classList.remove('active');
+      statusContent.innerHTML = '<div class="status-empty">No dynamic assignment verified on system ledger.</div>';
     }
+
+    const feedUrl = `${SUPABASE_URL}/rest/v1/selections?select=user_token,chosen_partner,created_at&order=created_at.desc&limit=40`;
+    const resFeed = await fetch(feedUrl, { method: 'GET', headers: HEADERS });
+    const feedData = await resFeed.json();
+    const feedList = document.getElementById('feed-list');
+
+    if (resFeed.ok && feedData.length > 0) {
+      feedList.innerHTML = '';
+      feedData.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'feed-item';
+        row.innerHTML = `
+          <div>
+            <div class="feed-user">${item.user_token}</div>
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">${new Date(item.created_at).toLocaleTimeString()}</div>
+          </div>
+          <div class="feed-choice">${item.chosen_partner}</div>
+        `;
+        feedList.appendChild(row);
+      });
+    } else {
+      feedList.innerHTML = '<div class="feed-empty">No transaction configurations broadcasted on channel.</div>';
+    }
+
   } catch {
-    console.error("Link synchronization failed.");
-  } finally {
-    loading.style.display = 'none';
+    showAlert('pick-alert', 'Network sync error. Retrying system bridge access.');
   }
 }
 
-async function handlePick() {
-  const selectedClassmate = document.getElementById('classmate-select').value;
-  if (!selectedClassmate) return showAlert('pick-alert', 'Please select an options profile.');
+async function handleLockChoice() {
+  const select = document.getElementById('classmate-select');
+  const partner = select.value;
+  if (!partner) return showAlert('pick-alert', 'Please select a classmate from the list.');
 
-  setLoading('pick-btn', true, 'Lock In My Choice 🔒');
+  if (currentPickData) {
+    return showAlert('pick-alert', 'You already have an active partner selection record saved.');
+  }
+
+  setLoading('pick', true, '');
+
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
-      method: 'POST', headers: HEADERS,
-      body: JSON.stringify({ user_token: currentUser.full_name, picked_token: selectedClassmate })
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({
+        user_token: currentUser.full_name,
+        chosen_partner: partner
+      })
     });
 
-    if (res.ok) {
-      showAlert('pick-alert', 'Choice permanently saved inside verification stack. Locked for 5 days.', 'success');
-      setTimeout(() => syncDashboard(), 1200);
+    if (response.ok) {
+      select.value = '';
+      showAlert('pick-alert', 'Choice permanently locked inside verification matrix.', 'success');
+      await syncDashboard();
     } else {
-      showAlert('pick-alert', 'Submission processing error.');
+      const err = await response.json().catch(() => ({}));
+      if (err.code === "23505") {
+        showAlert('pick-alert', 'This student configuration or partner has already been selected by another peer.');
+      } else {
+        showAlert('pick-alert', 'Database allocation collision. Selection rejected.');
+      }
     }
   } catch {
     showAlert('pick-alert', 'Data transmission fault.');
   } finally {
-    setLoading('pick-btn', false, 'Lock In My Choice 🔒');
+    setLoading('pick', false, 'Lock In My Choice 🔒');
   }
 }
 
@@ -1201,10 +1280,39 @@ function handleLogout() {
   document.getElementById('hub-view').style.display = 'none';
   document.getElementById('hub-view').classList.remove('active');
   document.getElementById('auth-card').style.display = 'block';
-  document.getElementById('login-name').value = '';
-  document.getElementById('login-password').value = '';
-  clearAlerts(); switchTab('login');
+  document.getElementById('auth-form').reset();
+  switchTab('login');
 }
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (isLight) {
+    btn.innerHTML = `<span>☀️</span> Light Mode`;
+  } else {
+    btn.innerHTML = `<span>🌙</span> Dark Mode`;
+  }
+}
+
+/* ── AMBIENT CANVAS GENERATOR ───────────────────────────── */
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
+  for (let i = 0; i < 24; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;bottom:${-size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*14+10}s;
+      animation-delay:${Math.random()*12}s;
+      filter:blur(${Math.random()}px);
+    `;
+    container.appendChild(p);
+  }
+})();
 </script>
 </body>
 </html>
