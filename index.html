@@ -592,7 +592,7 @@ body.light-theme .timer-badge {
     <div class="hub-profile-strip">
       <div class="avatar avatar-lg" id="hub-avatar">?</div>
       <div class="hub-profile-info">
-        <div class="hub-greeting">Logged in as</div>
+        <div class="hub-greeting" id="hub-field-badge">Logged in as</div>
         <div class="hub-name" id="hub-username">—</div>
       </div>
       <button class="logout-btn" onclick="handleLogout()">Log out</button>
@@ -686,39 +686,111 @@ const HEADERS = {
 const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
 
 /* ══════════════════════════════════════════════════════════
-   CLASS ROSTER — Safely used exclusively for account validation
+   CLASS ROSTER — Multi-Field/Class Structure
 ══════════════════════════════════════════════════════════ */
 const ROSTER = {
-  "AATIK HOUSSAM":"4821","ACHMIRROU MOSTAFA":"7134","AGHOUAR KHADIJA":"2956","AIT BELLA ABDELILAH":"8310",
-  "AIT BOURHIM AYOUB":"1549","AIT HAMMOU MOHAMED AMINE":"6273","AJAKKA MOHAMED":"3984","AKABAR OUMAIMA":"5102",
-  "ALOUANE WALID":"9437","ALOUNANE JAMILA":"2061","ASSABBANE KHADIJA":"7714","ASSADI HAJAR":"4390",
-  "BADR RANIA":"8825","BAGUENNI WALID":"1256","BAIKEN MARIAM":"6478","BANI BALHCEN OUSSAMA":"3192",
-  "BARDAGUI NASSIMA":"5503","BELQADI AYOUBE":"9041","BEN KAMEL OMAR":"2387","BENDAHAN ABDERRAHMANE":"7619",
-  "BENDAHAR YACINE":"4920","BENHADOU HIND":"8135","BENHALIMA IMANE":"3462","BENJILALI SALMA":"6089",
-  "BENKHAYA LAMYAE":"1754","BISSALITEN HASNAE":"9243","BOU-IBAOUN KAOUTAR":"5831","BOUBBAH ABDERRAHIM":"2176",
-  "BOUGHALEM YASSAMINE":"6904","BOUMAHDI ZINEB":"4127","BOUSDIG AHLAM":"8542","BOUZID IMRANE":"3019",
-  "CHAHID SOUKAINA":"7348","CHARAFI FATIMA ZAHRA":"1985","CHENTOUFI ZINEB":"5236","CHERBIB MOHAMED":"9912",
-  "CHKOURRACH ESSAADIA":"4470","DRIDBA SALMA":"8219","DRISSI YASSINE":"3654","EL ALLAOUI KHADIJA":"6108",
-  "EL BAIKEM MOHAMED":"2743","EL FADIL OUASSIME":"7891","EL HAKIMI AMAL":"1430","EL KOUSSIMI AYA":"5029",
-  "EL MARZOUKI RIDA":"9384","EL MENBBEHY FATIMA-EZZAHRAE":"6721","EL MOUBARKI WIAM":"3150","EL YOUSSFI AYOUB":"8463",
-  "ELAMRANI YOUSSRA":"2094","ELBOUHALI RABIAA":"7532","ELHARTI CHAIMAE":"4198","ELHORRI FATIMA ZAHRA":"5802",
-  "ES SADRI SOULAIMANE":"1347","ESSADIKI OUMAIMA":"9621","ESSOUFI SAIDA":"3840","ETALBI MOHAMED":"7059",
-  "ETTOUNOSY LAILA":"2416","EZZAHER CHAYMA":"6389","GHOUFIRI IMANE":"8724","HABIBI M'BAREK":"1053",
-  "HAFID IDRISSI MOUNIA":"4961","HAJI FATIMA":"3278","HAMRERRAS SALMA":"8104","HMIDI IDRISSI SAAD":"5642",
-  "ID BELKAS IKRAM":"9215","IHSSOUS NOUHAILA":"2340","IZZA ZAKARIA":"7493","JAMIL YOUSSEF":"6152",
-  "JARMOUNE MAROUA":"3891","KHARBOUCHE SOUHAIB":"8047","KHATIR HASNAA":"4712","KHILILA SAMIA":"1593",
-  "KISSADE FATIMA ZAHRA":"6824","LHAROUI CHAIMA":"3409","MEZIAT RIDA":"9176","MIFTAHALKHAIR IKRAM":"5241",
-  "NOUAR RAJAA":"2830","OUBLKHIR CHAIMAA":"7942","OUCHEHRA ABDELHAKIME":"6015","OUHAMMOU KHADIJA":"4329",
-  "OUKALTOUM ABDELLAH":"8691","OUKHACHA FATIMA ZAHRA":"1734","QUIRAT SIRINE":"5190","RABAH NADIA":"3048",
-  "RABBAH MARIEM":"9582","RAZKAOUI HAFSA":"6214","SANY ADIL":"4083","SEFNAJ MAROUA":"7329",
-  "TEST TEST":"1234","TOMZINE YOUSSEF":"1640","WAHKKI HAJAR":"8951","YAHIA YOUSSEF":"2318",
-  "YASSINE KAOUTAR":"5749","YASSIR IMAD":"9103","ZAKY SARA":"4632","ZDIHRI HIBA":"8275"
+  "AATIK HOUSSAM": { pin: "4821", field: "LEANG_S2" },
+  "ACHMIRROU MOSTAFA": { pin: "7134", field: "LEANG_S2" },
+  "AGHOUAR KHADIJA": { pin: "2956", field: "LEANG_S2" },
+  "AIT BELLA ABDELILAH": { pin: "8310", field: "LEANG_S2" },
+  "AIT BOURHIM AYOUB": { pin: "1549", field: "LEANG_S2" },
+  "AIT HAMMOU MOHAMED AMINE": { pin: "6273", field: "LEANG_S2" },
+  "AJAKKA MOHAMED": { pin: "3984", field: "LEANG_S2" },
+  "AKABAR OUMAIMA": { pin: "5102", field: "LEANG_S2" },
+  "ALOUANE WALID": { pin: "9437", field: "LEANG_S2" },
+  "ALOUNANE JAMILA": { pin: "2061", field: "LEANG_S2" },
+  "ASSABBANE KHADIJA": { pin: "7714", field: "LEANG_S2" },
+  "ASSADI HAJAR": { pin: "4390", field: "LEANG_S2" },
+  "BADR RANIA": { pin: "8825", field: "LEANG_S2" },
+  "BAGUENNI WALID": { pin: "1256", field: "LEANG_S2" },
+  "BAIKEN MARIAM": { pin: "6478", field: "LEANG_S2" },
+  "BANI BALHCEN OUSSAMA": { pin: "3192", field: "LEANG_S2" },
+  "BARDAGUI NASSIMA": { pin: "5503", field: "LEANG_S2" },
+  "BELQADI AYOUBE": { pin: "9041", field: "LEANG_S2" },
+  "BEN KAMEL OMAR": { pin: "2387", field: "LEANG_S2" },
+  "BENDAHAN ABDERRAHMANE": { pin: "7619", field: "LEANG_S2" },
+  "BENDAHAR YACINE": { pin: "4920", field: "LEANG_S2" },
+  "BENHADOU HIND": { pin: "8135", field: "LEANG_S2" },
+  "BENHALIMA IMANE": { pin: "3462", field: "LEANG_S2" },
+  "BENJILALI SALMA": { pin: "6089", field: "LEANG_S2" },
+  "BENKHAYA LAMYAE": { pin: "1754", field: "LEANG_S2" },
+  "BISSALITEN HASNAE": { pin: "9243", field: "LEANG_S2" },
+  "BOU-IBAOUN KAOUTAR": { pin: "5831", field: "LEANG_S2" },
+  "BOUBBAH ABDERRAHIM": { pin: "2176", field: "LEANG_S2" },
+  "BOUGHALEM YASSAMINE": { pin: "6904", field: "LEANG_S2" },
+  "BOUMAHDI ZINEB": { pin: "4127", field: "LEANG_S2" },
+  "BOUSDIG AHLAM": { pin: "8542", field: "LEANG_S2" },
+  "BOUZID IMRANE": { pin: "3019", field: "LEANG_S2" },
+  "CHAHID SOUKAINA": { pin: "7348", field: "LEANG_S2" },
+  "CHARAFI FATIMA ZAHRA": { pin: "1985", field: "LEANG_S2" },
+  "CHENTOUFI ZINEB": { pin: "5236", field: "LEANG_S2" },
+  "CHERBIB MOHAMED": { pin: "9912", field: "LEANG_S2" },
+  "CHKOURRACH ESSAADIA": { pin: "4470", field: "LEANG_S2" },
+  "DRIDBA SALMA": { pin: "8219", field: "LEANG_S2" },
+  "DRISSI YASSINE": { pin: "3654", field: "LEANG_S2" },
+  "EL ALLAOUI KHADIJA": { pin: "6108", field: "LEANG_S2" },
+  "EL BAIKEM MOHAMED": { pin: "2743", field: "LEANG_S2" },
+  "EL FADIL OUASSIME": { pin: "7891", field: "LEANG_S2" },
+  "EL HAKIMI AMAL": { pin: "1430", field: "LEANG_S2" },
+  "EL KOUSSIMI AYA": { pin: "5029", field: "LEANG_S2" },
+  "EL MARZOUKI RIDA": { pin: "9384", field: "LEANG_S2" },
+  "EL MENBBEHY FATIMA-EZZAHRAE": { pin: "6721", field: "LEANG_S2" },
+  "EL MOUBARKI WIAM": { pin: "3150", field: "LEANG_S2" },
+  "EL YOUSSFI AYOUB": { pin: "8463", field: "LEANG_S2" },
+  "ELAMRANI YOUSSRA": { pin: "2094", field: "LEANG_S2" },
+  "ELBOUHALI RABIAA": { pin: "7532", field: "LEANG_S2" },
+  "ELHARTI CHAIMAE": { pin: "4198", field: "LEANG_S2" },
+  "ELHORRI FATIMA ZAHRA": { pin: "5802", field: "LEANG_S2" },
+  "ES SADRI SOULAIMANE": { pin: "1347", field: "LEANG_S2" },
+  "ESSADIKI OUMAIMA": { pin: "9621", field: "LEANG_S2" },
+  "ESSOUFI SAIDA": { pin: "3840", field: "LEANG_S2" },
+  "ETALBI MOHAMED": { pin: "7059", field: "LEANG_S2" },
+  "ETTOUNOSY LAILA": { pin: "2416", field: "LEANG_S2" },
+  "EZZAHER CHAYMA": { pin: "6389", field: "LEANG_S2" },
+  "GHOUFIRI IMANE": { pin: "8724", field: "LEANG_S2" },
+  "HABIBI M'BAREK": { pin: "1053", field: "LEANG_S2" },
+  "HAFID IDRISSI MOUNIA": { pin: "4961", field: "LEANG_S2" },
+  "HAJI FATIMA": { pin: "3278", field: "LEANG_S2" },
+  "HAMRERRAS SALMA": { pin: "8104", field: "LEANG_S2" },
+  "HMIDI IDRISSI SAAD": { pin: "5642", field: "LEANG_S2" },
+  "ID BELKAS IKRAM": { pin: "9215", field: "LEANG_S2" },
+  "IHSSOUS NOUHAILA": { pin: "2340", field: "LEANG_S2" },
+  "IZZA ZAKARIA": { pin: "7493", field: "LEANG_S2" },
+  "JAMIL YOUSSEF": { pin: "6152", field: "LEANG_S2" },
+  "JARMOUNE MAROUA": { pin: "3891", field: "LEANG_S2" },
+  "KHARBOUCHE SOUHAIB": { pin: "8047", field: "LEANG_S2" },
+  "KHATIR HASNAA": { pin: "4712", field: "LEANG_S2" },
+  "KHILILA SAMIA": { pin: "1593", field: "LEANG_S2" },
+  "KISSADE FATIMA ZAHRA": { pin: "6824", field: "LEANG_S2" },
+  "LHAROUI CHAIMA": { pin: "3409", field: "LEANG_S2" },
+  "MEZIAT RIDA": { pin: "9176", field: "LEANG_S2" },
+  "MIFTAHALKHAIR IKRAM": { pin: "5241", field: "LEANG_S2" },
+  "NOUAR RAJAA": { pin: "2830", field: "LEANG_S2" },
+  "OUBLKHIR CHAIMAA": { pin: "7942", field: "LEANG_S2" },
+  "OUCHEHRA ABDELHAKIME": { pin: "6015", field: "LEANG_S2" },
+  "OUHAMMOU KHADIJA": { pin: "4329", field: "LEANG_S2" },
+  "OUKALTOUM ABDELLAH": { pin: "8691", field: "LEANG_S2" },
+  "OUKHACHA FATIMA ZAHRA": { pin: "1734", field: "LEANG_S2" },
+  "QUIRAT SIRINE": { pin: "5190", field: "LEANG_S2" },
+  "RABAH NADIA": { pin: "3048", field: "LEANG_S2" },
+  "RABBAH MARIEM": { pin: "9582", field: "LEANG_S2" },
+  "RAZKAOUI HAFSA": { pin: "6214", field: "LEANG_S2" },
+  "SANY ADIL": { pin: "4083", field: "LEANG_S2" },
+  "SEFNAJ MAROUA": { pin: "7329", field: "LEANG_S2" },
+  "TEST TEST": { pin: "1234", field: "LEEP_S4" },
+  "TOMZINE YOUSSEF": { pin: "1640", field: "LEANG_S2" },
+  "WAHKKI HAJAR": { pin: "8951", field: "LEANG_S2" },
+  "YAHIA YOUSSEF": { pin: "2318", field: "LEANG_S2" },
+  "YASSINE KAOUTAR": { pin: "5749", field: "LEANG_S2" },
+  "YASSIR IMAD": { pin: "9103", field: "LEANG_S2" },
+  "ZAKY SARA": { pin: "4632", field: "LEANG_S2" },
+  "ZDIHRI HIBA": { pin: "8275", field: "LEANG_S2" }
 };
 
 /* ══════════════════════════════════════════════════════════
    STATE
 ══════════════════════════════════════════════════════════ */
-let currentUser       = null; // { full_name, token }
+let currentUser       = null; // { full_name, token, field }
 let countdownInterval = null; // setInterval tracker
 let currentPickData   = null; // stores selected record values
 
@@ -817,7 +889,7 @@ function onSelectChange() {
   }
 }
 
-/* ── NEW SECURE COMPLIANT SIGNUP LAYER ────────────────── */
+/* ── REFACTORED WORKSPACE AUTHENTICATION INTERFACES ────── */
 async function handleRegister() {
   const name     = document.getElementById('reg-name').value.trim().toUpperCase();
   const pin      = document.getElementById('reg-pin').value.trim();
@@ -826,7 +898,7 @@ async function handleRegister() {
   if (!name || !pin || !password) return showAlert('register-alert','Please fill out all inputs.');
   if (password.length < 4) return showAlert('register-alert','Security password must contain at least 4 symbols.');
   if (!ROSTER[name]) return showAlert('register-alert','Name missing from authorized registration whitelist.');
-  if (ROSTER[name] !== pin) return showAlert('register-alert','Incorrect validation PIN code.');
+  if (ROSTER[name].pin !== pin) return showAlert('register-alert','Incorrect validation PIN code.');
 
   setLoading('register-btn', true, 'Create Account');
   try {
@@ -869,7 +941,11 @@ async function handleLogin() {
       showAlert('login-alert','Invalid credentials combination.'); return;
     }
 
-    currentUser = { full_name: data[0].full_name, token: data[0].id };
+    currentUser = { 
+      full_name: data[0].full_name, 
+      token: data[0].id,
+      field: ROSTER[data[0].full_name].field
+    };
     enterHub();
   } catch {
     showAlert('login-alert','Gateway link timeout.');
@@ -878,7 +954,7 @@ async function handleLogin() {
   }
 }
 
-/* ── PRIVACY ENFORCED WORKSPACE SYSTEM ─────────────────── */
+/* ── FIELD SEPARATED PRIVATE WORKSPACE HUBS ────────────── */
 async function enterHub() {
   document.getElementById('auth-card').style.display = 'none';
   const hub = document.getElementById('hub-view');
@@ -886,8 +962,8 @@ async function enterHub() {
 
   setAvatar(document.getElementById('hub-avatar'), currentUser.full_name);
   document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
+  document.getElementById('hub-field-badge').textContent = `Classroom Channel: ${currentUser.field}`;
 
-  // SECURE PRIVACY RETRIEVAL FROM SERVER
   const dropdownElement = document.getElementById('classmate-select');
   dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
 
@@ -897,9 +973,10 @@ async function enterHub() {
     });
     const activeProfiles = await response.json().catch(() => []);
 
+    // Filter down to match the exact localized class track
     const registeredClassmates = activeProfiles
       .map(p => p.full_name)
-      .filter(name => name !== currentUser.full_name)
+      .filter(name => name !== currentUser.full_name && ROSTER[name] && ROSTER[name].field === currentUser.field)
       .sort();
 
     dropdownElement.innerHTML = '';
@@ -958,7 +1035,6 @@ async function syncDashboard() {
       currentPickData = myPick; 
       const selectedPartner = myPick.picked_token;
 
-      // Sync custom dropdown preview values in background
       const selectEl = document.getElementById('classmate-select');
       if(selectEl) {
         selectEl.value = selectedPartner;
