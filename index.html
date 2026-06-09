@@ -670,18 +670,16 @@ body.light-theme .timer-badge {
   </div>
 </div>
 
-<script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
 /* ══════════════════════════════════════════════════════════
-   CONFIG 
+   CONFIG & SUPABASE CLIENT INIT
 ══════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
-const HEADERS = {
-  'Content-Type':  'application/json',
-  'apikey':        SUPABASE_KEY,
-  'Authorization': `Bearer ${SUPABASE_KEY}`,
-  'Prefer':        'return=representation'
-};
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
 
@@ -891,34 +889,70 @@ function onSelectChange() {
 
 /* ── REFACTORED WORKSPACE AUTHENTICATION INTERFACES ────── */
 async function handleRegister() {
-  const name     = document.getElementById('reg-name').value.trim().toUpperCase();
-  const pin      = document.getElementById('reg-pin').value.trim();
-  const password = document.getElementById('reg-password').value;
+  const first_name = document.getElementById('reg-name').value.trim().toUpperCase().split(' ')[0];
+  const last_name  = document.getElementById('reg-name').value.trim().toUpperCase().split(' ').slice(1).join(' ');
+  const full_name  = document.getElementById('reg-name').value.trim().toUpperCase();
+  const input_pin  = document.getElementById('reg-pin').value.trim();
+  const password   = document.getElementById('reg-password').value;
+  // Generate a synthetic email from name for Supabase Auth
+  const email      = `${full_name.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
 
-  if (!name || !pin || !password) return showAlert('register-alert','Please fill out all inputs.');
+  if (!full_name || !input_pin || !password) return showAlert('register-alert','Please fill out all inputs.');
   if (password.length < 4) return showAlert('register-alert','Security password must contain at least 4 symbols.');
-  if (!ROSTER[name]) return showAlert('register-alert','Name missing from authorized registration whitelist.');
-  if (ROSTER[name].pin !== pin) return showAlert('register-alert','Incorrect validation PIN code.');
 
   setLoading('register-btn', true, 'Create Account');
   try {
-    const res  = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
-      method: 'POST', headers: HEADERS,
-      body: JSON.stringify({ full_name: name, password })
+    // Step 1: Verify student against DB via secure RPC (no PIN exposure)
+    const { data: rpcData, error: rpcError } = await supabase.rpc('verify_student_pin', {
+      input_first_name: first_name,
+      input_last_name:  last_name,
+      input_pin:        input_pin
     });
-    const data = await res.json().catch(() => null);
 
-    if (res.ok) {
-      showAlert('register-alert','✅ Registration complete! Redirecting to credentials gateway…','success');
-      ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
-      setTimeout(() => switchTab('login'), 1500);
-    } else if (res.status === 409 || JSON.stringify(data).includes('duplicate')) {
-      showAlert('register-alert','This username profile already signed up.');
-    } else {
-      showAlert('register-alert',`Database fault: ${data?.message || 'Access rejected.'}`);
+    if (rpcError) {
+      showAlert('register-alert', `Verification error: ${rpcError.message}`);
+      return;
     }
-  } catch {
-    showAlert('register-alert','Connection failure.');
+
+    const result = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+
+    if (!result || !result.is_valid) {
+      showAlert('register-alert', 'Registration credentials do not match the administrative student roster. Please check your name and PIN.');
+      return;
+    }
+
+    const student_field    = result.student_field;
+    const student_semester = result.student_semester;
+
+    // Step 2: Sign up with Supabase Auth, embedding student profile into metadata
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          field:     student_field,
+          semester:  student_semester,
+          full_name: full_name
+        }
+      }
+    });
+
+    if (signUpError) {
+      if (signUpError.message.toLowerCase().includes('already') || signUpError.message.toLowerCase().includes('exists')) {
+        showAlert('register-alert', 'This account is already registered. Please log in.');
+      } else {
+        showAlert('register-alert', `Registration error: ${signUpError.message}`);
+      }
+      return;
+    }
+
+    showAlert('register-alert', '✅ Registration complete! Redirecting to credentials gateway…', 'success');
+    ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => switchTab('login'), 1500);
+
+  } catch (err) {
+    showAlert('register-alert', 'Connection failure. Please try again.');
+    console.error(err);
   } finally {
     setLoading('register-btn', false, 'Create Account');
   }
@@ -929,26 +963,29 @@ async function handleLogin() {
   const password = document.getElementById('login-password').value;
 
   if (!name || !password) return showAlert('login-alert','Provide access name and password verification.');
-  if (!ROSTER[name])       return showAlert('login-alert','Identity mismatch with authorization logs.');
+
+  const email = `${name.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
 
   setLoading('login-btn', true, 'Log In');
   try {
-    const url = `${SUPABASE_URL}/rest/v1/profiles?full_name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=full_name,id`;
-    const res  = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
-    const data = await res.json().catch(() => []);
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (!res.ok || !Array.isArray(data) || data.length === 0) {
-      showAlert('login-alert','Invalid credentials combination.'); return;
+    if (authError || !authData?.user) {
+      showAlert('login-alert', 'Invalid credentials combination. Please check your name and password.');
+      return;
     }
 
-    currentUser = { 
-      full_name: data[0].full_name, 
-      token: data[0].id,
-      field: ROSTER[data[0].full_name].field
+    const meta = authData.user.user_metadata || {};
+    currentUser = {
+      full_name: meta.full_name || name,
+      id:        authData.user.id,
+      field:     meta.field     || '',
+      semester:  meta.semester  || ''
     };
     enterHub();
-  } catch {
+  } catch (err) {
     showAlert('login-alert','Gateway link timeout.');
+    console.error(err);
   } finally {
     setLoading('login-btn', false, 'Log In');
   }
@@ -968,15 +1005,17 @@ async function enterHub() {
   dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-    });
-    const activeProfiles = await response.json().catch(() => []);
+    // RLS on students table automatically filters to current user's field & semester
+    const { data: students, error: studentsError } = await supabase
+      .from('students')
+      .select('first_name, last_name');
 
-    // Filter down to match the exact localized class track
-    const registeredClassmates = activeProfiles
-      .map(p => p.full_name)
-      .filter(name => name !== currentUser.full_name && ROSTER[name] && ROSTER[name].field === currentUser.field)
+    if (studentsError) throw studentsError;
+
+    // Build full_name strings, exclude self
+    const registeredClassmates = (students || [])
+      .map(s => `${s.first_name.trim().toUpperCase()} ${s.last_name.trim().toUpperCase()}`)
+      .filter(name => name !== currentUser.full_name)
       .sort();
 
     dropdownElement.innerHTML = '';
@@ -994,6 +1033,7 @@ async function enterHub() {
     }
   } catch (err) {
     dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices...</option>';
+    console.error('Failed to load classmates:', err);
   }
 
   await syncDashboard();
@@ -1012,9 +1052,9 @@ async function syncDashboard() {
   const banner  = document.getElementById('match-banner');
   const note    = document.getElementById('pending-note');
   
-  const formArea    = document.getElementById('pick-form-area');
+  const formArea     = document.getElementById('pick-form-area');
   const lockedNotice = document.getElementById('locked-notice');
-  const staticAlert = document.getElementById('already-picked-alert');
+  const staticAlert  = document.getElementById('already-picked-alert');
 
   loading.style.display = 'flex';
   banner.classList.remove('visible');
@@ -1022,21 +1062,25 @@ async function syncDashboard() {
   slotRight.innerHTML = '';
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections?select=user_token,picked_token,created_at`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-      cache: "no-store"
-    });
-    const selections = await res.json().catch(() => []);
+    // Fetch all selections to find current user's pick and reciprocal matches
+    const { data: selections, error: selError } = await supabase
+      .from('selections')
+      .select('user_token, picked_token, created_at');
 
-    const myPick = selections.find(s => s.user_token === currentUser.full_name);
-    const reciprocalMatches = selections.filter(s => s.picked_token === currentUser.full_name).map(s => s.user_token);
+    if (selError) throw selError;
+
+    const allSelections = selections || [];
+    const myPick = allSelections.find(s => s.user_token === currentUser.full_name);
+    const reciprocalMatches = allSelections
+      .filter(s => s.picked_token === currentUser.full_name)
+      .map(s => s.user_token);
 
     if (myPick) {
-      currentPickData = myPick; 
+      currentPickData = myPick;
       const selectedPartner = myPick.picked_token;
 
       const selectEl = document.getElementById('classmate-select');
-      if(selectEl) {
+      if (selectEl) {
         selectEl.value = selectedPartner;
         onSelectChange();
       }
@@ -1044,22 +1088,22 @@ async function syncDashboard() {
       slot.className = "selection-slot";
       setAvatar(slotAvatar, selectedPartner);
       slotName.textContent = titleCase(selectedPartner);
-      slotSub.textContent = "Your choice is locked";
+      slotSub.textContent  = "Your choice is locked";
 
       function triggerCountdownExecution() {
-        const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
-        const durationRemaining = LOCK_DURATION_MS - elapsedMs;
+        const elapsedMs          = Date.now() - new Date(currentPickData.created_at).getTime();
+        const durationRemaining  = LOCK_DURATION_MS - elapsedMs;
 
         if (durationRemaining > 0) {
           slot.className = "selection-slot is-locked";
-          formArea.style.display = 'none';
+          formArea.style.display    = 'none';
           lockedNotice.style.display = 'flex';
-          staticAlert.style.display = 'none';
+          staticAlert.style.display  = 'none';
 
           const d = Math.floor(durationRemaining / (1000 * 60 * 60 * 24));
           const h = Math.floor((durationRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const m = Math.floor((durationRemaining % (1000 * 60 * 60)) / (1000 * 60));
-          
+
           let durationString = d > 0 ? `${d}d ` : '';
           durationString += `${h}h ${m}m`;
 
@@ -1067,9 +1111,9 @@ async function syncDashboard() {
         } else {
           clearInterval(countdownInterval);
           slot.className = "selection-slot is-free";
-          formArea.style.display = 'none';
+          formArea.style.display    = 'none';
           lockedNotice.style.display = 'none';
-          staticAlert.style.display = 'block';
+          staticAlert.style.display  = 'block';
 
           slotRight.innerHTML = `<button class="btn-unlock" onclick="handleDeletePick()">Change Choice 🔓</button>`;
         }
@@ -1092,23 +1136,23 @@ async function syncDashboard() {
 
     } else {
       currentPickData = null;
-      slot.className = "selection-slot empty";
+      slot.className  = "selection-slot empty";
       setAvatar(slotAvatar, null);
       slotName.textContent = 'No pick yet';
-      slotSub.textContent = 'Lock in a choice above';
-      
-      formArea.style.display = 'block';
+      slotSub.textContent  = 'Lock in a choice above';
+
+      formArea.style.display    = 'block';
       lockedNotice.style.display = 'none';
-      staticAlert.style.display = 'none';
-      
+      staticAlert.style.display  = 'none';
+
       const selectEl = document.getElementById('classmate-select');
-      if(selectEl) {
+      if (selectEl) {
         selectEl.value = "";
         onSelectChange();
       }
     }
-  } catch {
-    console.error("Link synchronization failed.");
+  } catch (err) {
+    console.error("Link synchronization failed.", err);
   } finally {
     loading.style.display = 'none';
   }
@@ -1120,19 +1164,22 @@ async function handlePick() {
 
   setLoading('pick-btn', true, 'Lock In My Choice 🔒');
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/selections`, {
-      method: 'POST', headers: HEADERS,
-      body: JSON.stringify({ user_token: currentUser.full_name, picked_token: selectedClassmate })
-    });
+    const { error } = await supabase
+      .from('selections')
+      .upsert(
+        { user_token: currentUser.full_name, picked_token: selectedClassmate },
+        { onConflict: 'user_token' }
+      );
 
-    if (res.ok) {
+    if (error) {
+      showAlert('pick-alert', `Submission error: ${error.message}`);
+    } else {
       showAlert('pick-alert', 'Choice permanently saved inside verification stack. Locked for 5 days.', 'success');
       setTimeout(() => syncDashboard(), 1200);
-    } else {
-      showAlert('pick-alert', 'Submission processing error.');
     }
-  } catch {
+  } catch (err) {
     showAlert('pick-alert', 'Data transmission fault.');
+    console.error(err);
   } finally {
     setLoading('pick-btn', false, 'Lock In My Choice 🔒');
   }
@@ -1148,25 +1195,29 @@ async function handleDeletePick() {
   }
 
   if (!confirm("Are you certain you want to change your saved choice? This action resets your selection window.")) return;
-  
-  try {
-    const url = `${SUPABASE_URL}/rest/v1/selections?user_token=eq.${encodeURIComponent(currentUser.full_name)}`;
-    const res = await fetch(url, { method: 'DELETE', headers: HEADERS });
 
-    if (res.ok) {
+  try {
+    const { error } = await supabase
+      .from('selections')
+      .delete()
+      .eq('user_token', currentUser.full_name);
+
+    if (error) {
+      alert(`Database rejected modification command: ${error.message}`);
+    } else {
       currentPickData = null;
       await syncDashboard();
-    } else {
-      alert("Database rejected modification command.");
     }
-  } catch {
+  } catch (err) {
     alert("Network request termination fault.");
+    console.error(err);
   }
 }
 
-function handleLogout() {
+async function handleLogout() {
   if (countdownInterval) clearInterval(countdownInterval);
   currentUser = null; currentPickData = null;
+  await supabase.auth.signOut();
   document.getElementById('hub-view').style.display = 'none';
   document.getElementById('hub-view').classList.remove('active');
   document.getElementById('auth-card').style.display = 'block';
@@ -1174,6 +1225,15 @@ function handleLogout() {
   document.getElementById('login-password').value = '';
   clearAlerts(); switchTab('login');
 }
+/* ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (needed for inline onclick handlers with type=module) ── */
+window.toggleTheme      = toggleTheme;
+window.switchTab        = switchTab;
+window.onSelectChange   = onSelectChange;
+window.handleRegister   = handleRegister;
+window.handleLogin      = handleLogin;
+window.handlePick       = handlePick;
+window.handleDeletePick = handleDeletePick;
+window.handleLogout     = handleLogout;
 </script>
 </body>
 </html>
