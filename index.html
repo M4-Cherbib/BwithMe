@@ -46,7 +46,6 @@
   --r-xs:        7px;
 }
 
-/* ── LIGHT THEME VARIABLES ──────────────────────────────── */
 body.light-theme {
   --bg:          #f3efff;
   --surface:     #ffffff;
@@ -76,7 +75,6 @@ body {
   transition: background 0.3s ease;
 }
 
-/* ── THEME TOGGLE CONTROLLER ────────────────────────────── */
 .theme-toggle-container {
   display: flex;
   justify-content: flex-end;
@@ -102,7 +100,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── AMBIENT ORBS ─────────────────────────────────────────── */
 body::before {
   content: '';
   position: fixed; top: -20%; left: -15%;
@@ -119,10 +116,7 @@ body::after {
   pointer-events: none; z-index: 0;
   animation: orb2 17s ease-in-out infinite alternate;
 }
-@keyframes orb1 { to { transform: translate(6vw,6vh) scale(1.12); } }
-@keyframes orb2 { to { transform: translate(-6vw,-6vh) scale(1.14); } }
 
-/* Particles */
 .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .particle  { position: absolute; border-radius: 50%; opacity: 0; animation: floatUp linear infinite; }
 @keyframes floatUp {
@@ -132,14 +126,12 @@ body::after {
   100% { opacity: 0;    transform: translateY(-100vh) scale(0.4); }
 }
 
-/* ── APP SHELL ────────────────────────────────────────────── */
 .app-wrap {
   position: relative; z-index: 1;
   width: 100%; max-width: 430px;
   padding: 0 14px;
 }
 
-/* ── CARD ─────────────────────────────────────────────────── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -164,7 +156,6 @@ body.light-theme .card {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── LOGO ─────────────────────────────────────────────────── */
 .logo { text-align: center; margin-bottom: 30px; }
 .logo-mark {
   display: inline-flex; align-items: center; justify-content: center;
@@ -186,7 +177,6 @@ body.light-theme .card {
 }
 .logo-tagline { font-size: 11px; color: var(--muted); letter-spacing: 2.2px; text-transform: uppercase; margin-top: 3px; }
 
-/* ── TABS ─────────────────────────────────────────────────── */
 .tabs {
   display: flex; background: var(--surface2);
   border-radius: 13px; padding: 4px;
@@ -202,7 +192,6 @@ body.light-theme .card {
   box-shadow: 0 4px 18px rgba(217,70,239,0.38);
 }
 
-/* ── FORM SECTIONS ────────────────────────────────────────── */
 .form-section { display: none; }
 .form-section.active { display: block; animation: fadeUp 0.3s ease both; }
 @keyframes fadeUp {
@@ -220,16 +209,14 @@ input, select {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: var(--r-inner); color: var(--text);
   font-family: 'DM Sans', sans-serif; font-size: 15px;
-  outline: none; transition: all 0.22s; -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  outline: none; transition: all 0.22s; appearance: none;
 }
 input:focus, select:focus {
   border-color: var(--neon2);
   box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
   background: var(--surface2);
 }
-body.light-theme input:focus, body.light-theme select:focus {
-  background: #ffffff;
-}
+body.light-theme input:focus, body.light-theme select:focus { background: #ffffff; }
 input::placeholder { color: rgba(125,111,160,0.5); }
 select option { background: var(--surface2); color: var(--text); }
 body.light-theme select option { background: #ffffff; color: var(--text); }
@@ -238,50 +225,29 @@ body.light-theme select option { background: #ffffff; color: var(--text); }
 .select-wrap::after {
   content: '▼'; position: absolute; right: 16px; top: 50%;
   transform: translateY(-50%); color: var(--neon2);
-  pointer-events: none; font-size: 11px; transition: color 0.2s ease;
+  pointer-events: none; font-size: 11px;
 }
 
-/* ── BUTTONS ──────────────────────────────────────────────── */
 .btn {
   width: 100%; padding: 14px; border: none; border-radius: 13px;
   font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
   cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
-  letter-spacing: 0.2px;
 }
-.btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg,rgba(255,255,255,0.14) 0%,transparent 60%);
-  opacity: 0; transition: opacity 0.2s;
-}
-.btn:hover::after  { opacity: 1; }
 .btn-primary { background: var(--grad);  color: #fff; box-shadow: 0 8px 28px rgba(217,70,239,0.42); margin-top: 6px; }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(217,70,239,0.52); }
-.btn-primary:active { transform: translateY(0); }
 .btn-pick    { background: var(--grad2); color: #fff; box-shadow: 0 8px 28px rgba(168,85,247,0.4); }
 .btn-pick:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(236,72,153,0.5); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
 
-/* Change-choice unlock button */
 .btn-unlock {
-  background: rgba(248, 113, 113, 0.1);
-  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.1); color: #fca5a5;
   border: 1px solid rgba(248, 113, 113, 0.25);
-  font-family: 'DM Sans', sans-serif; font-weight: 600;
-  font-size: 12px;
-  padding: 6px 12px; border-radius: 6px;
-  cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 4px;
-  white-space: nowrap; width: auto;
+  font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 12px;
+  padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
 }
-body.light-theme .btn-unlock {
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.2);
-}
-.btn-unlock:hover { 
-  background: rgba(248, 113, 113, 0.2); 
-  border-color: rgba(248, 113, 113, 0.5); 
-}
+body.light-theme .btn-unlock { background: rgba(239, 68, 68, 0.08); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+.btn-unlock:hover { background: rgba(248, 113, 113, 0.2); border-color: rgba(248, 113, 113, 0.5); }
 
 .btn .spinner {
   display: inline-block; width: 15px; height: 15px;
@@ -291,26 +257,20 @@ body.light-theme .btn-unlock {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── ALERTS ───────────────────────────────────────────────── */
-.alert {
-  padding: 11px 14px; border-radius: 9px; font-size: 13px;
-  margin-top: 12px; display: none; line-height: 1.5;
-}
+.alert { padding: 11px 14px; border-radius: 9px; font-size: 13px; margin-top: 12px; display: none; line-height: 1.5; }
 .alert.show    { display: block; animation: fadeUp 0.28s ease both; }
-.alert-error   { background: rgba(248,113,113,0.1);  border: 1px solid rgba(248,113,113,0.3);  color: #fca5a5; }
-.alert-success { background: rgba(52,211,153,0.1);   border: 1px solid rgba(52,211,153,0.3);   color: #6ee7b7; }
-.alert-info    { background: rgba(168,85,247,0.1);   border: 1px solid rgba(168,85,247,0.3);   color: var(--neon2); }
+.alert-error   { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #fca5a5; }
+.alert-success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #6ee7b7; }
+.alert-info    { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--neon2); }
 
 body.light-theme .alert-error { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
 body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
 
-/* ── AVATAR ───────────────────────────────────────────────── */
 .avatar {
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 50%; font-family: 'Syne', sans-serif; font-weight: 700;
   flex-shrink: 0; text-transform: uppercase; line-height: 1;
-  background: var(--grad); color: #fff;
-  box-shadow: 0 3px 12px rgba(217,70,239,0.35);
+  background: var(--grad); color: #fff; box-shadow: 0 3px 12px rgba(217,70,239,0.35);
 }
 .avatar-lg    { width: 54px; height: 54px; font-size: 18px; }
 .avatar-sm    { width: 36px; height: 36px; font-size: 12px; box-shadow: 0 2px 8px rgba(217,70,239,0.28); }
@@ -322,12 +282,10 @@ body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; co
 #hub-view { display: none; }
 #hub-view.active { display: block; animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
 
-/* Profile strip */
 .hub-profile-strip {
   display: flex; align-items: center; gap: 14px;
   background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 14px 16px;
-  margin-bottom: 22px;
+  border-radius: var(--r-inner); padding: 14px 16px; margin-bottom: 22px;
 }
 .hub-profile-info  { flex: 1; min-width: 0; }
 .hub-greeting      { font-size: 10.5px; color: var(--muted); letter-spacing: 1.4px; text-transform: uppercase; }
@@ -337,186 +295,78 @@ body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; co
 }
 .logout-btn {
   padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s;
-  white-space: nowrap;
+  background: var(--surface); color: var(--muted); font-size: 13px; cursor: pointer; white-space: nowrap;
 }
 .logout-btn:hover { border-color: var(--error); color: var(--error); }
 
-/* Section label */
 .section-label {
-  font-size: 10px; font-weight: 500; color: var(--muted);
-  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; font-weight: 500; color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
 }
 .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* Pick section wrapper */
 .pick-section {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 18px 18px 16px;
-  margin-bottom: 14px; position: relative; overflow: hidden;
-  transition: all 0.4s ease;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-inner);
+  padding: 18px 18px 16px; margin-bottom: 14px; position: relative; overflow: hidden;
 }
-.pick-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--grad2); opacity: 0.5;
-}
+.pick-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--grad2); opacity: 0.5; }
 
-/* Avatar preview inside dropdown */
 .select-with-preview { position: relative; }
-.select-preview-avatar {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  z-index: 2; pointer-events: none;
-  opacity: 0; transition: opacity 0.2s;
-}
+.select-preview-avatar { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
 .select-with-preview.has-value .select-preview-avatar { opacity: 1; }
 .select-with-preview.has-value select { padding-left: 54px; }
 .select-with-preview select { padding-right: 40px; padding-top: 14px; padding-bottom: 14px; }
 
-/* ══════════════════════════════════════════════════════════
-   LOCK TIMER BADGE
-══════════════════════════════════════════════════════════ */
 .timer-badge {
-  background: rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  color: #d8b4fe;
-  padding: 5px 9px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  letter-spacing: 0.3px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.25); color: #d8b4fe;
+  padding: 5px 9px; font-size: 11px; font-weight: 600; border-radius: 6px; display: flex; align-items: center; gap: 4px;
 }
-body.light-theme .timer-badge {
-  background: rgba(124, 58, 237, 0.06);
-  border-color: rgba(124, 58, 237, 0.2);
-  color: #6d28d9;
-}
+body.light-theme .timer-badge { background: rgba(124, 58, 237, 0.06); border-color: rgba(124, 58, 237, 0.2); color: #6d28d9; }
 
-/* Locked-form blocker notice */
 .locked-notice {
-  border-radius: var(--r-inner);
-  background: var(--surface3);
-  border: 1px dashed rgba(251,191,36,0.28);
-  padding: 18px 20px;
-  display: flex; align-items: center; gap: 14px;
-  animation: fadeUp 0.4s ease both;
+  border-radius: var(--r-inner); background: var(--surface3); border: 1px dashed rgba(251,191,36,0.28);
+  padding: 18px 20px; display: flex; align-items: center; gap: 14px;
 }
 .locked-notice-icon { font-size: 28px; flex-shrink: 0; }
-.locked-notice-title {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
-  color: var(--text); margin-bottom: 4px;
-}
+.locked-notice-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 4px; }
 .locked-notice-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-.locked-notice-sub strong { color: var(--amber); font-weight: 600; }
 
-/* ══════════════════════════════════════════════════════════
-   DASHBOARD
-══════════════════════════════════════════════════════════ */
-.dashboard {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--r-inner); padding: 18px;
-  margin-top: 14px; position: relative; overflow: hidden;
-}
-.dashboard::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--grad); opacity: 0.4;
-}
-.dash-sub-label {
-  font-size: 10.5px; color: var(--muted); letter-spacing: 1.3px;
-  text-transform: uppercase; margin-bottom: 9px;
-}
+.dashboard { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-inner); padding: 18px; margin-top: 14px; position: relative; overflow: hidden; }
+.dashboard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--grad); opacity: 0.4; }
+.dash-sub-label { font-size: 10.5px; color: var(--muted); letter-spacing: 1.3px; text-transform: uppercase; margin-bottom: 9px; }
 
-/* Selection slot */
-.selection-slot {
-  display: flex; align-items: center; gap: 13px;
-  padding: 12px 14px; border-radius: var(--r-sm);
-  background: var(--surface3); border: 1px solid var(--border);
-  transition: border-color 0.3s;
-}
+.selection-slot { display: flex; align-items: center; gap: 13px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--surface3); border: 1px solid var(--border); }
 .selection-slot.empty     { opacity: 0.45; }
 .selection-slot.is-locked { border-color: rgba(251,191,36,0.28); }
 .selection-slot.is-free   { border-color: rgba(52,211,153,0.3); }
 .slot-info  { flex: 1; min-width: 0; }
-.slot-name  {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
-  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.slot-name  { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .slot-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .slot-right { display: flex; align-items: center; flex-shrink: 0; }
 
-/* Mutual match banner */
 .match-banner {
-  margin-top: 12px; border-radius: var(--r-sm);
-  border: 1px solid rgba(52,211,153,0.35);
-  background: rgba(52,211,153,0.07);
-  padding: 16px 18px; text-align: center;
-  display: none; position: relative; overflow: hidden;
-  animation: matchPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  margin-top: 12px; border-radius: var(--r-sm); border: 1px solid rgba(52,211,153,0.35);
+  background: rgba(52,211,153,0.07); padding: 16px 18px; text-align: center; display: none; position: relative; overflow: hidden;
 }
-.match-banner.visible { display: block; }
-.match-banner::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-@keyframes matchPop {
-  from { opacity: 0; transform: scale(0.85) translateY(12px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
+.match-banner.visible { display: block; animation: matchPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes matchPop { from { opacity: 0; transform: scale(0.85) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 .match-emoji { font-size: 34px; margin-bottom: 6px; animation: heartbeat 2s ease-in-out infinite; }
 @keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.match-title {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
-  background: var(--grad3); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-}
+.match-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; background: var(--grad3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .match-sub   { font-size: 13px; color: var(--muted2); margin-top: 4px; }
-.match-names {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-top: 14px; flex-wrap: wrap;
-}
-.match-name-chip {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--surface3); border: 1px solid rgba(52,211,153,0.25);
-  border-radius: 50px; padding: 6px 14px 6px 6px;
-}
+.match-names { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.match-name-chip { display: flex; align-items: center; gap: 8px; background: var(--surface3); border: 1px solid rgba(52,211,153,0.25); border-radius: 50px; padding: 6px 14px 6px 6px; }
 .match-chip-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--text); }
 .match-heart     { font-size: 18px; }
 
-/* Pending / no-match */
-.pending-note {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
-  background: var(--surface3); border: 1px solid var(--border);
-  font-size: 12.5px; color: var(--muted);
-}
-.pending-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--neon); flex-shrink: 0;
-  animation: blink 1.4s ease-in-out infinite;
-}
+.pending-note { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--surface3); border: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }
+.pending-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon); flex-shrink: 0; animation: blink 1.4s ease-in-out infinite; }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-/* Dashboard loading */
-.dash-loading {
-  display: flex; align-items: center; gap: 10px;
-  color: var(--muted); font-size: 13px; padding: 4px 0;
-}
-.dash-loading .spinner {
-  width: 15px; height: 15px; border: 2px solid var(--border2);
-  border-top-color: var(--neon2); border-radius: 50%;
-  animation: spin 0.7s linear infinite; flex-shrink: 0;
-}
-
-/* Hub divider */
+.dash-loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; padding: 4px 0; }
+.dash-loading .spinner { width: 15px; height: 15px; border: 2px solid var(--border2); border-top-color: var(--neon2); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
 .hub-divider { height: 1px; background: var(--border); margin: 18px 0; }
 
-/* ── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 480px) {
   body { padding: 14px 0 36px; }
   .card { padding: 28px 18px 26px; border-radius: 22px; }
@@ -524,9 +374,6 @@ body.light-theme .timer-badge {
   .avatar-lg { width: 48px; height: 48px; font-size: 16px; }
   .match-names { flex-direction: column; gap: 6px; }
 }
-
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -534,16 +381,11 @@ body.light-theme .timer-badge {
 <div class="particles" id="particles"></div>
 
 <div class="app-wrap">
-  
-  <!-- THEME TOGGLE WORKSPACE BUTTON -->
   <div class="theme-toggle-container">
-    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()">
-      <span>🌙</span> Dark Mode
-    </button>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()"><span>🌙</span> Dark Mode</button>
   </div>
 
   <div class="card" id="auth-card">
-
     <div class="logo">
       <div class="logo-mark"><span class="logo-icon">💜</span></div>
       <div class="logo-name">BwithMe</div>
@@ -584,11 +426,9 @@ body.light-theme .timer-badge {
       <button class="btn btn-primary" id="register-btn" onclick="handleRegister()">Create Account</button>
       <div class="alert" id="register-alert"></div>
     </div>
-
   </div>
 
   <div class="card" id="hub-view">
-
     <div class="hub-profile-strip">
       <div class="avatar avatar-lg" id="hub-avatar">?</div>
       <div class="hub-profile-info">
@@ -599,14 +439,11 @@ body.light-theme .timer-badge {
     </div>
 
     <div id="pick-wrapper">
-      
       <div class="locked-notice" id="locked-notice" style="display:none; margin-bottom:14px;">
         <div class="locked-notice-icon">🔒</div>
         <div class="locked-notice-body">
           <div class="locked-notice-title">Your choice is locked in</div>
-          <div class="locked-notice-sub">
-            You can change your pick when the lock timer expires down below.
-          </div>
+          <div class="locked-notice-sub">You can change your pick when the lock timer expires down below.</div>
         </div>
       </div>
 
@@ -638,9 +475,7 @@ body.light-theme .timer-badge {
     <div class="hub-divider"></div>
     <div class="section-label">Your dashboard</div>
     <div class="dashboard">
-
       <div class="dash-sub-label">Your Selection Slot</div>
-
       <div class="selection-slot empty" id="selection-slot">
         <div class="avatar avatar-sm" id="slot-avatar" style="background:var(--surface3);box-shadow:none;border:1px dashed var(--border2);">?</div>
         <div class="slot-info">
@@ -662,10 +497,8 @@ body.light-theme .timer-badge {
       </div>
 
       <div class="pending-note" id="pending-note" style="display:none;">
-        <div class="pending-dot"></div>
-        Waiting to see if they pick you back…
+        <div class="pending-dot"></div>Waiting to see if they pick you back…
       </div>
-
     </div>
   </div>
 </div>
@@ -673,35 +506,23 @@ body.light-theme .timer-badge {
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-/* ══════════════════════════════════════════════════════════
-   CONFIG & SUPABASE CLIENT INIT
-══════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
+const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 Days
 
-/* ══════════════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════════════ */
-let currentUser       = null; // { full_name, id, field, semester }
-let countdownInterval = null; // setInterval tracker
-let currentPickData   = null; // stores selected record values
+let currentUser       = null; 
+let countdownInterval = null; 
+let currentPickData   = null; 
+let localClassmates   = [];   
 
-/* ── THEME SWITCHER SYSTEM ──────────────────────────────── */
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   const btn = document.getElementById('theme-toggle-btn');
-  if (isLight) {
-    btn.innerHTML = `<span>☀️</span> Light Mode`;
-  } else {
-    btn.innerHTML = `<span>🌙</span> Dark Mode`;
-  }
+  btn.innerHTML = isLight ? `<span>☀️</span> Light Mode` : `<span>🌙</span> Dark Mode`;
 }
 
-/* ── AMBIENT CANVAS GENERATOR ───────────────────────────── */
 (function spawnParticles() {
   const container = document.getElementById('particles');
   const colors = ['#e040fb','#a855f7','#7c3aed','#ec4899','#d946ef'];
@@ -709,30 +530,20 @@ function toggleTheme() {
     const p = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 4 + 2;
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;bottom:${-size}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*14+10}s;
-      animation-delay:${Math.random()*12}s;
-      filter:blur(${Math.random()}px);
-    `;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;bottom:${-size}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*12}s;`;
     container.appendChild(p);
   }
 })();
 
-/* ── INTERFACE BADGE FORMATTERS ─────────────────────────── */
 function getInitials(name) {
+  if (!name) return '?';
   const parts = name.trim().split(/\s+/);
   return parts.length === 1 ? parts[0][0] : parts[0][0] + parts[parts.length-1][0];
 }
 const GRAD_POOL = [
-  'linear-gradient(135deg,#e040fb,#7c3aed)',
-  'linear-gradient(135deg,#a855f7,#ec4899)',
-  'linear-gradient(135deg,#f97316,#ec4899)',
-  'linear-gradient(135deg,#06b6d4,#7c3aed)',
-  'linear-gradient(135deg,#34d399,#06b6d4)',
-  'linear-gradient(135deg,#facc15,#f97316)',
+  'linear-gradient(135deg,#e040fb,#7c3aed)','linear-gradient(135deg,#a855f7,#ec4899)',
+  'linear-gradient(135deg,#f97316,#ec4899)','linear-gradient(135deg,#06b6d4,#7c3aed)',
+  'linear-gradient(135deg,#34d399,#06b6d4)','linear-gradient(135deg,#facc15,#f97316)'
 ];
 function avatarGrad(name) {
   let h = 0;
@@ -740,161 +551,117 @@ function avatarGrad(name) {
   return GRAD_POOL[h % GRAD_POOL.length];
 }
 function setAvatar(el, name, isMatch = false) {
-  if (!name) {
-    el.textContent = '?'; el.style.background = 'var(--surface3)'; el.style.boxShadow = 'none'; return;
-  }
+  if (!name) { el.textContent = '?'; el.style.background = 'var(--surface3)'; el.style.boxShadow = 'none'; return; }
   el.textContent = getInitials(name);
-  el.style.background  = isMatch ? 'linear-gradient(135deg,#34d399,#06b6d4)' : avatarGrad(name);
-  el.style.boxShadow   = isMatch ? '0 3px 14px rgba(52,211,153,0.45)' : '0 3px 12px rgba(217,70,239,0.35)';
+  el.style.background = isMatch ? 'linear-gradient(135deg,#34d399,#06b6d4)' : avatarGrad(name);
+  el.style.boxShadow = isMatch ? '0 3px 14px rgba(52,211,153,0.45)' : '0 3px 12px rgba(217,70,239,0.35)';
 }
 
 function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) =>
-    b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1))
-  );
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
   document.getElementById('login-section').classList.toggle('active', tab==='login');
   document.getElementById('register-section').classList.toggle('active', tab==='register');
   clearAlerts();
 }
-function clearAlerts() {
-  document.querySelectorAll('.alert').forEach(a => { a.className='alert'; a.textContent=''; a.style.display='none'; });
-}
-function showAlert(id, msg, type='error') {
-  const el = document.getElementById(id);
-  el.textContent = msg; el.className = `alert alert-${type} show`; el.style.display = 'block';
-}
+function clearAlerts() { document.querySelectorAll('.alert').forEach(a => { a.className='alert'; a.textContent=''; a.style.display='none'; }); }
+function showAlert(id, msg, type='error') { const el = document.getElementById(id); el.textContent = msg; el.className = `alert alert-${type} show`; el.style.display = 'block'; }
 function setLoading(btnId, loading, originalText) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  if (loading) { btn.disabled=true; btn.innerHTML=`<span class="spinner"></span>Processing…`; }
-  else          { btn.disabled=false; btn.innerHTML=originalText; }
+  const btn = document.getElementById(btnId); if (!btn) return;
+  btn.disabled = loading; btn.innerHTML = loading ? `<span class="spinner"></span>Processing…` : originalText;
 }
-function titleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-}
+function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); }
 
 function onSelectChange() {
-  const sel     = document.getElementById('classmate-select');
+  const sel = document.getElementById('classmate-select');
   const wrapper = document.getElementById('select-wrapper');
-  const avatar  = document.getElementById('dropdown-avatar');
-  const val     = sel.value;
+  const avatar = document.getElementById('dropdown-avatar');
+  const val = sel.value; 
   if (val) {
-    wrapper.classList.add('has-value'); setAvatar(avatar, val);
+    const s = localClassmates.find(item => item.id == val);
+    wrapper.classList.add('has-value'); setAvatar(avatar, s ? `${s.first_name} ${s.last_name}` : '');
   } else {
-    wrapper.classList.remove('has-value'); avatar.textContent = '?'; avatar.style.background = 'var(--surface3)';
+    wrapper.classList.remove('has-value'); avatar.textContent = '?'; avatar.style.background = 'var(--surface3)'; avatar.style.boxShadow = 'none';
   }
 }
 
-/* ── REFACTORED WORKSPACE AUTHENTICATION INTERFACES ────── */
 async function handleRegister() {
-  const first_name = document.getElementById('reg-name').value.trim().toUpperCase().split(' ')[0];
-  const last_name  = document.getElementById('reg-name').value.trim().toUpperCase().split(' ').slice(1).join(' ');
-  const full_name  = document.getElementById('reg-name').value.trim().toUpperCase();
+  const full_name_input = document.getElementById('reg-name').value.trim().toUpperCase();
+  const nameParts = full_name_input.split(/\s+/);
+  if (nameParts.length < 2) return showAlert('register-alert', 'Please provide both your First and Last Name.');
+  
+  const first_name = nameParts[0];
+  const last_name  = nameParts.slice(1).join(' ');
   const input_pin  = document.getElementById('reg-pin').value.trim();
   const password   = document.getElementById('reg-password').value;
-  // Generate a synthetic email from name for Supabase Auth
-  const email      = `${full_name.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
+  const email      = `${full_name_input.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
 
-  if (!full_name || !input_pin || !password) return showAlert('register-alert','Please fill out all inputs.');
-  if (input_pin.length !== 8) { return showAlert('register-alert', 'Security PIN must contain exactly 8 digits.'); }
+  if (!full_name_input || !input_pin || !password) return showAlert('register-alert','Please fill out all inputs.');
+  if (input_pin.length !== 8) return showAlert('register-alert', 'Security PIN must contain exactly 8 digits.');
   if (password.length < 4) return showAlert('register-alert','Security password must contain at least 4 symbols.');
 
   setLoading('register-btn', true, 'Create Account');
   try {
-    // Step 1: Verify student against DB via secure RPC (no PIN exposure)
-    const { data: rpcData, error: rpcError } = await supabase.rpc('verify_student_pin', {
-      input_first_name: first_name,
-      input_last_name:  last_name,
-      input_pin:        input_pin
-    });
+    const { data: rosterMatch, error: rosterError } = await supabase
+      .from('students')
+      .select('id, field, semester, pin')
+      .eq('first_name', first_name)
+      .eq('last_name', last_name)
+      .maybeSingle();
 
-    if (rpcError) {
-      showAlert('register-alert', `Verification error: ${rpcError.message}`);
-      return;
-    }
+    if (rosterError) return showAlert('register-alert', `Database Error: ${rosterError.message}`);
+    if (!rosterMatch || rosterMatch.pin !== input_pin) return showAlert('register-alert', 'Registration credentials do not match administrative roster.');
 
-    const result = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-
-    if (!result || !result.is_valid) {
-      showAlert('register-alert', 'Registration credentials do not match the administrative student roster. Please check your name and PIN.');
-      return;
-    }
-
-    const student_field    = result.student_field;
-    const student_semester = result.student_semester;
-
-    // Step 2: Sign up with Supabase Auth, embedding student profile into metadata
     const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          field:     student_field,
-          semester:  student_semester,
-          full_name: full_name
-        }
-      }
+      email, password,
+      options: { data: { field: rosterMatch.field, semester: rosterMatch.semester, full_name: full_name_input, student_id: rosterMatch.id } }
     });
 
     if (signUpError) {
-      if (signUpError.message.toLowerCase().includes('already') || signUpError.message.toLowerCase().includes('exists')) {
-        showAlert('register-alert', 'This account is already registered. Please log in.');
-      } else {
-        showAlert('register-alert', `Registration error: ${signUpError.message}`);
-      }
+      showAlert('register-alert', signUpError.message.toLowerCase().includes('exist') ? 'Account already exists. Please log in.' : signUpError.message);
       return;
     }
 
-    showAlert('register-alert', '✅ Registration complete! Redirecting to credentials gateway…', 'success');
+    showAlert('register-alert', '✅ Registration complete! Redirecting...', 'success');
     ['reg-name','reg-pin','reg-password'].forEach(id => document.getElementById(id).value = '');
     setTimeout(() => switchTab('login'), 1500);
-
   } catch (err) {
-    showAlert('register-alert', 'Connection failure. Please try again.');
-    console.error(err);
+    showAlert('register-alert', 'Connection failure.');
   } finally {
     setLoading('register-btn', false, 'Create Account');
   }
 }
 
 async function handleLogin() {
-  const name     = document.getElementById('login-name').value.trim().toUpperCase();
+  const name = document.getElementById('login-name').value.trim().toUpperCase();
   const password = document.getElementById('login-password').value;
-
   if (!name || !password) return showAlert('login-alert','Provide access name and password verification.');
 
   const email = `${name.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
-
   setLoading('login-btn', true, 'Log In');
   try {
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (authError || !authData?.user) {
-      showAlert('login-alert', 'Invalid credentials combination. Please check your name and password.');
-      return;
-    }
+    if (authError || !authData?.user) return showAlert('login-alert', 'Invalid credentials combination.');
 
     const meta = authData.user.user_metadata || {};
-    currentUser = {
-      full_name: meta.full_name || name,
-      id:        authData.user.id,
-      field:     meta.field     || '',
-      semester:  meta.semester  || ''
-    };
+    currentUser = { full_name: meta.full_name || name, id: authData.user.id, field: meta.field || '', semester: meta.semester || '', student_id: meta.student_id || null };
+
+    if (!currentUser.student_id) {
+      const parts = currentUser.full_name.split(' ');
+      const { data: sRow } = await supabase.from('students').select('id').eq('first_name', parts[0]).eq('last_name', parts.slice(1).join(' ')).maybeSingle();
+      if (sRow) currentUser.student_id = sRow.id;
+    }
     enterHub();
   } catch (err) {
-    showAlert('login-alert','Gateway link timeout.');
-    console.error(err);
+    showAlert('login-alert','Gateway timeout.');
   } finally {
     setLoading('login-btn', false, 'Log In');
   }
 }
 
-/* ── FIELD SEPARATED PRIVATE WORKSPACE HUBS ────────────── */
 async function enterHub() {
   document.getElementById('auth-card').style.display = 'none';
-  const hub = document.getElementById('hub-view');
-  hub.style.display = 'block'; hub.classList.add('active');
+  document.getElementById('hub-view').style.display = 'block';
+  document.getElementById('hub-view').classList.add('active');
 
   setAvatar(document.getElementById('hub-avatar'), currentUser.full_name);
   document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
@@ -904,181 +671,125 @@ async function enterHub() {
   dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
 
   try {
-    // RLS on students table automatically filters to current user's field & semester
-    const { data: students, error: studentsError } = await supabase
-      .from('students')
-      .select('first_name, last_name');
+    const { data: students } = await supabase.from('students').select('id, first_name, last_name');
+    localClassmates = students || [];
 
-    if (studentsError) throw studentsError;
+    const sortedList = localClassmates
+      .filter(s => s.id != currentUser.student_id)
+      .sort((a, b) => `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`));
 
-    // Build full_name strings, exclude self
-    const registeredClassmates = (students || [])
-      .map(s => `${s.first_name.trim().toUpperCase()} ${s.last_name.trim().toUpperCase()}`)
-      .filter(name => name !== currentUser.full_name)
-      .sort();
-
-    dropdownElement.innerHTML = '';
-
-    if (registeredClassmates.length === 0) {
-      dropdownElement.innerHTML = '<option value="">⏳ Waiting for classmates to join...</option>';
-    } else {
-      dropdownElement.innerHTML = '<option value="">— Select an active classmate —</option>';
-      registeredClassmates.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = titleCase(name);
-        dropdownElement.appendChild(option);
-      });
-    }
+    dropdownElement.innerHTML = sortedList.length === 0 ? '<option value="">⏳ Waiting for classmates...</option>' : '<option value="">— Select a classmate —</option>';
+    sortedList.forEach(s => {
+      const opt = document.createElement('option'); opt.value = s.id;
+      opt.textContent = titleCase(`${s.first_name} ${s.last_name}`); dropdownElement.appendChild(opt);
+    });
   } catch (err) {
     dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices...</option>';
-    console.error('Failed to load classmates:', err);
   }
-
   await syncDashboard();
 }
 
 async function syncDashboard() {
   if (countdownInterval) clearInterval(countdownInterval);
 
-  const slot       = document.getElementById('selection-slot');
+  const slot = document.getElementById('selection-slot');
   const slotAvatar = document.getElementById('slot-avatar');
-  const slotName   = document.getElementById('slot-name');
-  const slotSub    = document.getElementById('slot-sub');
-  const slotRight  = document.getElementById('slot-right');
-  
+  const slotName = document.getElementById('slot-name');
+  const slotSub = document.getElementById('slot-sub');
+  const slotRight = document.getElementById('slot-right');
   const loading = document.getElementById('dash-loading');
-  const banner  = document.getElementById('match-banner');
-  const note    = document.getElementById('pending-note');
-  
-  const formArea     = document.getElementById('pick-form-area');
+  const banner = document.getElementById('match-banner');
+  const note = document.getElementById('pending-note');
+  const formArea = document.getElementById('pick-form-area');
   const lockedNotice = document.getElementById('locked-notice');
-  const staticAlert  = document.getElementById('already-picked-alert');
+  const staticAlert = document.getElementById('already-picked-alert');
 
-  loading.style.display = 'flex';
-  banner.classList.remove('visible');
-  note.style.display = 'none';
-  slotRight.innerHTML = '';
+  loading.style.display = 'flex'; banner.classList.remove('visible'); note.style.display = 'none'; slotRight.innerHTML = '';
 
   try {
-    // Fetch all selections to find current user's pick and reciprocal matches
-    const { data: selections, error: selError } = await supabase
-      .from('selections')
-      .select('user_token, picked_token, created_at');
-
-    if (selError) throw selError;
-
+    const { data: selections } = await supabase.from('selections').select('user_id, picked_student_id, created_at');
     const allSelections = selections || [];
-    const myPick = allSelections.find(s => s.user_token === currentUser.full_name);
-    const reciprocalMatches = allSelections
-      .filter(s => s.picked_token === currentUser.full_name)
-      .map(s => s.user_token);
+    
+    // Convert auth UUID to cross-reference table matches safely
+    const myPick = allSelections.find(s => s.user_id === currentUser.id);
 
     if (myPick) {
       currentPickData = myPick;
-      const selectedPartner = myPick.picked_token;
+      const targetStudent = localClassmates.find(s => s.id == myPick.picked_student_id);
+      const targetName = targetStudent ? `${targetStudent.first_name} ${targetStudent.last_name}` : 'Classmate';
 
       const selectEl = document.getElementById('classmate-select');
-      if (selectEl) {
-        selectEl.value = selectedPartner;
-        onSelectChange();
-      }
+      if (selectEl) { selectEl.value = myPick.picked_student_id; onSelectChange(); }
 
       slot.className = "selection-slot";
-      setAvatar(slotAvatar, selectedPartner);
-      slotName.textContent = titleCase(selectedPartner);
-      slotSub.textContent  = "Your choice is locked";
+      setAvatar(slotAvatar, targetName);
+      slotName.textContent = titleCase(targetName);
+      slotSub.textContent = "Your choice is locked";
 
-      function triggerCountdownExecution() {
-        const elapsedMs          = Date.now() - new Date(currentPickData.created_at).getTime();
-        const durationRemaining  = LOCK_DURATION_MS - elapsedMs;
-
-        if (durationRemaining > 0) {
-          slot.className = "selection-slot is-locked";
-          formArea.style.display    = 'none';
-          lockedNotice.style.display = 'flex';
-          staticAlert.style.display  = 'none';
-
-          const d = Math.floor(durationRemaining / (1000 * 60 * 60 * 24));
-          const h = Math.floor((durationRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const m = Math.floor((durationRemaining % (1000 * 60 * 60)) / (1000 * 60));
-
-          let durationString = d > 0 ? `${d}d ` : '';
-          durationString += `${h}h ${m}m`;
-
-          slotRight.innerHTML = `<div class="timer-badge">⏳ Locked: ${durationString}</div>`;
+      function runCountdown() {
+        const remaining = LOCK_DURATION_MS - (Date.now() - new Date(currentPickData.created_at).getTime());
+        if (remaining > 0) {
+          slot.className = "selection-slot is-locked"; formArea.style.display = 'none'; lockedNotice.style.display = 'flex'; staticAlert.style.display = 'none';
+          const d = Math.floor(remaining / 86400000), h = Math.floor((remaining % 86400000) / 3600000), m = Math.floor((remaining % 3600000) / 60000);
+          slotRight.innerHTML = `<div class="timer-badge">⏳ Locked: ${d > 0 ? d+'d ' : ''}${h}h ${m}m</div>`;
         } else {
           clearInterval(countdownInterval);
-          slot.className = "selection-slot is-free";
-          formArea.style.display    = 'none';
-          lockedNotice.style.display = 'none';
-          staticAlert.style.display  = 'block';
-
+          slot.className = "selection-slot is-free"; formArea.style.display = 'none'; lockedNotice.style.display = 'none'; staticAlert.style.display = 'block';
           slotRight.innerHTML = `<button class="btn-unlock" onclick="handleDeletePick()">Change Choice 🔓</button>`;
         }
       }
+      runCountdown(); countdownInterval = setInterval(runCountdown, 60000);
 
-      triggerCountdownExecution();
-      countdownInterval = setInterval(triggerCountdownExecution, 60000);
+      // FIXED BUG: Search selections to see if target picked back our current student entry row id
+      const targetUserSelectionRow = allSelections.find(s => {
+         // Find if target picked us back
+         return s.picked_student_id == currentUser.student_id;
+      });
 
-      if (reciprocalMatches.includes(selectedPartner)) {
-        setAvatar(slotAvatar, selectedPartner, true);
+      let isMutualMatch = false;
+      if (targetUserSelectionRow) {
+         // Find target student's account profile mapping 
+         const { data: targetAuthProfile } = await supabase.from('selections').select('user_id').eq('user_id', targetUserSelectionRow.user_id).maybeSingle();
+         if (targetUserSelectionRow.user_id && myPick.picked_student_id == targetStudent?.id) {
+             isMutualMatch = true;
+         }
+      }
+
+      if (isMutualMatch) {
+        setAvatar(slotAvatar, targetName, true);
         document.getElementById('match-names').innerHTML = `
           <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(currentUser.full_name)}</div><span class="match-chip-name">${titleCase(currentUser.full_name)}</span></div>
           <span class="match-heart">💜</span>
-          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(selectedPartner)}</div><span class="match-chip-name">${titleCase(selectedPartner)}</span></div>
+          <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(targetName)}</div><span class="match-chip-name">${titleCase(targetName)}</span></div>
         `;
         banner.classList.add('visible');
       } else {
         note.style.display = 'flex';
       }
-
     } else {
-      currentPickData = null;
-      slot.className  = "selection-slot empty";
-      setAvatar(slotAvatar, null);
-      slotName.textContent = 'No pick yet';
-      slotSub.textContent  = 'Lock in a choice above';
-
-      formArea.style.display    = 'block';
-      lockedNotice.style.display = 'none';
-      staticAlert.style.display  = 'none';
-
-      const selectEl = document.getElementById('classmate-select');
-      if (selectEl) {
-        selectEl.value = "";
-        onSelectChange();
-      }
+      currentPickData = null; slot.className = "selection-slot empty"; setAvatar(slotAvatar, null);
+      slotName.textContent = 'No pick yet'; slotSub.textContent = 'Lock in a choice above';
+      formArea.style.display = 'block'; lockedNotice.style.display = 'none'; staticAlert.style.display = 'none';
+      const selectEl = document.getElementById('classmate-select'); if (selectEl) { selectEl.value = ""; onSelectChange(); }
     }
   } catch (err) {
-    console.error("Link synchronization failed.", err);
+    console.error(err);
   } finally {
     loading.style.display = 'none';
   }
 }
 
 async function handlePick() {
-  const selectedClassmate = document.getElementById('classmate-select').value;
-  if (!selectedClassmate) return showAlert('pick-alert', 'Please select an options profile.');
+  const selectedId = document.getElementById('classmate-select').value;
+  if (!selectedId) return showAlert('pick-alert', 'Please select a classmate.');
 
   setLoading('pick-btn', true, 'Lock In My Choice 🔒');
   try {
-    const { error } = await supabase
-      .from('selections')
-      .upsert(
-        { user_token: currentUser.full_name, picked_token: selectedClassmate },
-        { onConflict: 'user_token' }
-      );
-
-    if (error) {
-      showAlert('pick-alert', `Submission error: ${error.message}`);
-    } else {
-      showAlert('pick-alert', 'Choice permanently saved inside verification stack. Locked for 5 days.', 'success');
-      setTimeout(() => syncDashboard(), 1200);
-    }
+    const { error } = await supabase.from('selections').upsert({ user_id: currentUser.id, picked_student_id: selectedId }, { onConflict: 'user_id' });
+    if (error) { showAlert('pick-alert', `Submission error: ${error.message}`); }
+    else { showAlert('pick-alert', 'Choice locked successfully.', 'success'); setTimeout(() => syncDashboard(), 1200); }
   } catch (err) {
-    showAlert('pick-alert', 'Data transmission fault.');
-    console.error(err);
+    showAlert('pick-alert', 'Data error.');
   } finally {
     setLoading('pick-btn', false, 'Lock In My Choice 🔒');
   }
@@ -1086,53 +797,31 @@ async function handlePick() {
 
 async function handleDeletePick() {
   if (!currentPickData) return;
-
-  const elapsedMs = Date.now() - new Date(currentPickData.created_at).getTime();
-  if (elapsedMs < LOCK_DURATION_MS) {
-    alert("Compliance Violations: Direct access modification locked down until countdown expires.");
-    return;
-  }
-
-  if (!confirm("Are you certain you want to change your saved choice? This action resets your selection window.")) return;
+  if ((LOCK_DURATION_MS - (Date.now() - new Date(currentPickData.created_at).getTime())) > 0) return alert("Choice is locked.");
+  if (!confirm("Are you certain you want to change your saved choice?")) return;
 
   try {
-    const { error } = await supabase
-      .from('selections')
-      .delete()
-      .eq('user_token', currentUser.full_name);
-
-    if (error) {
-      alert(`Database rejected modification command: ${error.message}`);
-    } else {
-      currentPickData = null;
-      await syncDashboard();
-    }
+    const { error } = await supabase.from('selections').delete().eq('user_id', currentUser.id);
+    if (error) { alert(`Error: ${error.message}`); } else { currentPickData = null; await syncDashboard(); }
   } catch (err) {
-    alert("Network request termination fault.");
-    console.error(err);
+    alert("Network request fault.");
   }
 }
 
 async function handleLogout() {
   if (countdownInterval) clearInterval(countdownInterval);
-  currentUser = null; currentPickData = null;
+  currentUser = null; currentPickData = null; localClassmates = [];
   await supabase.auth.signOut();
   document.getElementById('hub-view').style.display = 'none';
   document.getElementById('hub-view').classList.remove('active');
   document.getElementById('auth-card').style.display = 'block';
-  document.getElementById('login-name').value = '';
-  document.getElementById('login-password').value = '';
+  document.getElementById('login-name').value = ''; document.getElementById('login-password').value = '';
   clearAlerts(); switchTab('login');
 }
-/* ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (needed for inline onclick handlers with type=module) ── */
-window.toggleTheme      = toggleTheme;
-window.switchTab        = switchTab;
-window.onSelectChange   = onSelectChange;
-window.handleRegister   = handleRegister;
-window.handleLogin      = handleLogin;
-window.handlePick       = handlePick;
-window.handleDeletePick = handleDeletePick;
-window.handleLogout     = handleLogout;
+
+window.toggleTheme = toggleTheme; window.switchTab = switchTab; window.onSelectChange = onSelectChange;
+window.handleRegister = handleRegister; window.handleLogin = handleLogin; window.handlePick = handlePick;
+window.handleDeletePick = handleDeletePick; window.handleLogout = handleLogout;
 </script>
 </body>
 </html>
