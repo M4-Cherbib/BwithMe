@@ -787,13 +787,12 @@ function onSelectChange() {
 
 /* ── REFACTORED WORKSPACE AUTHENTICATION INTERFACES ────── */
 async function handleRegister() {
-  const raw_name   = document.getElementById('reg-name').value.trim().toUpperCase();
-  const name_parts = raw_name.split(/\s+/);
-  const first_name = name_parts[0] || '';
-  const last_name  = name_parts.slice(1).join(' ');
-  const full_name  = raw_name;
+  const first_name = document.getElementById('reg-name').value.trim().toUpperCase().split(' ')[0];
+  const last_name  = document.getElementById('reg-name').value.trim().toUpperCase().split(' ').slice(1).join(' ');
+  const full_name  = document.getElementById('reg-name').value.trim().toUpperCase();
   const input_pin  = document.getElementById('reg-pin').value.trim();
   const password   = document.getElementById('reg-password').value;
+  // Generate a synthetic email from name for Supabase Auth
   const email      = `${full_name.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
 
   if (!full_name || !input_pin || !password) return showAlert('register-alert','Please fill out all inputs.');
@@ -962,33 +961,26 @@ async function syncDashboard() {
   slotRight.innerHTML = '';
 
   try {
-    // Fetch user selection context down from database securely using authentic auth profiles
+    // Fetch all selections to find current user's pick and reciprocal matches
     const { data: selections, error: selError } = await supabase
       .from('selections')
-      .select('user_id, picked_profile_id, created_at, profiles!selections_picked_profile_id_fkey(full_name)');
+      .select('user_token, picked_token, created_at');
 
     if (selError) throw selError;
 
     const allSelections = selections || [];
-    
-    // Evaluate choices by matching internal IDs instead of open-ended name text tokens
-    const myPick = allSelections.find(s => s.user_id === currentUser.id);
+    const myPick = allSelections.find(s => s.user_token === currentUser.full_name);
     const reciprocalMatches = allSelections
-      .filter(s => s.picked_profile_id === currentUser.id)
-      .map(s => s.user_id);
+      .filter(s => s.picked_token === currentUser.full_name)
+      .map(s => s.user_token);
 
     if (myPick) {
       currentPickData = myPick;
-      const selectedPartner = myPick.profiles?.full_name || 'Classmate';
+      const selectedPartner = myPick.picked_token;
 
       const selectEl = document.getElementById('classmate-select');
       if (selectEl) {
-        // Resolve matching string for dropdown state update
-        const options = Array.from(selectEl.options);
-        const matchOpt = options.find(o => o.value.toUpperCase() === selectedPartner.toUpperCase());
-        if (matchOpt) {
-          selectEl.value = matchOpt.value;
-        }
+        selectEl.value = selectedPartner;
         onSelectChange();
       }
 
@@ -1029,7 +1021,7 @@ async function syncDashboard() {
       triggerCountdownExecution();
       countdownInterval = setInterval(triggerCountdownExecution, 60000);
 
-      if (reciprocalMatches.includes(myPick.picked_profile_id)) {
+      if (reciprocalMatches.includes(selectedPartner)) {
         setAvatar(slotAvatar, selectedPartner, true);
         document.getElementById('match-names').innerHTML = `
           <div class="match-name-chip"><div class="avatar avatar-sm avatar-match">${getInitials(currentUser.full_name)}</div><span class="match-chip-name">${titleCase(currentUser.full_name)}</span></div>
@@ -1071,23 +1063,11 @@ async function handlePick() {
 
   setLoading('pick-btn', true, 'Lock In My Choice 🔒');
   try {
-    // Resolve matching profile ID from classmate string safely inside DB queries
-    const { data: targetProfile, error: profileErr } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('full_name', selectedClassmate.toUpperCase())
-      .maybeSingle();
-
-    if (profileErr || !targetProfile) {
-      showAlert('pick-alert', 'Could not locate classmate profile context information.');
-      return;
-    }
-
     const { error } = await supabase
       .from('selections')
       .upsert(
-        { user_id: currentUser.id, picked_profile_id: targetProfile.id },
-        { onConflict: 'user_id' }
+        { user_token: currentUser.full_name, picked_token: selectedClassmate },
+        { onConflict: 'user_token' }
       );
 
     if (error) {
@@ -1119,7 +1099,7 @@ async function handleDeletePick() {
     const { error } = await supabase
       .from('selections')
       .delete()
-      .eq('user_id', currentUser.id);
+      .eq('user_token', currentUser.full_name);
 
     if (error) {
       alert(`Database rejected modification command: ${error.message}`);
@@ -1144,8 +1124,7 @@ async function handleLogout() {
   document.getElementById('login-password').value = '';
   clearAlerts(); switchTab('login');
 }
-
-/* ── EXPOSE FUNCTIONS TO GLOBAL SCOPE ── */
+/* ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (needed for inline onclick handlers with type=module) ── */
 window.toggleTheme      = toggleTheme;
 window.switchTab        = switchTab;
 window.onSelectChange   = onSelectChange;
