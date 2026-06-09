@@ -601,11 +601,12 @@ async function handleRegister() {
 
   setLoading('register-btn', true, 'Create Account');
   try {
+    // MODIFIED TO USE .ilike INSTEAD OF .eq FOR CASE-INSENSITIVE ROSTER CHECKING
     const { data: rosterMatch, error: rosterError } = await supabase
       .from('students')
       .select('id, field, semester, pin')
-      .eq('first_name', first_name)
-      .eq('last_name', last_name)
+      .ilike('first_name', first_name)
+      .ilike('last_name', last_name)
       .maybeSingle();
 
     if (rosterError) return showAlert('register-alert', `Database Error: ${rosterError.message}`);
@@ -647,7 +648,8 @@ async function handleLogin() {
 
     if (!currentUser.student_id) {
       const parts = currentUser.full_name.split(' ');
-      const { data: sRow } = await supabase.from('students').select('id').eq('first_name', parts[0]).eq('last_name', parts.slice(1).join(' ')).maybeSingle();
+      // MODIFIED TO USE .ilike INSTEAD OF .eq
+      const { data: sRow } = await supabase.from('students').select('id').ilike('first_name', parts[0]).ilike('last_name', parts.slice(1).join(' ')).maybeSingle();
       if (sRow) currentUser.student_id = sRow.id;
     }
     enterHub();
@@ -710,7 +712,6 @@ async function syncDashboard() {
     const { data: selections } = await supabase.from('selections').select('user_id, picked_student_id, created_at');
     const allSelections = selections || [];
     
-    // Convert auth UUID to cross-reference table matches safely
     const myPick = allSelections.find(s => s.user_id === currentUser.id);
 
     if (myPick) {
@@ -740,15 +741,12 @@ async function syncDashboard() {
       }
       runCountdown(); countdownInterval = setInterval(runCountdown, 60000);
 
-      // FIXED BUG: Search selections to see if target picked back our current student entry row id
       const targetUserSelectionRow = allSelections.find(s => {
-         // Find if target picked us back
          return s.picked_student_id == currentUser.student_id;
       });
 
       let isMutualMatch = false;
       if (targetUserSelectionRow) {
-         // Find target student's account profile mapping 
          const { data: targetAuthProfile } = await supabase.from('selections').select('user_id').eq('user_id', targetUserSelectionRow.user_id).maybeSingle();
          if (targetUserSelectionRow.user_id && myPick.picked_student_id == targetStudent?.id) {
              isMutualMatch = true;
