@@ -199,76 +199,104 @@ body.light-theme .card {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.form-group { margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; position: relative; }
 label {
   display: block; font-size: 10.5px; font-weight: 500; color: var(--muted);
   letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 7px;
 }
-input, select {
+input {
   width: 100%; padding: 13px 15px;
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: var(--r-inner); color: var(--text);
   font-family: 'DM Sans', sans-serif; font-size: 15px;
-  outline: none; transition: all 0.22s; appearance: none;
+  outline: none; transition: all 0.22s;
 }
-input:focus, select:focus {
+input:focus {
   border-color: var(--neon2);
   box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
   background: var(--surface2);
 }
-body.light-theme input:focus, body.light-theme select:focus { background: #ffffff; }
+body.light-theme input:focus { background: #ffffff; }
 input::placeholder { color: rgba(125,111,160,0.5); }
-/* ── Dropdown panel & options: deep dark themed ── */
-select {
-  background-color: #120e1e;
-  color: var(--text);
-  border-color: rgba(168,85,247,0.35);
+
+/* ══════════════════════════════════════════════════════════
+   HIGHLY CUSTOMIZED CYBERPUNK DROPDOWN CONTAINER STYLES
+══════════════════════════════════════════════════════════ */
+.custom-dropdown-trigger {
+  width: 100%; padding: 13px 40px 13px 15px;
+  background: #120e1e; border: 1px solid rgba(168,85,247,0.35);
+  border-radius: var(--r-inner); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  text-align: left; cursor: pointer; position: relative;
+  transition: all 0.22s; user-select: none;
 }
-select:focus {
+.custom-dropdown-trigger:focus, .custom-dropdown-trigger.open {
   border-color: var(--neon2);
   box-shadow: 0 0 0 3px rgba(168,85,247,0.22), 0 0 18px rgba(168,85,247,0.18);
+  background: #120e1e;
 }
-select option {
-  background-color: #120e1e;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  padding: 10px 14px;
+body.light-theme .custom-dropdown-trigger {
+  background: #ffffff; border-color: rgba(124,58,237,0.25);
 }
-select option:checked,
-select option:hover {
-  background-color: #2a1f4a;
-  color: #e9d5ff;
-}
-select option.empty-state {
-  color: var(--muted);
-  font-style: italic;
-  opacity: 0.7;
-}
-body.light-theme select {
-  background-color: #ffffff;
-  border-color: rgba(124,58,237,0.25);
-}
-body.light-theme select option {
-  background-color: #ffffff;
-  color: var(--text);
-}
-body.light-theme select option:checked,
-body.light-theme select option:hover {
-  background-color: #ede9fe;
-  color: #4c1d95;
-}
-body.light-theme select option.empty-state {
-  color: var(--muted);
+body.light-theme .custom-dropdown-trigger:focus, body.light-theme .custom-dropdown-trigger.open {
+  background: #ffffff;
 }
 
-.select-wrap { position: relative; width: 100%; }
-.select-wrap::after {
+.custom-dropdown-trigger::after {
   content: '▼'; position: absolute; right: 16px; top: 50%;
   transform: translateY(-50%); color: var(--neon2);
-  pointer-events: none; font-size: 11px;
+  font-size: 11px; transition: transform 0.2s ease;
+}
+.custom-dropdown-trigger.open::after {
+  transform: translateY(-50%) rotate(180deg);
 }
 
+.custom-dropdown-panel {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: #120e1e; border: 1px solid var(--neon2);
+  border-radius: var(--r-inner); z-index: 100; max-height: 220px;
+  overflow-y: auto; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5), var(--glow2);
+}
+.custom-dropdown-panel.show {
+  display: block; animation: fadeUp 0.18s ease both;
+}
+body.light-theme .custom-dropdown-panel {
+  background: #ffffff; border-color: var(--violet); box-shadow: 0 10px 25px rgba(124,58,237,0.1);
+}
+
+.custom-dropdown-option {
+  padding: 12px 16px; color: var(--text); font-size: 14px;
+  cursor: pointer; transition: all 0.15s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+.custom-dropdown-option:hover {
+  background-color: #2a1f4a; color: #e9d5ff;
+}
+.custom-dropdown-option.selected {
+  background-color: var(--violet); color: #ffffff;
+}
+body.light-theme .custom-dropdown-option:hover {
+  background-color: #ede9fe; color: #4c1d95;
+}
+body.light-theme .custom-dropdown-option.selected {
+  background-color: var(--violet); color: #ffffff;
+}
+
+.custom-dropdown-option.empty-state {
+  color: var(--muted); font-style: italic; opacity: 0.8; cursor: default;
+}
+.custom-dropdown-option.empty-state:hover {
+  background: none; color: var(--muted);
+}
+
+.select-with-preview { position: relative; }
+.select-preview-avatar { position: absolute; left: 14px; top: 24px; transform: translateY(-50%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+.select-with-preview.has-value .select-preview-avatar { opacity: 1; }
+.select-with-preview.has-value .custom-dropdown-trigger { padding-left: 54px; }
+
+/* ══════════════════════════════════════════════════════════
+   REST OF CONTROLS
+══════════════════════════════════════════════════════════ */
 .btn {
   width: 100%; padding: 14px; border: none; border-radius: 13px;
   font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
@@ -348,15 +376,9 @@ body.light-theme .alert-success { background: #d1fae5; border-color: #a7f3d0; co
 
 .pick-section {
   background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-inner);
-  padding: 18px 18px 16px; margin-bottom: 14px; position: relative; overflow: hidden;
+  padding: 18px 18px 16px; margin-bottom: 14px; position: relative; overflow: visible;
 }
 .pick-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--grad2); opacity: 0.5; }
-
-.select-with-preview { position: relative; }
-.select-preview-avatar { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
-.select-with-preview.has-value .select-preview-avatar { opacity: 1; }
-.select-with-preview.has-value select { padding-left: 54px; }
-.select-with-preview select { padding-right: 40px; padding-top: 14px; padding-bottom: 14px; }
 
 .timer-badge {
   background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.25); color: #d8b4fe;
@@ -496,11 +518,17 @@ body.light-theme .timer-badge { background: rgba(124, 58, 237, 0.06); border-col
               <div class="select-preview-avatar">
                 <div class="avatar avatar-sm" id="dropdown-avatar">?</div>
               </div>
-              <div class="select-wrap">
-                <select id="classmate-select" onchange="onSelectChange()">
-                  <option value="">— Loading registered profiles… —</option>
-                </select>
+              
+              <!-- ── NEW HIGHLY CUSTOM STYLE IMMUNE TO BROWSER DEFAULTS ── -->
+              <div id="custom-dropdown-btn" class="custom-dropdown-trigger" onclick="toggleCustomDropdown(event)">
+                — Loading registered profiles… —
               </div>
+              <div id="custom-dropdown-panel" class="custom-dropdown-panel">
+                <!-- Data options injected programmatically -->
+              </div>
+              <!-- Hidden primitive input to store selected matching key safely -->
+              <input type="hidden" id="classmate-select" value="" />
+
             </div>
           </div>
           <button class="btn btn-pick" id="pick-btn" onclick="handlePick()">Lock In My Choice 🔒</button>
@@ -551,7 +579,7 @@ const SUPABASE_URL = 'https://xiitnfszvqymgtrrpqym.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RcnrnWbVAn8OdGyL3gI3ow_7eEdH494';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 Days
+const LOCK_DURATION_MS = 5 * 24 * 60 * 60 * 1000; 
 
 let currentUser       = null; 
 let countdownInterval = null; 
@@ -612,17 +640,53 @@ function setLoading(btnId, loading, originalText) {
 }
 function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); }
 
-function onSelectChange() {
-  const sel = document.getElementById('classmate-select');
+/* ── NEW CUSTOM SIMULATED DROPDOWN HANDLERS ── */
+function toggleCustomDropdown(e) {
+  e.stopPropagation();
+  const trigger = document.getElementById('custom-dropdown-btn');
+  const panel = document.getElementById('custom-dropdown-panel');
+  
+  if (trigger.classList.contains('disabled')) return;
+  
+  const isOpen = panel.classList.contains('show');
+  if (isOpen) {
+    panel.classList.remove('show');
+    trigger.classList.remove('open');
+  } else {
+    panel.classList.add('show');
+    trigger.classList.add('open');
+  }
+}
+
+// Close panel automatically if user clicks completely outside of container
+document.addEventListener('click', () => {
+  document.getElementById('custom-dropdown-panel').classList.remove('show');
+  document.getElementById('custom-dropdown-btn').classList.remove('open');
+});
+
+function selectCustomOption(id, name) {
+  const hiddenInput = document.getElementById('classmate-select');
+  const trigger = document.getElementById('custom-dropdown-btn');
   const wrapper = document.getElementById('select-wrapper');
   const avatar = document.getElementById('dropdown-avatar');
-  const val = sel.value; 
-  if (val) {
-    const s = localClassmates.find(item => item.id == val);
-    wrapper.classList.add('has-value'); setAvatar(avatar, s ? `${s.first_name} ${s.last_name}` : '');
+
+  hiddenInput.value = id;
+  
+  if (id) {
+    trigger.textContent = name;
+    wrapper.classList.add('has-value');
+    setAvatar(avatar, name);
   } else {
-    wrapper.classList.remove('has-value'); avatar.textContent = '?'; avatar.style.background = 'var(--surface3)'; avatar.style.boxShadow = 'none';
+    trigger.textContent = '— Select a classmate —';
+    wrapper.classList.remove('has-value');
+    avatar.textContent = '?';
+    avatar.style.background = 'var(--surface3)';
+    avatar.style.boxShadow = 'none';
   }
+  
+  document.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+    opt.classList.toggle('selected', opt.getAttribute('data-value') === id);
+  });
 }
 
 async function handleRegister() {
@@ -642,7 +706,6 @@ async function handleRegister() {
 
   setLoading('register-btn', true, 'Create Account');
   try {
-    // MODIFIED TO USE .ilike INSTEAD OF .eq FOR CASE-INSENSITIVE ROSTER CHECKING
     const { data: rosterMatch, error: rosterError } = await supabase
       .from('students')
       .select('id, field, semester, pin')
@@ -689,7 +752,6 @@ async function handleLogin() {
 
     if (!currentUser.student_id) {
       const parts = currentUser.full_name.split(' ');
-      // MODIFIED TO USE .ilike INSTEAD OF .eq
       const { data: sRow } = await supabase.from('students').select('id').ilike('first_name', parts[0]).ilike('last_name', parts.slice(1).join(' ')).maybeSingle();
       if (sRow) currentUser.student_id = sRow.id;
     }
@@ -710,12 +772,14 @@ async function enterHub() {
   document.getElementById('hub-username').textContent = titleCase(currentUser.full_name);
   document.getElementById('hub-field-badge').textContent = `Classroom Channel: ${currentUser.field}`;
 
-  const dropdownElement = document.getElementById('classmate-select');
-  dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
+  const trigger = document.getElementById('custom-dropdown-btn');
+  const panel = document.getElementById('custom-dropdown-panel');
+  
+  trigger.textContent = '— Loading registered profiles… —';
+  trigger.classList.add('disabled');
+  panel.innerHTML = '';
 
-  // ─── ONLY THIS try/catch BLOCK WAS CHANGED ──────────────────────────────────
   try {
-    // Step 1: Fetch only students who share the logged-in user's semester
     const { data: students, error: studentsError } = await supabase
       .from('students')
       .select('id, first_name, last_name')
@@ -723,19 +787,14 @@ async function enterHub() {
 
     if (studentsError) throw studentsError;
 
-    // Step 2: Fetch all rows from the profiles table, which only contains
-    //         students who have completed account registration.
-    //         Each row has a student_id linking back to the students table.
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
       .select('student_id');
 
     if (profilesError) throw profilesError;
 
-    // Build a quick-lookup Set of registered student IDs
     const registeredIds = new Set((profiles || []).map(p => p.student_id));
 
-    // Step 3: Keep only students who are registered AND are not the current user
     localClassmates = (students || []).filter(s =>
       s.id != currentUser.student_id &&
       registeredIds.has(s.id)
@@ -745,21 +804,40 @@ async function enterHub() {
       `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`)
     );
 
-    dropdownElement.innerHTML = sortedList.length === 0
-      ? '<option value="" disabled selected class="empty-state">✦ Awaiting classmate registrations…</option>'
-      : '<option value="" class="empty-state">— Select a classmate —</option>';
+    trigger.classList.remove('disabled');
 
-    sortedList.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.id;
-      opt.textContent = titleCase(`${s.first_name} ${s.last_name}`);
-      dropdownElement.appendChild(opt);
-    });
+    if (sortedList.length === 0) {
+      trigger.textContent = '✦ Awaiting classmate registrations…';
+      panel.innerHTML = '<div class="custom-dropdown-option empty-state">⏳ No registered classmates yet…</div>';
+    } else {
+      trigger.textContent = '— Select a classmate —';
+      
+      // Add a reset element inside the panel
+      const defaultOpt = document.createElement('div');
+      defaultOpt.className = 'custom-dropdown-option empty-state';
+      defaultOpt.textContent = '— Select a classmate —';
+      defaultOpt.onclick = () => selectCustomOption('', '');
+      panel.appendChild(defaultOpt);
+
+      sortedList.forEach(s => {
+        const fullName = titleCase(`${s.first_name} ${s.last_name}`);
+        const opt = document.createElement('div');
+        opt.className = 'custom-dropdown-option';
+        opt.setAttribute('data-value', s.id);
+        opt.textContent = fullName;
+        opt.onclick = (e) => {
+          e.stopPropagation();
+          selectCustomOption(s.id, fullName);
+          panel.classList.remove('show');
+          trigger.classList.remove('open');
+        };
+        panel.appendChild(opt);
+      });
+    }
   } catch (err) {
     console.error('Classmate load error:', err);
-    dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices…</option>';
+    trigger.textContent = '⚠️ Error loading choices…';
   }
-  // ─── END OF CHANGED BLOCK ────────────────────────────────────────────────────
 
   await syncDashboard();
 }
@@ -778,6 +856,7 @@ async function syncDashboard() {
   const formArea = document.getElementById('pick-form-area');
   const lockedNotice = document.getElementById('locked-notice');
   const staticAlert = document.getElementById('already-picked-alert');
+  const trigger = document.getElementById('custom-dropdown-btn');
 
   loading.style.display = 'flex'; banner.classList.remove('visible'); note.style.display = 'none'; slotRight.innerHTML = '';
 
@@ -791,13 +870,14 @@ async function syncDashboard() {
       currentPickData = myPick;
       const targetStudent = localClassmates.find(s => s.id == myPick.picked_student_id);
       const targetName = targetStudent ? `${targetStudent.first_name} ${targetStudent.last_name}` : 'Classmate';
+      const cleanTargetName = titleCase(targetName);
 
-      const selectEl = document.getElementById('classmate-select');
-      if (selectEl) { selectEl.value = myPick.picked_student_id; onSelectChange(); }
+      // Force view mapping initialization
+      selectCustomOption(myPick.picked_student_id, cleanTargetName);
 
       slot.className = "selection-slot";
       setAvatar(slotAvatar, targetName);
-      slotName.textContent = titleCase(targetName);
+      slotName.textContent = cleanTargetName;
       slotSub.textContent = "Your choice is locked";
 
       function runCountdown() {
@@ -820,7 +900,6 @@ async function syncDashboard() {
 
       let isMutualMatch = false;
       if (targetUserSelectionRow) {
-         const { data: targetAuthProfile } = await supabase.from('selections').select('user_id').eq('user_id', targetUserSelectionRow.user_id).maybeSingle();
          if (targetUserSelectionRow.user_id && myPick.picked_student_id == targetStudent?.id) {
              isMutualMatch = true;
          }
@@ -841,7 +920,8 @@ async function syncDashboard() {
       currentPickData = null; slot.className = "selection-slot empty"; setAvatar(slotAvatar, null);
       slotName.textContent = 'No pick yet'; slotSub.textContent = 'Lock in a choice above';
       formArea.style.display = 'block'; lockedNotice.style.display = 'none'; staticAlert.style.display = 'none';
-      const selectEl = document.getElementById('classmate-select'); if (selectEl) { selectEl.value = ""; onSelectChange(); }
+      
+      selectCustomOption('', '');
     }
   } catch (err) {
     console.error(err);
@@ -890,7 +970,8 @@ async function handleLogout() {
   clearAlerts(); switchTab('login');
 }
 
-window.toggleTheme = toggleTheme; window.switchTab = switchTab; window.onSelectChange = onSelectChange;
+window.toggleTheme = toggleTheme; window.switchTab = switchTab;
+window.toggleCustomDropdown = toggleCustomDropdown;
 window.handleRegister = handleRegister; window.handleLogin = handleLogin; window.handlePick = handlePick;
 window.handleDeletePick = handleDeletePick; window.handleLogout = handleLogout;
 </script>
