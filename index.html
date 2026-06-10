@@ -672,22 +672,54 @@ async function enterHub() {
   const dropdownElement = document.getElementById('classmate-select');
   dropdownElement.innerHTML = '<option value="">— Loading registered profiles… —</option>';
 
+  // ─── ONLY THIS try/catch BLOCK WAS CHANGED ──────────────────────────────────
   try {
-    const { data: students } = await supabase.from('students').select('id, first_name, last_name');
-    localClassmates = students || [];
+    // Step 1: Fetch only students who share the logged-in user's semester
+    const { data: students, error: studentsError } = await supabase
+      .from('students')
+      .select('id, first_name, last_name')
+      .eq('semester', currentUser.semester);
 
-    const sortedList = localClassmates
-      .filter(s => s.id != currentUser.student_id)
-      .sort((a, b) => `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`));
+    if (studentsError) throw studentsError;
 
-    dropdownElement.innerHTML = sortedList.length === 0 ? '<option value="">⏳ Waiting for classmates...</option>' : '<option value="">— Select a classmate —</option>';
+    // Step 2: Fetch all rows from the profiles table, which only contains
+    //         students who have completed account registration.
+    //         Each row has a student_id linking back to the students table.
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('student_id');
+
+    if (profilesError) throw profilesError;
+
+    // Build a quick-lookup Set of registered student IDs
+    const registeredIds = new Set((profiles || []).map(p => p.student_id));
+
+    // Step 3: Keep only students who are registered AND are not the current user
+    localClassmates = (students || []).filter(s =>
+      s.id != currentUser.student_id &&
+      registeredIds.has(s.id)
+    );
+
+    const sortedList = [...localClassmates].sort((a, b) =>
+      `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`)
+    );
+
+    dropdownElement.innerHTML = sortedList.length === 0
+      ? '<option value="">⏳ No registered classmates yet…</option>'
+      : '<option value="">— Select a classmate —</option>';
+
     sortedList.forEach(s => {
-      const opt = document.createElement('option'); opt.value = s.id;
-      opt.textContent = titleCase(`${s.first_name} ${s.last_name}`); dropdownElement.appendChild(opt);
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = titleCase(`${s.first_name} ${s.last_name}`);
+      dropdownElement.appendChild(opt);
     });
   } catch (err) {
-    dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices...</option>';
+    console.error('Classmate load error:', err);
+    dropdownElement.innerHTML = '<option value="">⚠️ Error loading choices…</option>';
   }
+  // ─── END OF CHANGED BLOCK ────────────────────────────────────────────────────
+
   await syncDashboard();
 }
 
