@@ -593,7 +593,7 @@ async function handleRegister() {
   const last_name  = nameParts.slice(1).join(' ');
   const input_pin  = document.getElementById('reg-pin').value.trim();
   const password   = document.getElementById('reg-password').value;
-  const email      = `${full_name_input.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
+  const email = `${full_name_input.replace(/\s+/g, '.').toLowerCase()}@bwithme.com`;
 
   if (!full_name_input || !input_pin || !password) return showAlert('register-alert','Please fill out all inputs.');
   if (input_pin.length !== 8) return showAlert('register-alert', 'Security PIN must contain exactly 8 digits.');
@@ -637,7 +637,7 @@ async function handleLogin() {
   const password = document.getElementById('login-password').value;
   if (!name || !password) return showAlert('login-alert','Provide access name and password verification.');
 
-  const email = `${name.replace(/\s+/g, '.').toLowerCase()}@bwithme.local`;
+  const email = `${name.replace(/\s+/g, '.').toLowerCase()}@bwithme.com`;
   setLoading('login-btn', true, 'Log In');
   try {
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
