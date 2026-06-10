@@ -218,8 +218,49 @@ input:focus, select:focus {
 }
 body.light-theme input:focus, body.light-theme select:focus { background: #ffffff; }
 input::placeholder { color: rgba(125,111,160,0.5); }
-select option { background: var(--surface2); color: var(--text); }
-body.light-theme select option { background: #ffffff; color: var(--text); }
+/* ── Dropdown panel & options: deep dark themed ── */
+select {
+  background-color: #120e1e;
+  color: var(--text);
+  border-color: rgba(168,85,247,0.35);
+}
+select:focus {
+  border-color: var(--neon2);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.22), 0 0 18px rgba(168,85,247,0.18);
+}
+select option {
+  background-color: #120e1e;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+}
+select option:checked,
+select option:hover {
+  background-color: #2a1f4a;
+  color: #e9d5ff;
+}
+select option.empty-state {
+  color: var(--muted);
+  font-style: italic;
+  opacity: 0.7;
+}
+body.light-theme select {
+  background-color: #ffffff;
+  border-color: rgba(124,58,237,0.25);
+}
+body.light-theme select option {
+  background-color: #ffffff;
+  color: var(--text);
+}
+body.light-theme select option:checked,
+body.light-theme select option:hover {
+  background-color: #ede9fe;
+  color: #4c1d95;
+}
+body.light-theme select option.empty-state {
+  color: var(--muted);
+}
 
 .select-wrap { position: relative; width: 100%; }
 .select-wrap::after {
@@ -705,8 +746,8 @@ async function enterHub() {
     );
 
     dropdownElement.innerHTML = sortedList.length === 0
-      ? '<option value="">⏳ No registered classmates yet…</option>'
-      : '<option value="">— Select a classmate —</option>';
+      ? '<option value="" disabled selected class="empty-state">✦ Awaiting classmate registrations…</option>'
+      : '<option value="" class="empty-state">— Select a classmate —</option>';
 
     sortedList.forEach(s => {
       const opt = document.createElement('option');
